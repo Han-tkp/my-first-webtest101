@@ -91,9 +91,12 @@
                         </div>
                         <a href="contact.html" class="nav-item nav-link">ติดต่อ</a>
                     </div>
-                    <div class="ms-auto">
-                        <a href="" class="btn btn-primary py-2 px-3">เข้าสู่ระบบ</a>
-                    </div>
+                    <!-- ตรง navbar -->
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a id="loginLogoutBtn" class="nav-link" href="login.html">เข้าสู่ระบบ</a>
+                        </li>
+                    </ul>
                 </div>
             </nav>
         </div>
@@ -774,7 +777,31 @@
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Template Javascript -->
+    <!--เงื่อนไขปุ่ม และ การเข้าสู่ระบบ start--> 
     <script src="js/main.js"></script>
+
+    <script>
+        const btn = document.getElementById("loginLogoutBtn");
+        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+        if (btn) {
+            if (isLoggedIn) {
+                btn.textContent = "ออกจากระบบ";
+                btn.href = "#";
+                btn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    localStorage.removeItem("isLoggedIn");
+                    alert("ออกจากระบบแล้ว");
+                    window.location.href = "index.html"; // หรือหน้า login ก็ได้
+                });
+            } else {
+                btn.textContent = "เข้าสู่ระบบ";
+                btn.href = "login.html";
+            }
+        }
+    </script>
+    <!--เงื่อนไขปุ่ม และ การเข้าสู่ระบบ end--> 
+
 </body>
 
 </html>

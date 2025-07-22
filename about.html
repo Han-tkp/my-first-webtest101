@@ -30,9 +30,58 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+
 </head>
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Sarabun', sans-serif;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+        transition: transform 0.2s;
+    }
+
+    .card:hover {
+        transform: scale(1.02);
+    }
+
+    .equipment-image {
+        max-height: 180px;
+        object-fit: cover;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+    }
+
+    .status-ok {
+        color: green;
+        font-weight: bold;
+    }
+
+    .status-broken {
+        color: red;
+        font-weight: bold;
+    }
+</style>
 
 <body>
+    <script>
+        if (localStorage.getItem("isLoggedIn") !== "true") {
+            alert("กรุณาเข้าสู่ระบบก่อนเข้าใช้งานหน้านี้");
+            window.location.href = "login.html";
+        }
+    </script>
+
+    <script>
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            window.location.href = "login.html";
+        }
+    </script>
+
+
     <!-- Spinner Start -->
     <div id="spinner"
         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
@@ -91,9 +140,12 @@
                         </div>
                         <a href="contact.html" class="nav-item nav-link">ติดต่อ</a>
                     </div>
-                    <div class="ms-auto">
-                        <a href="" class="btn btn-primary py-2 px-3">เข้าสู่ระบบ</a>
-                    </div>
+                    <!-- ตรง navbar -->
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a id="loginLogoutBtn" class="nav-link" href="login.html">เข้าสู่ระบบ</a>
+                        </li>
+                    </ul>
                 </div>
             </nav>
         </div>
@@ -114,218 +166,88 @@
                             </h1>
                             <nav aria-label="breadcrumb animated slideInDown">
                                 <ol class="breadcrumb justify-content- align-content-xxl-start">
-                                    <li class="breadcrumb-item"><a href="#"></a></li>
-                                    <li class="breadcrumb-item"><a href="#">ประเภทเครื่อง</a></li>
                                     <li class="breadcrumb-item" aria-current="page">คู่มือการใช้งานอุปกรณ์</li>
                                     <li class="breadcrumb-item" aria-current="page">ขั้นตอนการยืม</li>
 
                                 </ol>
                             </nav>
-                            <!-- เมนูแบบ 1-->
-                            <div class="container-fluid pt-6 pb-6">
-                                <div class="container pt-xxl-5">
-                                    <div class="row g-lg-0 feature-row wow fadeIn" data-wow-delay="0.1s">
-                                        <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.3s">
-                                            <div class="feature-item border h-100">
-                                                <div class="feature-icon btn-xxl-square bg-primary mb-4 mt-n4">
-                                                    <i class="fa fa-hammer fa-2x text-white"></i>
-                                                </div>
-                                                <div class="p-5 pt-0">
-                                                    <h5 class="text-uppercase mb-3">Quality Welding</h5>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                                        Curabitur
-                                                        tellus augue.</p>
-                                                    <a class="position-relative text-body text-uppercase small d-flex justify-content-between"
-                                                        href="#"><b class="bg-white pe-3">Read More</b> <i
-                                                            class="bi bi-arrow-right bg-white ps-3"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.3s">
-                                            <div class="feature-item border h-100">
-                                                <div class="feature-icon btn-xxl-square bg-primary mb-4 mt-n4">
-                                                    <i class="fa fa-hammer fa-2x text-white"></i>
-                                                </div>
-                                                <div class="p-5 pt-0">
-                                                    <h5 class="text-uppercase mb-3">Quality Welding</h5>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                                        Curabitur
-                                                        tellus augue.</p>
-                                                    <a class="position-relative text-body text-uppercase small d-flex justify-content-between"
-                                                        href="#"><b class="bg-white pe-3">Read More</b> <i
-                                                            class="bi bi-arrow-right bg-white ps-3"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
+                            <div class="container py-5">
+                                <h2 class="mb-4 text-center text-primary">รายการอุปกรณ์ที่ให้ยืม</h2>
+                                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
-                                        <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.4s">
-                                            <div class="feature-item border h-100">
-                                                <div class="feature-icon btn-xxl-square bg-primary mb-4 mt-n4">
-                                                    <i class="fa fa-dollar-sign fa-2x text-white"></i>
-                                                </div>
-                                                <div class="p-5 pt-0">
-                                                    <h5 class="text-uppercase">Affordable Pricing</h5>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                                        Curabitur
-                                                        tellus augue.</p>
-                                                    <a class="position-relative text-body text-uppercase small d-flex justify-content-between"
-                                                        href="#"><b class="bg-white pe-3">Read More</b> <i
-                                                            class="bi bi-arrow-right bg-white ps-3"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.5s">
-                                            <div class="feature-item border h-100">
-                                                <div class="feature-icon btn-xxl-square bg-primary mb-4 mt-n4">
-                                                    <i class="fa fa-check-double fa-2x text-white"></i>
-                                                </div>
-                                                <div class="p-5 pt-0">
-                                                    <h5 class="text-uppercase">Best Welder</h5>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                                        Curabitur
-                                                        tellus augue.</p>
-                                                    <a class="position-relative text-body text-uppercase small d-flex justify-content-between"
-                                                        href="#"><b class="bg-white pe-3">Read More</b> <i
-                                                            class="bi bi-arrow-right bg-white ps-3"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.6s">
-                                            <div class="feature-item border h-100">
-                                                <div class="feature-icon btn-xxl-square bg-primary mb-4 mt-n4">
-                                                    <i class="fa fa-tools fa-2x text-white"></i>
-                                                </div>
-                                                <div class="p-5 pt-0">
-                                                    <h5 class="text-uppercase">Quality Tools</h5>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                                        Curabitur
-                                                        tellus augue.</p>
-                                                    <a class="position-relative text-body text-uppercase small d-flex justify-content-between"
-                                                        href="#"><b class="bg-white pe-3">Read More</b> <i
-                                                            class="bi bi-arrow-right bg-white ps-3"></i></a>
-                                                </div>
+                                    <!-- อุปกรณ์ 1 -->
+                                    <div class="col">
+                                        <div class="card h-100">
+                                            <img src="img/service-2.jpg" class="card-img-top equipment-image"
+                                                alt="เครื่องพ่น ULV ติดตั้งบนรถยนต์">
+                                            <div class="card-body">
+                                                <h5 class="card-title">เครื่องพ่น ULV ติดตั้งบนรถยนต์</h5>
+                                                <p class="status-ok">พร้อมให้ยืม</p>
+                                                <a href="borrowform.html" target="_blank" rel="noopener noreferrer">
+                                                    <button class="btn btn-primary w-100">ขอยืมอุปกรณ์</button>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- อุปกรณ์ 2 - ชำรุด -->
+                                    <div class="col">
+                                        <div class="card h-100">
+                                            <img src="img/service-3.jpg" class="card-img-top equipment-image"
+                                                alt="เครื่องพ่นหมอกควันติดรถ">
+                                            <div class="card-body">
+                                                <h5 class="card-title">เครื่องพ่นหมอกควัน ติดตั้งบนรถยนต์</h5>
+                                                <p class="status-broken">ไม่สามารถยืมได้ (เครื่องชำรุด)</p>
+                                                <button class="btn btn-secondary w-100"
+                                                    disabled>ไม่สามารถยืมได้</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- อุปกรณ์ 3 -->
+                                    <div class="col">
+                                        <div class="card h-100">
+                                            <img src="img/service-4.jpg" class="card-img-top equipment-image"
+                                                alt="เครื่องพ่นหมอกควันสะพายไหล่">
+                                            <div class="card-body">
+                                                <h5 class="card-title">เครื่องพ่นหมอกควันสะพายไหล่</h5>
+                                                <p class="status-ok">พร้อมให้ยืม</p>
+                                                <button class="btn btn-primary w-100">ขอยืมอุปกรณ์</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- อุปกรณ์ 4 -->
+                                    <div class="col">
+                                        <div class="card h-100">
+                                            <img src="img/service-5.jpg" class="card-img-top equipment-image"
+                                                alt="ULV สะพายหลัง">
+                                            <div class="card-body">
+                                                <h5 class="card-title">เครื่องพ่น ULV สะพายหลัง</h5>
+                                                <p class="status-ok">พร้อมให้ยืม</p>
+                                                <button class="btn btn-primary w-100">ขอยืมอุปกรณ์</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- อุปกรณ์ 5 -->
+                                    <div class="col">
+                                        <div class="card h-100">
+                                            <img src="img/service-8.jpg" class="card-img-top equipment-image"
+                                                alt="เครื่องพ่นชนิดอัดลม">
+                                            <div class="card-body">
+                                                <h5 class="card-title">เครื่องพ่นชนิดอัดลม</h5>
+                                                <p class="status-ok">พร้อมให้ยืม</p>
+                                                <button class="btn btn-primary w-100">ขอยืมอุปกรณ์</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-                            <!-- เมนูแบบ 1 end-->
-                            <div class="container-fluid team pt-8 pb-8">
-                                <div class="container">
-                                    <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s"
-                                        style="max-width: 800px;">
-                                        <h1 class="display-6 text-uppercase mb-5">ประเภทเครื่องพิเศษ</h1>
-                                    </div>
-                                    <div class="row g-4">
-                                        <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                                            <div class="team-item">
-                                                <div class="position-relative overflow-hidden">
-                                                    <img class="img-fluid w-100" src="img/team-1.jpg" alt="">
-                                                    <div class="team-social">
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-facebook-f"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-twitter"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-linkedin-in"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-youtube"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="text-center p-4">
-                                                    <h5 class="mb-1">Alex Robin</h5>
-                                                    <span>Welder</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                                            <div class="team-item">
-                                                <div class="position-relative overflow-hidden">
-                                                    <img class="img-fluid w-100" src="img/team-1.jpg" alt="">
-                                                    <div class="team-social">
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-facebook-f"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-twitter"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-linkedin-in"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-youtube"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="text-center p-4">
-                                                    <h5 class="mb-1">Alex Robin</h5>
-                                                    <span>Welder</span>
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
-                                            <div class="team-item">
-                                                <div class="position-relative overflow-hidden">
-                                                    <img class="img-fluid w-100" src="img/team-2.jpg" alt="">
-                                                    <div class="team-social">
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-facebook-f"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-twitter"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-linkedin-in"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-youtube"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="text-center p-4">
-                                                    <h5 class="mb-1">Andrew Bon</h5>
-                                                    <span>Welder</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                                            <div class="team-item">
-                                                <div class="position-relative overflow-hidden">
-                                                    <img class="img-fluid w-100" src="img/team-3.jpg" alt="">
-                                                    <div class="team-social">
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-facebook-f"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-twitter"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-linkedin-in"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-youtube"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="text-center p-4">
-                                                    <h5 class="mb-1">Martin Tompson</h5>
-                                                    <span>Welder</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
-                                            <div class="team-item">
-                                                <div class="position-relative overflow-hidden">
-                                                    <img class="img-fluid w-100" src="img/team-4.jpg" alt="">
-                                                    <div class="team-social">
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-facebook-f"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-twitter"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-linkedin-in"></i></a>
-                                                        <a class="btn btn-square btn-dark mx-1" href=""><i
-                                                                class="fab fa-youtube"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="text-center p-4">
-                                                    <h5 class="mb-1">Clarabelle Samber</h5>
-                                                    <span>Welder</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <script
+                                src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
                         </div>
                     </div>
@@ -458,6 +380,27 @@
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="lib/counterup/counterup.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script>
+        const btn = document.getElementById("loginLogoutBtn");
+        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+        if (btn) {
+            if (isLoggedIn) {
+                btn.textContent = "ออกจากระบบ";
+                btn.href = "#";
+                btn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    localStorage.removeItem("isLoggedIn");
+                    alert("ออกจากระบบแล้ว");
+                    window.location.href = "index.html"; // หรือหน้า login ก็ได้
+                });
+            } else {
+                btn.textContent = "เข้าสู่ระบบ";
+                btn.href = "login.html";
+            }
+        }
+    </script>
+
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
