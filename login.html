@@ -239,6 +239,31 @@
         }
     });
 </script>
+    <!--เงื่อนไขปุ่ม และ การเข้าสู่ระบบ start-->
+    <script src="js/main.js"></script>
+    git commit
+    <script>
+        const btn = document.getElementById("loginLogoutBtn");
+        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+        if (btn) {
+            if (isLoggedIn) {
+                btn.textContent = "ออกจากระบบ";
+                btn.href = "#";
+                btn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    localStorage.removeItem("isLoggedIn");
+                    alert("ออกจากระบบแล้ว");
+                    window.location.href = "index.html"; // หรือหน้า login ก็ได้
+                });
+            } else {
+                btn.textContent = "เข้าสู่ระบบ";
+                btn.href = "login.html";
+            }
+        }
+    </script>
+    <!--เงื่อนไขปุ่ม และ การเข้าสู่ระบบ end-->
+
 
 </body>
 

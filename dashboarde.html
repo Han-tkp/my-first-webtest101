@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>ระบบยืม-คืน อุปกรณ์</title>
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+<!-- Dashboard Section Start -->
+<div class="container my-6">
+    <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+        <h1 class="display-6 text-uppercase mb-5">แดชบอร์ดผู้บริหาร</h1>
+    </div>
+    <div class="row g-4">
+        <!-- Budget Summary Cards -->
+        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
+            <div class="bg-light rounded p-4 h-100">
+                <h5 class="text-uppercase">งบประมาณทั้งหมด</h5>
+                <h3 class="text-primary">฿ 200,000</h3>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="bg-light rounded p-4 h-100">
+                <h5 class="text-uppercase">ใช้ไปแล้ว</h5>
+                <h3 class="text-warning">฿ 123,000</h3>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
+            <div class="bg-light rounded p-4 h-100">
+                <h5 class="text-uppercase">คงเหลือ</h5>
+                <h3 class="text-success">฿ 77,000</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Management -->
+    <div class="row g-4 mt-5">
+        <div class="col-12 wow fadeInUp" data-wow-delay="0.5s">
+            <div class="bg-white p-4 rounded shadow-sm">
+                <h5 class="text-uppercase mb-4">เพิ่มผู้ใช้งานระบบ</h5>
+                <form id="addUserForm">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="ชื่อผู้ใช้" required>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="email" class="form-control" placeholder="อีเมล" required>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" required>
+                                <option selected disabled>สิทธิ์การใช้งาน</option>
+                                <option value="admin">ผู้ดูแลระบบ</option>
+                                <option value="officer">เจ้าหน้าที่</option>
+                                <option value="user">ผู้ใช้ทั่วไป</option>
+                            </select>
+                        </div>
+                        <div class="col-12 text-end">
+                            <button type="submit" class="btn btn-primary">เพิ่มผู้ใช้</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Dashboard Section End -->
+
+</body>
+
+</html>

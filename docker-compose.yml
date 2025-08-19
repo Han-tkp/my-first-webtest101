@@ -1,0 +1,48 @@
+
+version: "3.9"
+services:
+  db:
+    image: mysql:8.0
+    container_name: weldork_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: weldork
+      MYSQL_USER: weldork
+      MYSQL_PASSWORD: weldorkpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: weldork_backend
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: weldork
+      DB_USER: weldork
+      DB_PASS: weldorkpass
+      JWT_SECRET: "super-secret-change-me"
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build: ./frontend
+    container_name: weldork_frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+
+volumes:
+  db_data:
