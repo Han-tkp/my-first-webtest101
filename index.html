@@ -1,595 +1,1095 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 
 <head>
-    <meta charset="utf-8">
-    <title>ระบบยืม-คืน อุปกรณ์</title>
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yonchuw – ระบบจอง ยืม-คืน และซ่อมบำรุง</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ใช้ฟอนต์ Noto Sans Thai เป็นหลัก */
+    body {
+      font-family: 'Noto Sans Thai', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    }
 
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    /* พื้นหลังแบบไล่ระดับสีเพื่อความสวยงาม */
+    .bg-grad {
+      background: radial-gradient(1200px 600px at 80% -10%, rgba(79, 70, 229, .18), transparent 60%), linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #7c3aed 100%);
+    }
 
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@700;800&display=swap"
-        rel="stylesheet">
+    /* เอฟเฟกต์กระจกฝ้าสำหรับ Topbar */
+    .glass {
+      backdrop-filter: saturate(140%) blur(10px);
+      background: rgba(255, 255, 255, 0.08);
+    }
 
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+    /* การ์ดหลักใช้พื้นหลังสีขาวเกือบทึบ */
+    .card {
+      background: rgba(255, 255, 255, 0.96);
+    }
 
-    <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    /* Animation สำหรับการเปลี่ยนหน้า */
+    .fade-in {
+      animation: fade .35s ease-out;
+    }
 
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    @keyframes fade {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
 
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* สไตล์สำหรับ Chip แสดงคุณสมบัติ */
+    .chip {
+      background: rgba(99, 102, 241, .12);
+      color: #4338ca;
+      font-weight: 500;
+    }
+
+    /* สไตล์สำหรับปุ่มที่ถูกปิดใช้งาน */
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 
-<body>
-    <!-- Spinner Start -->
-    <div id="spinner"
-        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
-    </div>
-    <!-- Spinner End -->
-
-
-    <!-- Topbar Start -->
-    <div class="container-fluid bg-primary text-white d-flex wow fadeIn" data-wow-delay="0.1s">
-
-        <div class="container py-3">
-            <div class="d-flex align-items-center">
-                <a href="index.html">
-                    <h1 class="text-white fw-bold m-0">ศตม.นราฯ </h1>
-                </a>
-                <div class="ms-auto d-flex align-items-center">
-                    <a class="btn btn-sm-square btn-light text-primary ms-2"
-                        href="https://www.facebook.com/vbdc.nara"><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-sm-square btn-light text-primary ms-2" href=""><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-sm-square btn-light text-primary ms-2" href=""><i
-                            class="fab fa-linkedin-in"></i></a>
-                </div>
-            </div>
+<body class="min-h-screen bg-grad text-white transition-all duration-300">
+  <!-- Topbar -->
+  <header class="sticky top-0 z-30 glass">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="show('home')">
+        <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
+          <!-- ไอคอนระบบ -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+            <path d="m7 11 2-2-2-2" />
+            <path d="M11 13h4" />
+            <path d="m17 11 2 2-2 2" />
+            <path d="M21 12a9 9 0 1 1-6.2-8.7" />
+          </svg>
         </div>
-    </div>
-    </div>
-    <!-- Topbar End -->
-
-
-    <!-- Navbar Start -->
-    <div class="container-fluid bg-white sticky-top wow fadeIn" data-wow-delay="0.1s">
-        <div class="container">
-            <nav class="navbar navbar-expand-lg bg-white navbar-light p-lg-0">
-                <a href="index.html" class="navbar-brand d-lg-none">
-                    <h3 class="fw-bold m-0">ยืม-คืนอุปกรณ์</h3>
-                </a>
-                <button type="button" class="navbar-toggler me-0" data-bs-toggle="collapse"
-                    data-bs-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav">
-                        <a href="index.html" class="nav-item nav-link active">หน้าหลัก</a>
-                        <a href="about.html" class="nav-item nav-link">ยืมอุปกรณ์</a>
-                        <a href="service.html" class="nav-item nav-link">คู่มือการใช้งานอุปกรณ์</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">อื่นๆ</a>
-                            <div class="dropdown-menu bg-light rounded-0 rounded-bottom m-0">
-                                <a href="feature.html" class="dropdown-item">เจ้าหน้าที่ที่เกี่ยวข้องกับระบบ</a>
-                                <a href="team.html" class="dropdown-item">ปรวัติความเป็นมา</a>
-                                <a href="testimonial.html" class="dropdown-item">กฎระเบียบการใช้บริการ</a>
-                                <a href="appoinment.html" class="dropdown-item">แผนผังองค์กรณ์</a>
-                                <a href="404.html" class="dropdown-item">ประเมินความพึงพอใจ</a>
-                            </div>
-                        </div>
-                        <a href="contact.html" class="nav-item nav-link">ติดต่อ</a>
-                    </div>
-                    <!-- ตรง navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a id="loginLogoutBtn" class="nav-link" href="login.html">เข้าสู่ระบบ</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+        <div>
+          <p class="font-semibold text-lg">Yonchuw</p>
+          <p class="text-white/80 text-xs -mt-0.5">ระบบบริหารจัดการเครื่องพ่นหมอกควัน</p>
         </div>
-    </div>
-    <!-- Navbar End -->
-    <!-- Carousel Start -->
-    <div class="container-fluid p-0 mb-6 wow fadeIn" data-wow-delay="0.1s">
-        <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#header-carousel" data-bs-slide-to="0" class="active"
-                    aria-current="true" aria-label="Slide 1">
-                    <img class="img-fluid" src="img/carousel-1.jpg" alt="Image">
-                </button>
-                <button type="button" data-bs-target="#header-carousel" data-bs-slide-to="1" aria-label="Slide 2">
-                    <img class="img-fluid" src="img/carousel-2.jpg" alt="Image">
-                </button>
-                <button type="button" data-bs-target="#header-carousel" data-bs-slide-to="2" aria-label="Slide 3">
-                    <img class="img-fluid" src="img/carousel-3.jpg" alt="Image">
-                </button>
-            </div>
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img class="w-100" src="img/carousel-1.jpg" alt="Image">
-                    <div class="carousel-caption">
-                        <h1 class="display-1 text-uppercase text-white mb-4 animated zoomIn">ขั้นตอนการยืม อุปกรณ์
-                        </h1>
-                        <a href="#" class="btn btn-primary py-3 px-4">กดดูเพิ่มเติม</a>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <img class="w-100" src="img/carousel-2.jpg" alt="Image">
-                    <div class="carousel-caption">
-                        <h1 class="display-1 text-uppercase text-white mb-4 animated zoomIn">คู่มือการใช้งานอุปกรณ์
-                        </h1>
-                        <a href="#" class="btn btn-primary py-3 px-4">กดดูเพิ่มเติม</a>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <img class="w-100" src="img/carousel-3.jpg" alt="Image">
-                    <div class="carousel-caption">
-                        <h1 class="display-1 text-uppercase text-white mb-4 animated zoomIn">ระบบนี้มีไว้ทำไม
-                        </h1>
-                        <a href="#" class="btn btn-primary py-3 px-4">กดดูเพิ่มเติม</a>
-                    </div>
-                </div>
-            </div>
+      </div>
+      <nav class="flex items-center gap-2" id="nav-actions">
+        <button id="btnLogin" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">เข้าสู่ระบบ</button>
+        <button id="btnRegister"
+          class="px-4 py-2 rounded-lg bg-white text-slate-900 font-semibold hover:opacity-90 transition">ลงทะเบียน</button>
+        <div id="userInfo" class="hidden items-center gap-3">
+          <span id="userNameDisplay" class="text-sm font-medium"></span>
+          <button id="btnLogout"
+            class="px-4 py-2 rounded-lg bg-red-500/20 text-red-100 hover:bg-red-500/40 transition text-sm">ออกจากระบบ</button>
         </div>
+      </nav>
     </div>
-    <!-- Carousel End -->
+  </header>
 
-
-    <!-- โรคที่ควรระวัง Start -->
-    <div class="container-fluid service pt-6 pb-6">
-        <div class="container">
-            <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
-                <h1 class="display-6 text-uppercase mb-5">โรคที่ควรระวัง</h1>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="service-item">
-                        <div class="service-inner pb-5">
-                            <img class="img-fluid w-100" src="img/service-1.jpg" alt="">
-                            <div class="service-text px-5 pt-4">
-                                <h5 class="text-uppercase">โรคไข้เลือดออก</h4>
-                                    <p>โรคไข้เลือดออกเกิดจากเชื้อไวรัสเดงกี (Dengue virus) ซึ่งมียุงลายเป็นพาหะนำโรค
-                                        (ส่วนใหญ่คือยุงลายสวน Aedes aegypti และยุงลายบ้าน Aedes albopictus) โรคนี้มี 4
-                                        สายพันธุ์ย่อย
-                                        การติดเชื้อสายพันธุ์หนึ่งจะทำให้มีภูมิคุ้มกันต่อสายพันธุ์นั้นชั่วคราว
-                                        แต่จะไม่มีภูมิคุ้มกันต่อสายพันธุ์อื่น
-                                        และการติดเชื้อซ้ำด้วยสายพันธุ์อื่นอาจทำให้มีอาการรุนแรงขึ้น
-                                        อาการที่พบบ่อยได้แก่:
-                                    </p>
-                            </div>
-                            <a class="btn btn-light px-3" href="">อ่านเพิ่มเติม<i
-                                    class="bi bi-chevron-double-right ms-1"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
-                    <div class="service-item">
-                        <div class="service-inner pb-5">
-                            <img class="img-fluid w-100" src="img/service-2.jpg" alt="">
-                            <div class="service-text px-5 pt-4">
-                                <h5 class="text-uppercase">โรคไข้มาลาเรีย</h4>
-                                    <p>โรคไข้มาลาเรียเกิดจากเชื้อโปรโตซัวพลาสโมเดียม (Plasmodium)
-                                        ซึ่งมียุงก้นปล่องเพศเมียเป็นพาหะนำโรค เชื้อมีหลายสายพันธุ์ที่ก่อให้เกิดโรคในคน
-                                        โดยแต่ละสายพันธุ์มีระยะฟักตัวและอาการที่แตกต่างกัน อาการที่พบบ่อยได้แก่:
-                                    </p>
-                            </div>
-                            <a class="btn btn-light px-3" href="">อ่าเพิ่มเติม<i
-                                    class="bi bi-chevron-double-right ms-1"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="service-item">
-                        <div class="service-inner pb-5">
-                            <img class="img-fluid w-100" src="img/service-3.jpg" alt="">
-                            <div class="service-text px-5 pt-4">
-                                <h5 class="text-uppercase">โรคสครับไทฟัส</h4>
-                                    <p>โรคสครับไทฟัสเกิดจากเชื้อแบคทีเรีย Orientia tsutsugamushi ซึ่งมีไรอ่อน (chigger
-                                        mite)
-                                        เป็นพาหะ ไรอ่อนนี้มักอาศัยอยู่ในพื้นที่ที่มีพงหญ้ารก ป่าละเมาะ ไร่ นา หรือสวน
-                                        อาการที่พบบ่อยได้แก่:
-                                    </p>
-                            </div>
-                            <a class="btn btn-light px-3" href="">อ่าเพิ่มเติม<i
-                                    class="bi bi-chevron-double-right ms-1"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
-                    <div class="service-item">
-                        <div class="service-inner pb-5">
-                            <img class="img-fluid w-100" src="img/service-4.jpg" alt="">
-                            <div class="service-text px-5 pt-4">
-                                <h5 class="text-uppercase">โรคปวดข้อยุงลาย</h4>
-                                    <p>รคปวดข้อยุงลายเกิดจากเชื้อไวรัสชิคุนกุนยา (Chikungunya virus)
-                                        ซึ่งมียุงลายเป็นพาหะนำโรค
-                                        (ส่วนใหญ่คือยุงลายสวน Aedes aegypti และยุงลายบ้าน Aedes albopictus)
-                                        อาการที่พบบ่อยได้แก่:
-                                    </p>
-                            </div>
-                            <a class="btn btn-light px-3" href="">อ่าเพิ่มเติม<i
-                                    class="bi bi-chevron-double-right ms-1"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="service-item">
-                        <div class="service-inner pb-5">
-                            <img class="img-fluid w-100" src="img/service-5.jpg" alt="">
-                            <div class="service-text px-5 pt-4">
-                                <h5 class="text-uppercase">โรคติดเชื้อไวรัสซิกา</h4>
-                                    <p>โรคติดเชื้อไวรัสซิกาเกิดจากเชื้อไวรัสซิกา (Zika virus)
-                                        ซึ่งมียุงลายเป็นพาหะนำโรคหลัก
-                                        (โดยเฉพาะยุงลายสวน Aedes aegypti) นอกจากนี้ยังสามารถติดต่อทางเพศสัมพันธ์
-                                        จากมารดาสู่ทารกในครรภ์ และการรับเลือดได้
-                                        อาการส่วนใหญ่มักไม่รุนแรงหรือไม่แสดงอาการเลย
-                                        ผู้ที่แสดงอาการมักมีอาการดังนี้:
-                                    </p>
-                            </div>
-                            <a class="btn btn-light px-3" href="">อ่าเพิ่มเติม<i
-                                    class="bi bi-chevron-double-right ms-1"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- หน้าแรก / Hero Section -->
+    <section id="home" class="fade-in">
+      <div class="grid md:grid-cols-2 gap-8 items-start">
+        <div>
+          <h1 class="text-4xl sm:text-5xl font-bold leading-tight tracking-tighter">ระบบจอง ยืม-คืน และซ่อมบำรุง</h1>
+          <p class="mt-4 text-lg text-white/90">ลดขั้นตอนงานเอกสาร เพิ่มประสิทธิภาพการทำงาน
+            ติดตามสถานะอุปกรณ์ได้แบบเรียลไทม์</p>
+          <div class="mt-8 flex flex-wrap gap-4">
+            <button id="startBtn"
+              class="px-6 py-3 rounded-xl bg-white text-slate-900 font-semibold hover:opacity-90 transition-transform hover:scale-105">เริ่มต้นใช้งาน</button>
+            <button id="browseBtn"
+              class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition">ดูรายการอุปกรณ์</button>
+          </div>
+          <div class="mt-6 flex items-center gap-3 text-sm">
+            <span class="chip px-3 py-1 rounded-full">Responsive</span>
+            <span class="chip px-3 py-1 rounded-full">Role-based</span>
+            <span class="chip px-3 py-1 rounded-full">Real-time</span>
+          </div>
         </div>
-    </div>
-    </div>
-    </div>
-    <!-- โรคที่ควรระวัง end -->
-
-    <!--วิดีโอแนะนำ start-->
-    <div class="container-fluid pt-6 pb-6">
-        <div class="container">
-            <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
-                <h1 class="display-6 text-uppercase mb-5">บทบาทของ ศตม. </h1>
-            </div>
-            <div class="row justify-content-center wow fadeInUp" data-wow-delay="0.3s">
-                <div class="col-lg-8">
-                    <div class="ratio ratio-16x9">
-                        <iframe width="560" height="315"
-                            src="https://www.youtube.com/embed/ZNbIReDK1tE?si=QTcoduvi2eLgpN8w"
-                            title="YouTube video player" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                    </div>
-
-                    <br>
-                    <p class="form-container alert-link ">ศูบทบาทของ ศตม. ไม่ได้จำกัดอยู่แค่การตอบสนองเมื่อเกิดการระบาด
-                        แต่ครอบคลุมถึงการทำงานเชิงรุกในทุกมิติ โดยเริ่มตั้งแต่การเฝ้าระวังทางกีฏวิทยาและระบาดวิทยา
-                        เพื่อติดตามความชุกชุมของแมลงนำโรคอย่างยุงลายและยุงก้นปล่อง
-                        รวมถึงติดตามสถานการณ์ผู้ป่วยในพื้นที่เสี่ยงอย่างใกล้ชิด
-                        ข้อมูลที่ได้จากการเฝ้าระวังนี้จะถูกนำมาวิเคราะห์เพื่อประเมินความเสี่ยงและแจ้งเตือนภัยล่วงหน้า
-                        ทำให้สามารถวางแผนป้องกันได้อย่างทันท่วงที
-                    </p>
-                </div>
-            </div>
+        <!-- คู่มือการใช้งาน -->
+        <div class="card rounded-2xl p-6 text-slate-900 shadow-xl">
+          <div class="flex items-center justify-between">
+            <p class="font-semibold">คู่มือใช้งานอย่างย่อ</p>
+            <span class="text-xs px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 font-medium">Demo</span>
+          </div>
+          <ol class="mt-4 space-y-2.5 text-sm text-slate-700 list-decimal list-inside">
+            <li><strong>ลงทะเบียน:</strong> ผู้ใช้ใหม่ลงทะเบียน → สถานะเป็น “รอตรวจสอบ”</li>
+            <li><strong>อนุมัติบัญชี:</strong> ผู้อนุมัติทำการอนุมัติ → ผู้ใช้จึงจะเข้าสู่ระบบได้</li>
+            <li><strong>ส่งคำขอยืม:</strong> ผู้ใช้ทั่วไปส่งคำขอยืม (ต้องระบุรายละเอียดให้ครบถ้วน)</li>
+            <li><strong>อนุมัติการยืม:</strong> ผู้อนุมัติอนุมัติคำขอ → สถานะอุปกรณ์เปลี่ยนเป็น “ถูกยืม”</li>
+            <li><strong>คืนอุปกรณ์:</strong> เมื่อคืนอุปกรณ์ ช่างจะตรวจสภาพและตัดสินว่า “เสีย/ไม่เสีย”</li>
+            <li><strong>ขั้นตอนการซ่อม:</strong> หากเสีย → สร้างคำขอซ่อม → อนุมัติซ่อม → ซ่อมเสร็จ → อุปกรณ์กลับมา
+              “ว่าง”</li>
+          </ol>
+          <div class="mt-5 p-3 rounded-lg bg-slate-50 border text-sm text-slate-600">
+            <strong>บัญชีทดสอบ (รหัสผ่าน: password)</strong>
+            <ul class="list-disc list-inside mt-1">
+              <li>admin@example.com (ผู้ดูแลระบบ)</li>
+              <li>approver@example.com (ผู้อนุมัติ)</li>
+              <li>tech@example.com (ช่างเทคนิค)</li>
+              <li>user@example.com (ผู้ใช้ทั่วไป)</li>
+            </ul>
+          </div>
         </div>
-    </div>
-    <!--วิดีโอแนะนำ end-->
+      </div>
+    </section>
 
-
-    <!-- ประเมินความพึงพอใจ และ สิ่งที่อยากให้ปรับปรุง Start -->
-    <div class="container-fluid appoinment mt-6 mb-6 py-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container pt-5">
-            <div class="row gy-5 gx-0">
-                <div class="col-lg-6 pe-lg-5 wow fadeIn" data-wow-delay="0.3s">
-                    <h1 class="display-6 text-uppercase text-white mb-4">ประเมินความพึงพอใจ และ ปรับปรุงเพิ่มเติม
-                    </h1>
-                    <p class="text-white mb-5 wow fadeIn" data-wow-delay="0.4s">Lorem ipsum dolor sit amet, consectetur
-                        adipiscing elit. Curabitur tellus
-                        augue, iaculis id elit eget, ultrices pulvinar tortor.</p>
-                    <div class="d-flex align-items-start wow fadeIn" data-wow-delay="0.5s">
-                        <div class="btn-lg-square bg-white">
-                            <i class="bi bi-geo-alt text-dark fs-3"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h6 class="text-white text-uppercase">ที่อยู่</h6>
-                            <span class="text-white">
-                                หน่วยควบคุมโรคติดต่อนำโดยแมลงที่ 12,4.4 11 ถนนระแงะมรรคา ตำบลบางนาค อำเภอเมืองนราธิวาส
-                                จังหวัดนราธิวาส 96000.</span>
-                        </div>
-                    </div>
-                    <hr class="bg-body">
-                    <div class="d-flex align-items-start wow fadeIn" data-wow-delay="0.6s">
-                        <div class="btn-lg-square bg-white">
-                            <i class="bi bi-clock text-dark fs-3"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h6 class="text-white text-uppercase"> เวลาทำการ</h6>
-                            <span class="text-white">วันจันทร์-วันศึกร์ , วันเสาร์-วันอาทิตย์ ปิดทำการ</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-n5 wow fadeIn" data-wow-delay="0.7s">
-                    <div class="bg-white p-5">
-                        <h2 class="text-uppercase mb-4">ประสบการณ์การใช้งาน</h2>
-                        <div class="row g-3">
-                            <div class="col-sm-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control border-0 bg-light" id="name"
-                                        placeholder="Your Name">
-                                    <label for="name">ชื่อ-นามสกุล</label>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-floating">
-                                    <input type="email" class="form-control border-0 bg-light" id="mail"
-                                        placeholder="Your Email">
-                                    <label for="mail">ชื่อหน่วยงาน</label>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control border-0 bg-light" id="mobile"
-                                        placeholder="Your Mobile">
-                                    <label for="mobile">อุปกรณ์ที่ใช้งานระบบ</label>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-floating">
-                                    <select class="form-select border-0 bg-light" id="service">
-                                        <option selected>ระบบยืม-คืน</option>
-                                        <option value="">หน้าตาเว็บไซต์</option>
-                                    </select>
-                                    <label for="service">บริการ</label>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <textarea class="form-control border-0 bg-light" placeholder="Leave a message here"
-                                        id="message" style="height: 130px"></textarea>
-                                    <label for="message">หมายเหตุ</label>
-                                </div>
-                            </div>
-                            <div class="col-12 text-center">
-                                <button class="btn btn-primary w-100 py-3" type="submit">ยืนยัน</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- หน้าแสดงรายการอุปกรณ์ (สำหรับคนทั่วไป) -->
+    <section id="equipmentShowcase" class="hidden fade-in">
+      <div class="flex items-center justify-between mb-6">
+        <button id="backFromEquip"
+          class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8l8 8l1.41-1.41L7.83 13H20v-2z" />
+          </svg>
+          กลับหน้าหลัก
+        </button>
+        <h2 class="text-xl font-semibold">รายการอุปกรณ์ทั้งหมด</h2>
+        <div></div> <!-- Spacer -->
+      </div>
+      <div class="card rounded-2xl p-6 text-slate-900">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <input id="equipSearch" placeholder="ค้นหาชื่อหรือ Serial"
+              class="px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            <select id="equipFilter" class="px-3 py-2 rounded-lg border border-slate-200">
+              <option value="">สถานะทั้งหมด</option>
+              <option value="available">ว่าง</option>
+              <option value="borrowed">ถูกยืม</option>
+              <option value="under_maintenance">ซ่อมบำรุง</option>
+            </select>
+          </div>
+          <button id="btnAddEquip"
+            class="hidden px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">เพิ่มอุปกรณ์</button>
         </div>
-    </div>
-    <!-- ประเมินความพึงพอใจ และ สิ่งที่อยากให้ปรับปรุง end -->
-
-
-    <!-- Team Start -->
-    <div class="container-fluid team pt-6 pb-6">
-        <div class="container">
-            <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
-                <h1 class="display-6 text-uppercase mb-5">ผู้พัฒนา เว็บไซต์</h1>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="team-item">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="img/team-1.jpg" alt="">
-                            <div class="team-social">
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-youtube"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-1">นาย อิลฮาน โต๊ะกาพอ</h5>
-                            <span>junuor dev</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
-                    <div class="team-item">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="img/team-2.jpg" alt="">
-                            <div class="team-social">
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-youtube"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-1">นางสาว ญาสมิน เจ๊ะโด</h5>
-                            <span>Data analytisc</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="team-item">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="img/team-3.jpg" alt="">
-                            <div class="team-social">
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-youtube"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-1">นางสาว อานีตา ซา</h5>
-                            <span>MS Office</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
-                    <div class="team-item">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="img/team-4.jpg" alt="">
-                            <div class="team-social">
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-square btn-dark mx-1" href=""><i class="fab fa-youtube"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-1">ที่ปรึกษาโปรเจค</h5>
-                            <span>Welder</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div id="equipList" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Equipment cards will be rendered here -->
         </div>
-    </div>
-    <!-- Team End -->
+      </div>
+    </section>
 
-
-    <!-- ข้อเสนอแนะ Start -->
-    <div class="container-fluid newsletter mt-6 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container pb-5">
-            <div class="bg-white p-5 mb-5">
-                <div class="row g-5">
-                    <div class="col-md-6 wow fadeIn" data-wow-delay="0.3s">
-                        <h1 class="display-6 text-uppercase mb-4">ข้อเสนอแนะ</h1>
-                        <div class="d-flex">
-                            <i class="far fa-envelope-open fa-3x text-primary me-4"></i>
-                            <p class="fs-5 fst-italic mb-0"> อยากให้ปรับปรุง หรือมีฟีเจอร์เพิ่ม </p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 wow fadeIn" data-wow-delay="0.5s">
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control border-0 bg-light" id="mail"
-                                placeholder="Your Email">
-                            <label for="mail">ชื่อหน่วยงาน</label>
-                        </div>
-                        <button class="btn btn-primary w-100 py-3" type="submit">ยืนยัน </button>
-                    </div>
-                </div>
-            </div>
+    <!-- หน้าเข้าสู่ระบบ -->
+    <section id="loginPage" class="hidden fade-in">
+      <div class="max-w-md mx-auto card rounded-2xl p-8 text-slate-900 shadow-xl">
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-bold">เข้าสู่ระบบ</h2>
+          <button id="backFromLogin"
+            class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm">กลับ</button>
         </div>
-    </div>
-    <!-- ข้อเสนอแนะ end -->
+        <form id="loginForm" class="mt-6 space-y-4">
+          <input name="email" type="email" required placeholder="อีเมล"
+            class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          <input name="password" type="password" required placeholder="รหัสผ่าน"
+            class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          <button type="submit"
+            class="w-full px-4 py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">เข้าสู่ระบบ</button>
+        </form>
+        <p class="mt-4 text-sm text-center text-slate-600">ยังไม่มีบัญชี? <a href="#" id="goRegister"
+            class="font-medium text-indigo-600 hover:underline">ลงทะเบียนที่นี่</a></p>
+      </div>
+    </section>
 
-
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark footer py-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-uppercase text-light mb-4">Our Office</h5>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt text-primary me-3"></i> ที่อยู่
-                        หน่วยควบคุมโรคติดต่อนำโดยแมลงที่ 12,4.4 11 ถนนระแงะมรรคา ตำบลบางนาค อำเภอเมืองนราธิวาส
-                        จังหวัดนราธิวาส 96000.</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt text-primary me-3"></i>
-                        073-514-960 </p>
-                    <p class="mb-2"><i class="fa fa-envelope text-primary me-3"></i>info@example.com</p>
-                    <div class="d-flex pt-3">
-                        <a class="btn btn-square btn-light me-2" href=""><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-square btn-light me-2" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-square btn-light me-2" href=""><i class="fab fa-youtube"></i></a>
-                        <a class="btn btn-square btn-light me-2" href=""><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-uppercase text-light mb-4">เวลาทำการ</h5>
-                    <p class="text-uppercase mb-0">วันจันทร์-วันศึกร์</p>
-                    <p>09:00 - 16:00 น.</p>
-                    <p class="text-uppercase mb-0">วันเสาร์-วันอาทิตย์</p>
-                    <p>ปิดทำการ</p>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-uppercase text-light mb-4">Gallery</h5>
-                    <div class="row g-1">
-                        <div class="col-4">
-                            <img class="img-fluid" src="img/service-1.jpg" alt="">
-                        </div>
-                        <div class="col-4">
-                            <img class="img-fluid" src="img/service-2.jpg" alt="">
-                        </div>
-                        <div class="col-4">
-                            <img class="img-fluid" src="img/service-3.jpg" alt="">
-                        </div>
-                        <div class="col-4">
-                            <img class="img-fluid" src="img/service-4.jpg" alt="">
-                        </div>
-                        <div class="col-4">
-                            <img class="img-fluid" src="img/service-5.jpg" alt="">
-                        </div>
-                        <div class="col-4">
-                            <img class="img-fluid" src="img/service-6.jpg" alt="">
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- หน้าลงทะเบียน -->
+    <section id="registerPage" class="hidden fade-in">
+      <div class="max-w-xl mx-auto card rounded-2xl p-8 text-slate-900 shadow-xl">
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-bold">ลงทะเบียนผู้ใช้งานใหม่</h2>
+          <button id="backFromRegister"
+            class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm">กลับ</button>
         </div>
-    </div>
-    <!-- Footer End -->
-
-
-    <!-- Copyright Start -->
-    <div class="container-fluid text-body copyright py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    &copy; <a class="fw-semi-bold" href="#">Your Site Name</a>, All Right Reserved.
-                </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
-                    <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
-                    <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
-                    Designed By <a class="fw-semi-bold" href="https://htmlcodex.com">HTML Codex</a> Distributed by <a
-                        href="https://themewagon.com" target="_blank">ThemeWagon</a>
-                </div>
-            </div>
+        <form id="registerForm" class="mt-6 grid sm:grid-cols-2 gap-4">
+          <input name="full_name" required placeholder="ชื่อ-สกุล"
+            class="px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          <input name="agency" required placeholder="หน่วยงาน"
+            class="px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          <textarea name="address" placeholder="ที่อยู่หน่วยงาน" rows="2"
+            class="sm:col-span-2 px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
+          <input name="email" type="email" required placeholder="อีเมล"
+            class="px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          <input name="password" type="password" required placeholder="รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)" minlength="6"
+            class="px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          <button type="submit"
+            class="sm:col-span-2 px-4 py-3 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition">ยืนยันการลงทะเบียน</button>
+        </form>
+        <div class="mt-4 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <strong>หมายเหตุ:</strong> หลังลงทะเบียน บัญชีจะอยู่ในสถานะ “รอตรวจสอบ”
+          และจะใช้งานได้ต่อเมื่อผู้อนุมัติทำการอนุมัติเรียบร้อยแล้ว
         </div>
+      </div>
+    </section>
+
+    <!-- Dashboard (สำหรับผู้ใช้ที่ login แล้ว) -->
+    <section id="dashboard" class="hidden fade-in">
+      <!-- Tabs -->
+      <div class="mt-4 overflow-x-auto">
+        <div class="inline-flex gap-1 bg-white/10 rounded-xl p-1">
+          <button data-tab="equipmentTab" class="tab-btn px-4 py-2 rounded-lg">ภาพรวมอุปกรณ์</button>
+          <button data-tab="borrowTab" class="tab-btn px-4 py-2 rounded-lg">ยืม-คืน</button>
+          <button data-tab="techTab" class="tab-btn px-4 py-2 rounded-lg">ส่วนงานช่าง</button>
+          <button data-tab="approvalTab" class="tab-btn px-4 py-2 rounded-lg">จัดการคำขอ</button>
+          <button data-tab="assessmentTab" class="tab-btn px-4 py-2 rounded-lg">ประเมินมาตรฐาน</button>
+          <button data-tab="reportTab" class="tab-btn px-4 py-2 rounded-lg">รายงาน</button>
+        </div>
+      </div>
+
+      <!-- เนื้อหาของแต่ละ Tab -->
+      <div class="mt-6">
+        <!-- Equipment Tab Content -->
+        <div id="equipmentTab" class="tab-content">
+          <div class="grid lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 card rounded-2xl p-6 text-slate-900">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <h3 class="text-lg font-semibold">รายการอุปกรณ์</h3>
+                <div class="flex items-center gap-2">
+                  <input id="dashEquipSearch" placeholder="ค้นหา"
+                    class="px-3 py-2 w-32 rounded-lg border border-slate-200">
+                  <select id="dashEquipFilter" class="px-3 py-2 rounded-lg border border-slate-200">
+                    <option value="">ทั้งหมด</option>
+                    <option value="available">ว่าง</option>
+                    <option value="borrowed">ถูกยืม</option>
+                    <option value="under_maintenance">ซ่อมบำรุง</option>
+                    <option value="pending_repair_approval">รออนุมัติซ่อม</option>
+                  </select>
+                  <button id="btnAddEquipDash"
+                    class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 hidden">เพิ่ม</button>
+                </div>
+              </div>
+              <div id="dashEquipList" class="mt-4 grid sm:grid-cols-2 gap-4"></div>
+            </div>
+            <div class="card rounded-2xl p-6 text-slate-900">
+              <h3 class="text-lg font-semibold">สรุปสถานะ</h3>
+              <div id="equipmentSummary" class="grid grid-cols-2 gap-4 mt-4"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Borrow Tab Content -->
+        <div id="borrowTab" class="hidden tab-content">
+          <div class="grid lg:grid-cols-3 gap-6">
+            <div class="card rounded-2xl p-6 text-slate-900" id="borrowFormContainer">
+              <h3 class="text-lg font-semibold">สร้างคำขอยืมอุปกรณ์</h3>
+              <form id="borrowForm" class="mt-4 space-y-3">
+                <select id="borrowEquipSelect" class="w-full px-3 py-2 rounded-lg border border-slate-200"
+                  required></select>
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <input type="date" name="borrow_date" id="borrowDate"
+                    class="px-3 py-2 rounded-lg border border-slate-200" required>
+                  <input type="date" id="dueDate" class="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50"
+                    readonly>
+                </div>
+                <input name="purpose" placeholder="วัตถุประสงค์/พื้นที่ปฏิบัติงาน"
+                  class="w-full px-3 py-2 rounded-lg border border-slate-200" required>
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <input name="contact_name" placeholder="ผู้ประสานงาน"
+                    class="px-3 py-2 rounded-lg border border-slate-200" required>
+                  <input name="contact_phone" placeholder="เบอร์โทรติดต่อ"
+                    class="px-3 py-2 rounded-lg border border-slate-200" required>
+                </div>
+                <textarea name="notes" rows="2" placeholder="รายละเอียดเพิ่มเติม (เช่น พื้นที่เสี่ยง, เวลาเริ่มงาน)"
+                  class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
+                <button
+                  class="w-full px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700">ส่งคำขอ</button>
+              </form>
+              <p class="text-xs text-slate-500 mt-2">หมายเหตุ: ระบบจะกำหนดวันคืนอัตโนมัติ 7 วันนับจากวันที่ยืม</p>
+            </div>
+            <div class="lg:col-span-2 card rounded-2xl p-6 text-slate-900">
+              <h3 class="text-lg font-semibold">ประวัติการยืม-คืนของฉัน</h3>
+              <div id="myBorrows" class="mt-4 space-y-3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Technician Tab Content -->
+        <div id="techTab" class="hidden tab-content">
+          <div class="grid lg:grid-cols-3 gap-6">
+            <div class="card rounded-2xl p-6 text-slate-900">
+              <h3 class="text-lg font-semibold">รายการรอส่งมอบ</h3>
+              <div id="techDeliveryQueue" class="mt-4 space-y-3"></div>
+            </div>
+            <div class="card rounded-2xl p-6 text-slate-900">
+              <h3 class="text-lg font-semibold">รายการรอตรวจสภาพ (หลังคืน)</h3>
+              <div id="techReturnQueue" class="mt-4 space-y-3"></div>
+            </div>
+            <div class="card rounded-2xl p-6 text-slate-900">
+              <h3 class="text-lg font-semibold">รายการซ่อมบำรุงทั้งหมด</h3>
+              <div id="repairList" class="mt-4 space-y-3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Approval Tab Content -->
+        <div id="approvalTab" class="hidden tab-content">
+          <div class="grid lg:grid-cols-2 gap-6">
+            <div class="card rounded-2xl p-6 text-slate-900">
+              <h3 class="text-lg font-semibold">อนุมัติบัญชีผู้ใช้ใหม่</h3>
+              <div id="approvalUsers" class="mt-3 space-y-3"></div>
+            </div>
+            <div class="card rounded-2xl p-6 text-slate-900">
+              <h3 class="text-lg font-semibold">อนุมัติการยืม</h3>
+              <div id="approvalBorrowList" class="mt-3 space-y-3"></div>
+            </div>
+            <div class="card rounded-2xl p-6 text-slate-900 lg:col-span-2">
+              <h3 class="text-lg font-semibold">อนุมัติการซ่อม</h3>
+              <div id="approvalRepairList" class="mt-3 space-y-3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assessment Tab Content -->
+        <div id="assessmentTab" class="hidden tab-content">
+          <div class="card rounded-2xl p-6 text-slate-900">
+            <h3 class="text-lg font-semibold">ประเมินมาตรฐานเครื่องพ่น</h3>
+            <p class="text-sm text-slate-600 mt-1">เลือกเครื่องพ่นที่ต้องการบันทึกการประเมินประสิทธิภาพ</p>
+            <div id="assessmentEquipList" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+          </div>
+        </div>
+
+        <!-- Report Tab Content -->
+        <div id="reportTab" class="hidden tab-content">
+          <div class="card rounded-2xl p-6 text-slate-900">
+            <h3 class="text-lg font-semibold">แดชบอร์ดรายงาน</h3>
+            <div id="reportCards" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal"
+    class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+    <div id="modalContent"
+      class="bg-white rounded-2xl p-6 text-slate-900 w-full max-w-lg max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300">
+      <div class="flex items-center justify-between">
+        <h3 id="modalTitle" class="text-xl font-bold">Modal Title</h3>
+        <button id="modalClose" class="text-2xl leading-none text-slate-400 hover:text-slate-800">&times;</button>
+      </div>
+      <div id="modalBody" class="mt-4">
+        <!-- Dynamic content goes here -->
+      </div>
     </div>
-    <!-- Copyright End -->
+  </div>
 
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+  <!-- Toast Notification -->
+  <div id="toast"
+    class="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-lg text-white text-sm font-medium shadow-lg hidden transition-all duration-300">
+  </div>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
 
-    <!-- JavaScript Libraries -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/counterup/counterup.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+      // =================================================================================
+      // MOCK STATE & API (ส่วนจำลองฐานข้อมูลและ Backend)
+      // =================================================================================
+      const state = {
+        user: null, // {id, name, role}
+        equipment: [
+          { id: 1, serial: 'F-1001', name: 'เครื่องพ่นหมอกควัน STIHL SR-420', status: 'available' },
+          { id: 2, serial: 'F-1002', name: 'เครื่องพ่นหมอกควัน STIHL SR-420', status: 'borrowed' },
+          { id: 3, serial: 'F-1003', name: 'เครื่องพ่นหมอกควัน IGEBA TF-35', status: 'under_maintenance' },
+          { id: 4, serial: 'F-1004', name: 'เครื่องพ่นหมอกควัน IGEBA TF-35', status: 'available' },
+          { id: 5, serial: 'F-1005', name: 'เครื่องพ่นหมอกควัน SWINGFOG SN-50', status: 'pending_repair_approval' },
+          { id: 6, serial: 'F-1006', name: 'เครื่องพ่นหมอกควัน SWINGFOG SN-50', status: 'available' },
+        ],
+        borrows: [
+          { id: 1, equipment_id: 2, user_id: 4, user_name: 'ผู้ใช้ทั่วไป', borrow_date: '2025-09-10', due_date: '2025-09-17', return_date: null, purpose: 'พ่นป้องกันไข้เลือดออก หมู่บ้านจัดสรร', contact_name: 'คุณสมศรี', contact_phone: '081-234-5678', notes: 'ขอเข้าพื้นที่ช่วงบ่าย', status: 'borrowed' }
+        ],
+        repairs: [
+          { id: 1, equipment_id: 3, equipment_name: 'เครื่องพ่นหมอกควัน IGEBA TF-35', damage_description: 'หัวฉีดอุดตัน', status: 'repair_approved', technician_id: 3, repair_details: null, cost: null, parts_used: null },
+          { id: 2, equipment_id: 5, equipment_name: 'เครื่องพ่นหมอกควัน SWINGFOG SN-50', damage_description: 'สตาร์ทไม่ติด', status: 'pending_repair_approval', technician_id: null, repair_details: null, cost: null, parts_used: null }
+        ],
+        users: [
+          { id: 1, full_name: 'ผู้ดูแลระบบ', email: 'admin@example.com', role: 'admin', status: 'active', agency: 'ส่วนกลาง', address: '-' },
+          { id: 2, full_name: 'ผู้อนุมัติ', email: 'approver@example.com', role: 'approver', status: 'active', agency: 'สำนักงานใหญ่', address: '-' },
+          { id: 3, full_name: 'ช่างเทคนิค', email: 'tech@example.com', role: 'technician', status: 'active', agency: 'แผนกซ่อมบำรุง', address: '-' },
+          { id: 4, full_name: 'ผู้ใช้ทั่วไป', email: 'user@example.com', role: 'user', status: 'active', agency: 'อบต. ตัวอย่าง', address: '123 ถ.สุขุมวิท' },
+        ],
+        pendingUsers: [
+          { id: 5, full_name: 'สมชาย ใจดี', email: 'somchai@example.com', role: 'user', status: 'pending_approval', agency: 'เทศบาลนคร', address: '456 ถ.เพชรเกษม' }
+        ],
+        assessments: [],
+        seq: { borrow: 2, repair: 3, user: 6, equip: 7, assessment: 1 }
+      };
 
-    <!-- Template Javascript -->
-    <!--เงื่อนไขปุ่ม และ การเข้าสู่ระบบ start-->
-    <script src="js/main.js"></script>
-    git commit
-    <script>
-        const btn = document.getElementById("loginLogoutBtn");
-        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-
-        if (btn) {
-            if (isLoggedIn) {
-                btn.textContent = "ออกจากระบบ";
-                btn.href = "#";
-                btn.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    localStorage.removeItem("isLoggedIn");
-                    alert("ออกจากระบบแล้ว");
-                    window.location.href = "index.html"; // หรือหน้า login ก็ได้
-                });
-            } else {
-                btn.textContent = "เข้าสู่ระบบ";
-                btn.href = "login.html";
-            }
+      const api = {
+        login: async (email, password) => {
+          const u = state.users.find(x => x.email === email);
+          if (!u || password !== 'password') throw new Error('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+          if (u.status !== 'active') throw new Error('บัญชียังไม่เปิดใช้งาน');
+          return { id: u.id, name: u.full_name, role: u.role };
+        },
+        register: async (data) => {
+          if (state.users.some(u => u.email === data.email) || state.pendingUsers.some(u => u.email === data.email)) throw new Error('อีเมลนี้ถูกใช้แล้ว');
+          state.pendingUsers.push({ id: state.seq.user++, ...data, role: 'user', status: 'pending_approval' });
+          return { message: 'ลงทะเบียนสำเร็จ กำลังรอผู้อนุมัติอนุมัติ' };
+        },
+        listPendingUsers: async () => state.pendingUsers,
+        approveUser: async (id) => {
+          const idx = state.pendingUsers.findIndex(u => u.id === id);
+          if (idx < 0) throw new Error('ไม่พบบัญชี');
+          const [u] = state.pendingUsers.splice(idx, 1);
+          state.users.push({ ...u, status: 'active' });
+          return true;
+        },
+        rejectUser: async (id) => {
+          state.pendingUsers = state.pendingUsers.filter(u => u.id !== id);
+          return true;
+        },
+        equipmentList: async (q = '', f = '') => {
+          let list = [...state.equipment];
+          if (q) list = list.filter(e => e.name.toLowerCase().includes(q.toLowerCase()) || e.serial.toLowerCase().includes(q.toLowerCase()));
+          if (f) list = list.filter(e => e.status === f);
+          return list;
+        },
+        createBorrow: async (payload) => {
+          const eq = state.equipment.find(e => e.id === payload.equipment_id);
+          if (!eq || eq.status !== 'available') throw new Error('อุปกรณ์ไม่ว่างหรือไม่มีอยู่');
+          const due = new Date(payload.borrow_date); due.setDate(due.getDate() + 7);
+          const due_date = due.toISOString().slice(0, 10);
+          state.borrows.push({
+            id: state.seq.borrow++, ...payload,
+            user_name: state.user.name, due_date, return_date: null,
+            status: 'pending_borrow_approval'
+          });
+          return true;
+        },
+        myBorrows: async (user_id) => state.borrows.filter(b => b.user_id === user_id).sort((a, b) => b.id - a.id),
+        listBorrowRequests: async () => state.borrows.filter(b => b.status === 'pending_borrow_approval'),
+        approveBorrow: async (id) => {
+          const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+          // CHANGE: status becomes 'pending_delivery' for tech inspection
+          b.status = 'pending_delivery';
+          return true;
+        },
+        performPreDeliveryCheck: async (id) => {
+          const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+          b.status = 'borrowed'; // previously 'approved'
+          const eq = state.equipment.find(e => e.id === b.equipment_id); if (eq) eq.status = 'borrowed';
+          return true;
+        },
+        rejectBorrow: async (id) => {
+          const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+          b.status = 'rejected'; return true;
+        },
+        queueForDelivery: async () => state.borrows.filter(b => b.status === 'pending_delivery'),
+        queueForReturn: async () => state.borrows.filter(b => b.status === 'borrowed' && !b.return_date),
+        techInspectReturn: async (id, isDamaged, notes) => {
+          const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+          b.return_date = new Date().toISOString().slice(0, 10);
+          const eq = state.equipment.find(e => e.id === b.equipment_id);
+          if (isDamaged) {
+            b.status = 'returned_damaged';
+            if (eq) eq.status = 'pending_repair_approval';
+            state.repairs.push({ id: state.seq.repair++, equipment_id: b.equipment_id, equipment_name: eq.name, damage_description: notes || 'ชำรุดจากการใช้งาน', status: 'pending_repair_approval', technician_id: null });
+          } else {
+            b.status = 'returned';
+            if (eq) eq.status = 'available';
+          }
+          return true;
+        },
+        listRepairs: async () => state.repairs.sort((a, b) => b.id - a.id),
+        listRepairRequests: async () => state.repairs.filter(r => r.status === 'pending_repair_approval'),
+        approveRepair: async (id) => {
+          const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
+          r.status = 'repair_approved';
+          r.technician_id = state.user.role === 'technician' ? state.user.id : null;
+          const eq = state.equipment.find(e => e.id === r.equipment_id); if (eq) eq.status = 'under_maintenance';
+          return true;
+        },
+        rejectRepair: async (id) => {
+          const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
+          r.status = 'repair_rejected';
+          const eq = state.equipment.find(e => e.id === r.equipment_id); if (eq) eq.status = 'available';
+          return true;
+        },
+        completeRepair: async (id, details) => {
+          const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
+          r.status = 'completed';
+          r.repair_details = details.repair_details;
+          r.cost = details.cost;
+          r.parts_used = details.parts_used;
+          const eq = state.equipment.find(e => e.id === r.equipment_id); if (eq) eq.status = 'available';
+          return true;
+        },
+        createAssessment: async (data) => {
+          state.assessments.push({ id: state.seq.assessment++, ...data, date: new Date().toISOString().slice(0, 10) });
+          return true;
+        },
+        reportOverview: async () => {
+          const total = state.equipment.length;
+          const borrowed = state.equipment.filter(e => e.status === 'borrowed').length;
+          const maintenance = state.equipment.filter(e => ['under_maintenance', 'pending_repair_approval'].includes(e.status)).length;
+          const available = state.equipment.filter(e => e.status === 'available').length;
+          return [
+            { label: 'อุปกรณ์ทั้งหมด', value: total, color: 'bg-blue-100 text-blue-800' },
+            { label: 'ว่าง', value: available, color: 'bg-emerald-100 text-emerald-800' },
+            { label: 'กำลังใช้งาน', value: borrowed, color: 'bg-indigo-100 text-indigo-800' },
+            { label: 'รอ/กำลังซ่อม', value: maintenance, color: 'bg-amber-100 text-amber-800' },
+          ];
         }
-    </script>
-    <!--เงื่อนไขปุ่ม และ การเข้าสู่ระบบ end-->
+      };
 
+      // =================================================================================
+      // UTILS (ฟังก์ชันช่วยเหลือทั่วไป)
+      // =================================================================================
+      const $ = (selector) => document.querySelector(selector);
+      const $$ = (selector) => document.querySelectorAll(selector);
+
+      const toast = (msg, isError = false) => {
+        const el = $('#toast');
+        el.textContent = msg;
+        el.className = `fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-lg text-white text-sm font-medium shadow-lg transition-all duration-300 ${isError ? 'bg-red-600' : 'bg-slate-800'}`;
+        el.classList.remove('hidden');
+        setTimeout(() => el.classList.add('hidden'), 2500);
+      };
+
+      const show = (id) => {
+        $$('main section').forEach(s => s.classList.add('hidden'));
+        $(`#${id}`).classList.remove('hidden');
+      };
+
+      const setTabs = (tabId) => {
+        $$('.tab-btn').forEach(b => {
+          const isSelected = b.dataset.tab === tabId;
+          b.classList.toggle('bg-white', isSelected);
+          b.classList.toggle('text-slate-900', isSelected);
+          b.classList.toggle('font-semibold', isSelected);
+          b.classList.toggle('hover:bg-white/20', !isSelected);
+        });
+        $$('.tab-content').forEach(c => c.classList.toggle('hidden', c.id !== tabId));
+      };
+
+      const showModal = (title, content, actions) => {
+        $('#modalTitle').textContent = title;
+        $('#modalBody').innerHTML = content + (actions ? `<div class="mt-6 flex justify-end gap-3">${actions}</div>` : '');
+        $('#modal').classList.remove('hidden');
+        setTimeout(() => {
+          $('#modal').style.opacity = '1';
+          $('#modalContent').classList.remove('scale-95');
+        }, 10);
+      };
+
+      const hideModal = () => {
+        $('#modal').style.opacity = '0';
+        $('#modalContent').classList.add('scale-95');
+        setTimeout(() => $('#modal').classList.add('hidden'), 300);
+      };
+
+      const statusMap = {
+        available: { text: 'ว่าง', color: 'bg-emerald-100 text-emerald-800' },
+        borrowed: { text: 'ถูกยืม', color: 'bg-indigo-100 text-indigo-800' },
+        under_maintenance: { text: 'ซ่อมบำรุง', color: 'bg-amber-100 text-amber-800' },
+        pending_repair_approval: { text: 'รออนุมัติซ่อม', color: 'bg-rose-100 text-rose-800' }
+      };
+
+      // =================================================================================
+      // RENDER FUNCTIONS (ฟังก์ชันสำหรับวาด UI)
+      // =================================================================================
+
+      async function renderEquipmentLists() {
+        const q1 = $('#equipSearch')?.value || '';
+        const f1 = $('#equipFilter')?.value || '';
+        const list1 = await api.equipmentList(q1, f1);
+        $('#equipList').innerHTML = list1.map(e => {
+          const { text, color } = statusMap[e.status] || { text: 'N/A', color: 'bg-gray-100' };
+          const canBorrow = e.status === 'available' && state.user?.role === 'user';
+          return `
+                    <div class="rounded-xl border border-slate-200 p-4 bg-white flex flex-col justify-between">
+                        <div>
+                            <div class="font-semibold">${e.name}</div>
+                            <div class="text-sm text-slate-500">S/N: ${e.serial}</div>
+                            <span class="mt-2 inline-block text-xs font-medium px-2 py-1 rounded-full ${color}">${text}</span>
+                        </div>
+                        ${canBorrow ? `<button onclick="handleBorrowClick(${e.id})" class="mt-3 w-full text-center px-3 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 text-sm">ขอยืม</button>` : ''}
+                    </div>
+                `;
+        }).join('') || `<p class="text-slate-500">ไม่พบอุปกรณ์</p>`;
+
+        if (state.user) {
+          const q2 = $('#dashEquipSearch')?.value || '';
+          const f2 = $('#dashEquipFilter')?.value || '';
+          const list2 = await api.equipmentList(q2, f2);
+          $('#dashEquipList').innerHTML = list2.map(e => {
+            const { text, color } = statusMap[e.status] || { text: 'N/A', color: 'bg-gray-100' };
+            return `
+                        <div class="rounded-xl border border-slate-200 p-4 bg-white">
+                            <div class="font-semibold">${e.name}</div>
+                            <div class="text-sm text-slate-500">S/N: ${e.serial}</div>
+                            <span class="mt-2 inline-block text-xs font-medium px-2 py-1 rounded-full ${color}">${text}</span>
+                        </div>
+                    `;
+          }).join('') || `<p class="text-slate-500">ไม่พบอุปกรณ์</p>`;
+
+          $('#assessmentEquipList').innerHTML = list2.map(e => `
+                    <button onclick="handleAssessmentClick(${e.id}, '${e.name}')" class="text-left p-4 rounded-xl border border-slate-200 hover:bg-slate-50">
+                        <div class="font-semibold">${e.name}</div>
+                        <div class="text-sm text-slate-500">S/N: ${e.serial}</div>
+                    </button>
+                `).join('');
+        }
+      }
+      window.handleBorrowClick = (equipId) => {
+        show('dashboard');
+        setTabs('borrowTab');
+        $('#borrowEquipSelect').value = equipId;
+      }
+
+      async function renderEquipmentSummary() {
+        const summary = await api.reportOverview();
+        $('#equipmentSummary').innerHTML = summary.map(item => `
+                <div class="rounded-xl p-4 ${item.color}">
+                    <div class="text-sm">${item.label}</div>
+                    <div class="text-2xl font-bold mt-1">${item.value}</div>
+                </div>
+            `).join('');
+      }
+
+      async function renderMyBorrows() {
+        if (!state.user) return;
+        const borrows = await api.myBorrows(state.user.id);
+        const wrap = $('#myBorrows');
+        if (borrows.length === 0) {
+          wrap.innerHTML = `<div class="text-slate-500 text-center col-span-full">ไม่มีประวัติการยืม</div>`; return;
+        }
+        wrap.innerHTML = borrows.map(b => {
+          const eq = state.equipment.find(e => e.id === b.equipment_id);
+          let statusText, statusColor;
+          switch (b.status) {
+            case 'pending_borrow_approval': statusText = 'รออนุมัติ'; statusColor = 'bg-yellow-100 text-yellow-800'; break;
+            case 'pending_delivery': statusText = 'รอช่างตรวจ'; statusColor = 'bg-cyan-100 text-cyan-800'; break;
+            case 'borrowed': statusText = 'ยืมอยู่'; statusColor = 'bg-blue-100 text-blue-800'; break;
+            case 'rejected': statusText = 'ไม่อนุมัติ'; statusColor = 'bg-red-100 text-red-800'; break;
+            case 'returned': statusText = 'คืนแล้ว'; statusColor = 'bg-green-100 text-green-800'; break;
+            case 'returned_damaged': statusText = 'คืน (ชำรุด)'; statusColor = 'bg-orange-100 text-orange-800'; break;
+            default: statusText = 'ไม่ทราบสถานะ'; statusColor = 'bg-gray-100 text-gray-800';
+          }
+          return `
+                    <div class="p-3 rounded-lg border border-slate-200 text-sm">
+                        <div class="flex justify-between items-start">
+                           <span class="font-semibold">${eq?.name || 'N/A'}</span>
+                           <span class="text-xs font-medium px-2 py-1 rounded-full ${statusColor}">${statusText}</span>
+                        </div>
+                        <p class="text-slate-600">ยืม: ${b.borrow_date} | คืน: ${b.due_date}</p>
+                        <p class="text-slate-600">วัตถุประสงค์: ${b.purpose}</p>
+                    </div>`;
+        }).join('');
+      }
+
+      async function renderApprovalLists() {
+        if (!state.user || !['admin', 'approver'].includes(state.user.role)) return;
+
+        const pendingUsers = await api.listPendingUsers();
+        $('#approvalUsers').innerHTML = pendingUsers.length === 0 ? `<p class="text-slate-500">ไม่มีบัญชีรออนุมัติ</p>`
+          : pendingUsers.map(u => `
+                <div class="p-3 rounded-lg border border-slate-200">
+                    <p class="font-semibold">${u.full_name} (${u.agency})</p>
+                    <p class="text-sm text-slate-500">${u.email}</p>
+                    <div class="mt-2 flex gap-2">
+                        <button onclick="handleApproveUser(${u.id})" class="px-3 py-1 text-sm rounded bg-emerald-500 text-white hover:bg-emerald-600">อนุมัติ</button>
+                        <button onclick="handleRejectUser(${u.id})" class="px-3 py-1 text-sm rounded bg-rose-500 text-white hover:bg-rose-600">ไม่อนุมัติ</button>
+                    </div>
+                </div>`).join('');
+
+        const borrowReqs = await api.listBorrowRequests();
+        $('#approvalBorrowList').innerHTML = borrowReqs.length === 0 ? `<p class="text-slate-500">ไม่มีคำขอยืมรออนุมัติ</p>`
+          : borrowReqs.map(b => {
+            const eq = state.equipment.find(e => e.id === b.equipment_id);
+            return `
+                <div class="p-3 rounded-lg border border-slate-200">
+                    <p><span class="font-semibold">${b.user_name}</span> ขอยืม <span class="font-semibold">${eq?.name}</span></p>
+                    <div class="text-sm text-slate-600 bg-slate-50 p-2 rounded-md mt-1">
+                      <p><strong>วันที่:</strong> ${b.borrow_date} ถึง ${b.due_date}</p>
+                      <p><strong>ผู้ประสานงาน:</strong> ${b.contact_name} (${b.contact_phone})</p>
+                      <p><strong>วัตถุประสงค์:</strong> ${b.purpose}</p>
+                      ${b.notes ? `<p><strong>หมายเหตุ:</strong> ${b.notes}</p>` : ''}
+                    </div>
+                    <div class="mt-2 flex gap-2">
+                        <button onclick="handleApproveBorrow(${b.id})" class="px-3 py-1 text-sm rounded bg-emerald-500 text-white hover:bg-emerald-600">อนุมัติ</button>
+                        <button onclick="handleRejectBorrow(${b.id})" class="px-3 py-1 text-sm rounded bg-rose-500 text-white hover:bg-rose-600">ไม่อนุมัติ</button>
+                    </div>
+                </div>`}).join('');
+
+        const repairReqs = await api.listRepairRequests();
+        $('#approvalRepairList').innerHTML = repairReqs.length === 0 ? `<p class="text-slate-500">ไม่มีคำขอซ่อมรออนุมัติ</p>`
+          : repairReqs.map(r => `
+                <div class="p-3 rounded-lg border border-slate-200">
+                    <p>คำขอซ่อม <span class="font-semibold">${r.equipment_name}</span></p>
+                    <p class="text-sm text-slate-500">อาการ: ${r.damage_description}</p>
+                    <div class="mt-2 flex gap-2">
+                        <button onclick="handleApproveRepair(${r.id})" class="px-3 py-1 text-sm rounded bg-emerald-500 text-white hover:bg-emerald-600">อนุมัติ</button>
+                        <button onclick="handleRejectRepair(${r.id})" class="px-3 py-1 text-sm rounded bg-rose-500 text-white hover:bg-rose-600">ไม่อนุมัติ</button>
+                    </div>
+                </div>`).join('');
+      }
+
+      async function renderTechnicianQueues() {
+        if (!state.user || !['admin', 'technician'].includes(state.user.role)) return;
+
+        // Delivery Queue
+        const deliveryQueue = await api.queueForDelivery();
+        $('#techDeliveryQueue').innerHTML = deliveryQueue.length === 0 ? `<p class="text-slate-500">ไม่มีรายการรอส่งมอบ</p>`
+          : deliveryQueue.map(b => {
+            const eq = state.equipment.find(e => e.id === b.equipment_id);
+            return `
+                <div class="p-3 rounded-lg border border-slate-200 text-sm">
+                    <p>ส่งมอบ <span class="font-semibold">${eq.name}</span></p>
+                    <p class="text-slate-600">ให้กับ: ${b.user_name}</p>
+                    <button onclick="handlePreDeliveryCheck(${b.id})" class="mt-2 w-full px-3 py-1 rounded bg-blue-500 text-white hover:bg-blue-600 text-xs">ตรวจสภาพก่อนส่งมอบ</button>
+                </div>
+                `}).join('');
+
+        // Return Queue
+        const returnQueue = await api.queueForReturn();
+        $('#techReturnQueue').innerHTML = returnQueue.length === 0 ? `<p class="text-slate-500">ไม่มีรายการรอตรวจสภาพ</p>`
+          : returnQueue.map(b => {
+            const eq = state.equipment.find(e => e.id === b.equipment_id);
+            return `
+                    <div class="p-3 rounded-lg border border-slate-200 text-sm">
+                        <p><span class="font-semibold">${b.user_name}</span> คืน <span class="font-semibold">${eq?.name}</span></p>
+                        <p class="text-slate-600">วันที่ยืม: ${b.borrow_date}</p>
+                        <button onclick="handlePostReturnCheck(${b.id})" class="mt-2 w-full px-3 py-1 rounded bg-orange-500 text-white hover:bg-orange-600 text-xs">ตรวจสภาพหลังส่งคืน</button>
+                    </div>`;
+          }).join('');
+
+        // Repair List
+        const repairs = await api.listRepairs();
+        $('#repairList').innerHTML = repairs.length === 0 ? `<div class="text-slate-500 text-center">ไม่มีประวัติการซ่อม</div>`
+          : repairs.map(r => {
+            let statusText, statusColor;
+            switch (r.status) {
+              case 'pending_repair_approval': statusText = 'รออนุมัติซ่อม'; statusColor = 'bg-yellow-100 text-yellow-800'; break;
+              case 'repair_approved': statusText = 'กำลังซ่อม'; statusColor = 'bg-blue-100 text-blue-800'; break;
+              case 'repair_rejected': statusText = 'ไม่อนุมัติซ่อม'; statusColor = 'bg-red-100 text-red-800'; break;
+              case 'completed': statusText = 'ซ่อมเสร็จ'; statusColor = 'bg-green-100 text-green-800'; break;
+              default: statusText = 'ไม่ทราบสถานะ'; statusColor = 'bg-gray-100 text-gray-800';
+            }
+            const canComplete = r.status === 'repair_approved' && (state.user.role === 'technician' || state.user.role === 'admin');
+            return `
+                    <div class="p-3 rounded-lg border border-slate-200 text-sm">
+                        <div class="flex justify-between items-start">
+                           <span class="font-semibold">${r.equipment_name}</span>
+                           <span class="text-xs font-medium px-2 py-1 rounded-full ${statusColor}">${statusText}</span>
+                        </div>
+                        <p class="text-slate-600">อาการ: ${r.damage_description}</p>
+                        ${canComplete ? `<button onclick="handleCompleteRepairClick(${r.id})" class="mt-2 px-3 py-1 text-xs rounded bg-indigo-500 text-white hover:bg-indigo-600">บันทึกการซ่อม</button>` : ''}
+                        ${r.status === 'completed' ? `<div class="text-xs mt-1 text-slate-500 bg-slate-50 p-1.5 rounded"><strong>รายละเอียด:</strong> ${r.repair_details || '-'} | <strong>ค่าซ่อม:</strong> ${r.cost || 0} บาท</div>` : ''}
+                    </div>`;
+          }).join('');
+      }
+
+      async function renderReports() {
+        const summary = await api.reportOverview();
+        $('#reportCards').innerHTML = summary.map(item => `
+                <div class="rounded-xl p-4 ${item.color}">
+                    <div class="text-sm font-medium">${item.label}</div>
+                    <div class="text-3xl font-bold mt-1">${item.value}</div>
+                </div>
+            `).join('');
+      }
+
+      // =================================================================================
+      // EVENT HANDLERS (ฟังก์ชันจัดการการกระทำของผู้ใช้)
+      // =================================================================================
+
+      // Approvals
+      window.handleApproveUser = async (id) => { try { await api.approveUser(id); toast('อนุมัติผู้ใช้สำเร็จ'); fullRender(); } catch (e) { toast(e.message, true); } };
+      window.handleRejectUser = async (id) => { try { await api.rejectUser(id); toast('ปฏิเสธผู้ใช้เรียบร้อย'); fullRender(); } catch (e) { toast(e.message, true); } };
+      window.handleApproveBorrow = async (id) => { try { await api.approveBorrow(id); toast('อนุมัติการยืมสำเร็จ (รอช่างตรวจ)'); fullRender(); } catch (e) { toast(e.message, true); } };
+      window.handleRejectBorrow = async (id) => { try { await api.rejectBorrow(id); toast('ปฏิเสธการยืมเรียบร้อย'); fullRender(); } catch (e) { toast(e.message, true); } };
+      window.handleApproveRepair = async (id) => { try { await api.approveRepair(id); toast('อนุมัติการซ่อมสำเร็จ'); fullRender(); } catch (e) { toast(e.message, true); } };
+      window.handleRejectRepair = async (id) => { try { await api.rejectRepair(id); toast('ปฏิเสธการซ่อมเรียบร้อย'); fullRender(); } catch (e) { toast(e.message, true); } };
+
+      // Technicians
+      const checklistItems = [
+        { id: 'c1', label: 'สภาพภายนอกตัวเครื่อง' },
+        { id: 'c2', label: 'ตรวจสอบน้ำมันเชื้อเพลิง' },
+        { id: 'c3', label: 'ทดสอบการสตาร์ทเครื่องยนต์' },
+        { id: 'c4', label: 'ตรวจสอบระบบพ่น' },
+        { id: 'c5', label: 'อุปกรณ์เสริมครบถ้วน' },
+      ];
+
+      window.handlePreDeliveryCheck = (id) => {
+        const content = `
+                <form id="preDeliveryForm" data-id="${id}">
+                    <p class="text-sm text-slate-600 mb-3">ยืนยันว่าได้ตรวจสอบรายการต่อไปนี้ครบถ้วนแล้ว</p>
+                    <div class="space-y-2">
+                        ${checklistItems.map(item => `
+                            <label class="flex items-center p-2 rounded-md bg-slate-50 hover:bg-slate-100 border">
+                                <input type="checkbox" required class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <span class="ml-3 text-sm">${item.label}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </form>
+            `;
+        const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200">ยกเลิก</button>
+                             <button type="submit" form="preDeliveryForm" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">ยืนยันการส่งมอบ</button>`;
+        showModal('ตรวจสภาพก่อนส่งมอบ', content, actions);
+      };
+
+      window.handlePostReturnCheck = (id) => {
+        const content = `
+                <form id="postReturnForm" data-id="${id}">
+                    <p class="text-sm text-slate-600 mb-3">กรุณาตรวจสอบและบันทึกผล</p>
+                    <div class="space-y-2 mb-4">
+                        ${checklistItems.map(item => `
+                            <label class="flex items-center p-2 rounded-md bg-slate-50 hover:bg-slate-100 border">
+                                <input type="checkbox" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                <span class="ml-3 text-sm">${item.label}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <label class="block text-sm font-medium text-slate-700">สรุปผล</label>
+                    <select name="isDamaged" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="false">ปกติ</option>
+                        <option value="true">ชำรุด</option>
+                    </select>
+                    <textarea name="notes" rows="2" placeholder="หมายเหตุ (หากชำรุด กรุณาระบุอาการ)" class="mt-2 w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
+                </form>
+            `;
+        const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200">ยกเลิก</button>
+                             <button type="submit" form="postReturnForm" class="px-4 py-2 rounded-lg bg-orange-600 text-white hover:bg-orange-700">บันทึกผล</button>`;
+        showModal('ตรวจสภาพหลังส่งคืน', content, actions);
+      };
+
+      window.handleCompleteRepairClick = (id) => {
+        const content = `
+                 <form id="completeRepairForm" data-id="${id}" class="space-y-3">
+                    <textarea name="repair_details" required rows="3" placeholder="รายละเอียดการซ่อม" class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
+                    <input name="parts_used" placeholder="อะไหล่ที่ใช้ (ถ้ามี)" class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                    <input name="cost" type="number" placeholder="ค่าใช้จ่าย (บาท)" class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                 </form>
+            `;
+        const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200">ยกเลิก</button>
+                             <button type="submit" form="completeRepairForm" class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">บันทึกการซ่อม</button>`;
+        showModal('บันทึกรายละเอียดการซ่อม', content, actions);
+      };
+
+      window.handleAssessmentClick = (id, name) => {
+        const assessmentChecklist = [
+          '1. อัตราการไหลของน้ำมันเชื้อเพลิง (มล./นาที)',
+          '2. อัตราการไหลของน้ำยาเคมี (ลิตร/ชม.)',
+          '3. อุณหภูมิที่ปลายท่อพ่น (องศาเซลเซียส)',
+          '4. ขนาดละอองฝอย (ไมครอน)',
+        ];
+        const content = `
+                <form id="assessmentForm" data-id="${id}">
+                    <p class="text-sm text-slate-600 mb-3">กรอกผลการประเมินสำหรับ <strong>${name}</strong></p>
+                    <div class="space-y-3">
+                        ${assessmentChecklist.map((item, index) => `
+                        <div>
+                           <label class="block text-sm font-medium text-slate-700">${item}</label>
+                           <input type="text" name="val${index + 1}" required class="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200">
+                        </div>
+                        `).join('')}
+                         <select name="result" class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-md">
+                            <option value="ผ่าน">สรุปผล: ผ่าน</option>
+                            <option value="ไม่ผ่าน">สรุปผล: ไม่ผ่าน</option>
+                        </select>
+                        <textarea name="notes" placeholder="ข้อเสนอแนะ" rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
+                    </div>
+                </form>
+            `;
+        const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200">ยกเลิก</button>
+                             <button type="submit" form="assessmentForm" class="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700">บันทึกผลประเมิน</button>`;
+        showModal('แบบรายงานการประเมินมาตรฐานเครื่องพ่น', content, actions);
+      };
+
+      // Form Submissions
+      async function handleLogin(e) { e.preventDefault(); /* ... same as before ... */ }
+      async function handleRegister(e) { e.preventDefault(); /* ... same as before ... */ }
+      function handleLogout() { /* ... same as before ... */ }
+
+      async function handleBorrowSubmit(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('button');
+        const formData = new FormData(e.target);
+        try {
+          btn.disabled = true;
+          const payload = {
+            equipment_id: parseInt(formData.get('borrowEquipSelect')),
+            borrow_date: formData.get('borrow_date'),
+            purpose: formData.get('purpose'),
+            contact_name: formData.get('contact_name'),
+            contact_phone: formData.get('contact_phone'),
+            notes: formData.get('notes'),
+            user_id: state.user.id
+          };
+          if (!payload.equipment_id || !payload.borrow_date || !payload.purpose || !payload.contact_name) {
+            throw new Error('กรุณากรอกข้อมูลสำคัญให้ครบถ้วน');
+          }
+          await api.createBorrow(payload);
+          toast('ส่งคำขอยืมสำเร็จ');
+          e.target.reset();
+          fullRender();
+        } catch (err) {
+          toast(err.message, true);
+        } finally { btn.disabled = false; }
+      }
+
+      async function handleDynamicFormSubmit(e) {
+        e.preventDefault();
+        const form = e.target;
+        const id = parseInt(form.dataset.id);
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        try {
+          switch (form.id) {
+            case 'preDeliveryForm':
+              await api.performPreDeliveryCheck(id);
+              toast('บันทึกผลและส่งมอบเรียบร้อย');
+              break;
+            case 'postReturnForm':
+              await api.techInspectReturn(id, data.isDamaged === 'true', data.notes);
+              toast('บันทึกผลการตรวจสภาพสำเร็จ');
+              break;
+            case 'completeRepairForm':
+              await api.completeRepair(id, data);
+              toast('บันทึกรายละเอียดการซ่อมเรียบร้อย');
+              break;
+            case 'assessmentForm':
+              await api.createAssessment({ equipment_id: id, ...data });
+              toast('บันทึกผลการประเมินสำเร็จ');
+              break;
+          }
+          hideModal();
+          fullRender();
+        } catch (err) {
+          toast(err.message, true);
+        }
+      }
+      // Simplified login/register/logout handlers for brevity
+      async function handleLogin(e) { e.preventDefault(); const d = Object.fromEntries(new FormData(e.target).entries()); try { const user = await api.login(d.email, d.password); state.user = user; localStorage.setItem('yonchuw_user', JSON.stringify(user)); toast(`ยินดีต้อนรับ, ${user.name}`); show('dashboard'); fullRender(); } catch (err) { toast(err.message, true); } e.target.reset(); }
+      async function handleRegister(e) { e.preventDefault(); const d = Object.fromEntries(new FormData(e.target).entries()); if (d.password.length < 6) { toast('รหัสผ่านต้องมี 6 ตัวอักษรขึ้นไป', true); return; } try { const res = await api.register(d); toast(res.message); show('loginPage'); } catch (err) { toast(err.message, true); } e.target.reset(); }
+      function handleLogout() { state.user = null; localStorage.removeItem('yonchuw_user'); toast('ออกจากระบบสำเร็จ'); show('home'); applyRoleVisibility(); }
+
+      // =================================================================================
+      // INITIALIZATION (ฟังก์ชันเริ่มต้นและตั้งค่า)
+      // =================================================================================
+      function applyRoleVisibility() {
+        const loggedIn = !!state.user;
+        $('#btnLogin').classList.toggle('hidden', loggedIn);
+        $('#btnRegister').classList.toggle('hidden', loggedIn);
+        $('#userInfo').classList.toggle('hidden', !loggedIn);
+        $('#userInfo').classList.toggle('flex', loggedIn);
+
+        if (loggedIn) {
+          $('#userNameDisplay').textContent = state.user.name;
+          const isAdmin = state.user.role === 'admin';
+          const isApprover = state.user.role === 'approver';
+          const isTechnician = state.user.role === 'technician';
+          const isUser = state.user.role === 'user';
+
+          $('#btnAddEquip').classList.toggle('hidden', !isAdmin);
+          $('#btnAddEquipDash').classList.toggle('hidden', !isAdmin);
+
+          $('#borrowFormContainer').classList.toggle('hidden', !isUser);
+
+          $('[data-tab="approvalTab"]').classList.toggle('hidden', !(isAdmin || isApprover));
+          $('[data-tab="techTab"]').classList.toggle('hidden', !(isAdmin || isTechnician));
+          $('[data-tab="assessmentTab"]').classList.toggle('hidden', !(isAdmin || isTechnician));
+        }
+      }
+
+      function setupEventListeners() {
+        // Navigation
+        $('#btnLogin').addEventListener('click', () => show('loginPage'));
+        $('#btnRegister').addEventListener('click', () => show('registerPage'));
+        $('#goRegister').addEventListener('click', (e) => { e.preventDefault(); show('registerPage'); });
+        $('#startBtn').addEventListener('click', () => state.user ? show('dashboard') : show('loginPage'));
+        $('#browseBtn').addEventListener('click', () => show('equipmentShowcase'));
+        $('#backFromEquip').addEventListener('click', () => show('home'));
+        $('#backFromLogin').addEventListener('click', () => show('home'));
+        $('#backFromRegister').addEventListener('click', () => show('loginPage'));
+        $('#btnLogout').addEventListener('click', handleLogout);
+
+        // Forms
+        $('#loginForm').addEventListener('submit', handleLogin);
+        $('#registerForm').addEventListener('submit', handleRegister);
+        $('#borrowForm').addEventListener('submit', handleBorrowSubmit);
+
+        // Modal
+        $('#modalClose').addEventListener('click', hideModal);
+        $('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') hideModal() });
+        document.addEventListener('submit', (e) => {
+          if (['preDeliveryForm', 'postReturnForm', 'completeRepairForm', 'assessmentForm'].includes(e.target.id)) {
+            handleDynamicFormSubmit(e);
+          }
+        });
+
+        // Filters
+        $('#equipSearch').addEventListener('input', renderEquipmentLists);
+        $('#equipFilter').addEventListener('change', renderEquipmentLists);
+        $('#dashEquipSearch').addEventListener('input', renderEquipmentLists);
+        $('#dashEquipFilter').addEventListener('change', renderEquipmentLists);
+
+        // Dashboard Tabs
+        $$('.tab-btn').forEach(btn => {
+          btn.addEventListener('click', () => setTabs(btn.dataset.tab));
+        });
+
+        // Auto-update due date
+        $('#borrowDate').addEventListener('change', (e) => {
+          if (e.target.value) {
+            const borrowDate = new Date(e.target.value);
+            borrowDate.setDate(borrowDate.getDate() + 7);
+            $('#dueDate').value = borrowDate.toISOString().slice(0, 10);
+          } else {
+            $('#dueDate').value = '';
+          }
+        });
+      }
+
+      function populateBorrowSelect() {
+        const select = $('#borrowEquipSelect');
+        const availableEquip = state.equipment.filter(e => e.status === 'available');
+        select.innerHTML = `<option value="">-- เลือกอุปกรณ์ --</option>` + availableEquip.map(e => `<option value="${e.id}">${e.name} (S/N: ${e.serial})</option>`).join('');
+      }
+
+      function fullRender() {
+        applyRoleVisibility();
+        if (state.user) {
+          if (!$('#dashboard').classList.contains('hidden')) {
+            // Only set tab if dashboard is visible to avoid errors
+            const currentActiveTab = $('.tab-btn.bg-white')?.dataset?.tab || 'equipmentTab';
+            setTabs(currentActiveTab);
+          }
+          renderEquipmentSummary();
+          renderMyBorrows();
+          renderApprovalLists();
+          renderTechnicianQueues();
+          renderReports();
+          populateBorrowSelect();
+        }
+        renderEquipmentLists();
+      }
+
+      function init() {
+        const savedUser = localStorage.getItem('yonchuw_user');
+        if (savedUser) {
+          state.user = JSON.parse(savedUser);
+          show('dashboard');
+        } else {
+          show('home');
+        }
+        setupEventListeners();
+        fullRender();
+        setTabs('equipmentTab'); // Set default tab on load
+      }
+
+      init(); // Start the application
+    });
+  </script>
 </body>
 
 </html>
