@@ -69,7 +69,7 @@
       <div class="flex items-center gap-3 cursor-pointer" onclick="show('home')">
         <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
           <!-- ไอคอนระบบ -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 B24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
             <path d="m7 11 2-2-2-2" />
             <path d="M11 13h4" />
@@ -106,8 +106,8 @@
           <div class="mt-8 flex flex-wrap gap-4">
             <button id="startBtn"
               class="px-6 py-3 rounded-xl bg-white text-slate-900 font-semibold hover:opacity-90 transition-transform hover:scale-105">เริ่มต้นใช้งาน</button>
-            <button id="browseBtn"
-              class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition">ดูรายการอุปกรณ์</button>
+            <button id="browseBtn" class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition">ทดสอบระบบ
+              (ผู้ใช้ทั่วไป)</button>
           </div>
           <div class="mt-6 flex items-center gap-3 text-sm">
             <span class="chip px-3 py-1 rounded-full">Responsive</span>
@@ -124,8 +124,8 @@
           <ol class="mt-4 space-y-2.5 text-sm text-slate-700 list-decimal list-inside">
             <li><strong>ลงทะเบียน:</strong> ผู้ใช้ใหม่ลงทะเบียน → สถานะเป็น “รอตรวจสอบ”</li>
             <li><strong>อนุมัติบัญชี:</strong> ผู้อนุมัติทำการอนุมัติ → ผู้ใช้จึงจะเข้าสู่ระบบได้</li>
-            <li><strong>ส่งคำขอยืม:</strong> ผู้ใช้ทั่วไปส่งคำขอยืม (ต้องระบุรายละเอียดให้ครบถ้วน)</li>
-            <li><strong>อนุมัติการยืม:</strong> ผู้อนุมัติอนุมัติคำขอ → สถานะอุปกรณ์เปลี่ยนเป็น “ถูกยืม”</li>
+            <li><strong>ส่งคำขอยืม:</strong> ผู้ใช้ทั่วไปส่งคำขอยืม (สามารถเลือกได้หลายเครื่อง)</li>
+            <li><strong>อนุมัติการยืม:</strong> ผู้อนุมัติอนุมัติคำขอ → ช่างตรวจสภาพก่อนส่งมอบ</li>
             <li><strong>คืนอุปกรณ์:</strong> เมื่อคืนอุปกรณ์ ช่างจะตรวจสภาพและตัดสินว่า “เสีย/ไม่เสีย”</li>
             <li><strong>ขั้นตอนการซ่อม:</strong> หากเสีย → สร้างคำขอซ่อม → อนุมัติซ่อม → ซ่อมเสร็จ → อุปกรณ์กลับมา
               “ว่าง”</li>
@@ -229,6 +229,22 @@
 
     <!-- Dashboard (สำหรับผู้ใช้ที่ login แล้ว) -->
     <section id="dashboard" class="hidden fade-in">
+      <!-- DEMO MODE BANNER -->
+      <div id="demoModeBanner"
+        class="hidden bg-yellow-400 text-yellow-900 p-3 mb-6 rounded-lg flex items-center justify-between shadow-lg">
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="text-yellow-800">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+          <span class="font-semibold text-sm">คุณกำลังอยู่ในโหมดทดสอบระบบ (Simulation Mode)</span>
+        </div>
+        <button id="exitDemoBtn"
+          class="px-3 py-1 rounded-md bg-white/50 hover:bg-white/80 text-sm font-medium">ออกจากโหมดทดสอบ</button>
+      </div>
+
       <!-- Tabs -->
       <div class="mt-4 overflow-x-auto">
         <div class="inline-flex gap-1 bg-white/10 rounded-xl p-1">
@@ -278,13 +294,12 @@
             <div class="card rounded-2xl p-6 text-slate-900" id="borrowFormContainer">
               <h3 class="text-lg font-semibold">สร้างคำขอยืมอุปกรณ์</h3>
               <form id="borrowForm" class="mt-4 space-y-3">
-                <select name="borrowEquipSelect" id="borrowEquipSelect"
-                  class="w-full px-3 py-2 rounded-lg border border-slate-200" required></select>
-                <div class="grid sm:grid-cols-2 gap-3">
-                  <input name="ref_doc_no" placeholder="หนังสือเลขที่"
-                    class="w-full px-3 py-2 rounded-lg border border-slate-200">
-                  <input name="ref_doc_topic" placeholder="เรื่อง"
-                    class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                <!-- New multi-select equipment list -->
+                <div class="border rounded-lg p-2 max-h-48 overflow-y-auto">
+                  <p class="text-sm font-medium mb-1">เลือกเครื่องที่ต้องการยืม:</p>
+                  <div id="borrowEquipList" class="space-y-1">
+                    <!-- Checkboxes will be rendered here -->
+                  </div>
                 </div>
                 <div class="grid sm:grid-cols-2 gap-3">
                   <input type="date" name="borrow_date" id="borrowDate"
@@ -371,7 +386,14 @@
         <!-- Assessment Tab Content -->
         <div id="assessmentTab" class="hidden tab-content">
           <div class="card rounded-2xl p-6 text-slate-900">
-            <h3 class="text-lg font-semibold">ประเมินมาตรฐานเครื่องพ่น</h3>
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <h3 class="text-lg font-semibold">ประเมินมาตรฐานเครื่องพ่น</h3>
+              <div class="flex items-center gap-2">
+                <select id="assessmentTypeFilter" class="px-3 py-2 rounded-lg border border-slate-200 text-sm">
+                  <option value="">ทุกประเภท</option>
+                </select>
+              </div>
+            </div>
             <p class="text-sm text-slate-600 mt-1">เลือกเครื่องพ่นที่ต้องการบันทึกการประเมินประสิทธิภาพ</p>
             <div id="assessmentEquipList" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
           </div>
@@ -423,23 +445,21 @@
       const state = {
         user: null, // {id, name, role}
         equipment: [
-          { id: 1, serial: '0334 0418 0044', name: 'HUDSON X-PERT SPRAYER', status: 'available' },
-          { id: 2, serial: '0334 0418 0045', name: 'HUDSON X-PERT SPRAYER', status: 'available' },
-          { id: 3, serial: 'สคร.0334 0429 0863 0124', name: 'IK VECTOR CONTROL SUPER', status: 'available' },
-          { id: 4, serial: 'สคร.0334 0429 0465 0140', name: 'IK VECTOR CONTROL SUPER', status: 'available' },
-          { id: 5, serial: '51 6640 007 00005 (67)', name: 'Micron CS10', status: 'available' },
-          { id: 6, serial: '0332 048 0001 (8666)', name: 'SWING FOG SN 50', status: 'borrowed' },
-          { id: 7, serial: '0332 012.4 0010 (NR070542604)', name: 'IGEBA PORT 123 ULV', status: 'available' },
-          { id: 8, serial: '0332 012.4 0012', name: 'SWING FOG SN50', status: 'under_maintenance' },
-          { id: 9, serial: '0332 0418 0098 (TL 060545)', name: 'TWISTER XL BY DYNAFOG', status: 'available' },
-          { id: 10, serial: 'สคร.0332 0418 0105 (154710)', name: 'Swingtec ULV', status: 'available' },
-          { id: 11, serial: 'สคร.0332 0418 0121', name: 'FONTAN PORTASTARS', status: 'pending_repair_approval' },
-          { id: 12, serial: 'สคร.0332 0418 0122', name: 'FONTAN PORTASTARS', status: 'available' },
-          { id: 13, serial: '0334 0461 1260', name: 'Misuko 3WF-3A', status: 'available' },
-          { id: 14, serial: '0332 0461 11600124 (164841)', name: 'ULV Swingtac', status: 'available' },
+          { id: 1, serial: '0334 0418 0044', name: 'HUDSON X-PERT SPRAYER', type: 'เครื่องพ่นเคมีอัดลม', acquisition_date: '2023-01-25', status: 'available', notes: '' },
+          { id: 2, serial: '0334 0418 0045', name: 'HUDSON X-PERT SPRAYER', type: 'เครื่องพ่นเคมีอัดลม', acquisition_date: '2023-01-25', status: 'available', notes: '' },
+          { id: 3, serial: 'สคร.0334 0429 0863 0124', name: 'IK VECTOR CONTROL SUPER', type: 'เครื่องพ่นเคมีอัดลม', acquisition_date: '2023-03-10', status: 'available', notes: '' },
+          { id: 4, serial: 'สคร.0334 0429 0465 0140', name: 'IK VECTOR CONTROL SUPER', type: 'เครื่องพ่นเคมีอัดลม', acquisition_date: '2023-03-10', status: 'available', notes: '' },
+          { id: 5, serial: '51 6640 007 00005 (67)', name: 'Micron CS10', type: 'เครื่องพ่นฝอยละออง', acquisition_date: '2024-05-20', status: 'available', notes: '' },
+          { id: 6, serial: '0332 048 0001 (8666)', name: 'SWING FOG SN 50', type: 'เครื่องพ่นหมอกควัน', acquisition_date: '2022-11-30', status: 'borrowed', notes: '' },
+          { id: 7, serial: '0332 012.4 0010 (NR070542604)', name: 'IGEBA PORT 123 ULV', type: 'เครื่องพ่นฝอยละออง ULV', acquisition_date: '2022-11-30', status: 'available', notes: '' },
+          { id: 8, serial: '0332 012.4 0012', name: 'SWING FOG SN50', type: 'เครื่องพ่นหมอกควัน', acquisition_date: '2022-11-30', status: 'under_maintenance', notes: '' },
+          { id: 9, serial: '0332 0418 0098 (TL 060545)', name: 'TWISTER XL BY DYNAFOG', type: 'เครื่องพ่นละอองฝอย', acquisition_date: '2024-08-05', status: 'available', notes: '' },
+          { id: 10, serial: 'สคร.0332 0418 0105 (154710)', name: 'Swingtec ULV', type: 'เครื่องพ่นฝอยละออง ULV', acquisition_date: '2025-05-10', status: 'available', notes: '' },
+          { id: 11, serial: 'สคร.0332 0418 0121', name: 'FONTAN PORTASTARS', type: 'เครื่องพ่นละอองฝอย', acquisition_date: '2025-05-29', status: 'pending_repair_approval', notes: '' },
+          { id: 12, serial: 'สคร.0332 0418 0122', name: 'FONTAN PORTASTARS', type: 'เครื่องพ่นละอองฝอย', acquisition_date: '2025-05-29', status: 'available', notes: '' },
         ],
         borrows: [
-          { id: 1, equipment_id: 6, user_id: 4, user_name: 'ผู้ใช้ทั่วไป', borrow_date: '2025-09-10', due_date: '2025-09-17', return_date: null, purpose: 'พ่นป้องกันไข้เลือดออก หมู่บ้านจัดสรร', contact_name: 'คุณสมศรี', contact_phone: '081-234-5678', notes: 'ขอเข้าพื้นที่ช่วงบ่าย', status: 'borrowed' }
+          { id: 1, equipment_ids: [6], user_id: 4, user_name: 'ผู้ใช้ทั่วไป', borrow_date: '2025-09-10', due_date: '2025-09-17', return_date: null, purpose: 'พ่นป้องกันไข้เลือดออก หมู่บ้านจัดสรร', contact_name: 'คุณสมศรี', contact_phone: '081-234-5678', notes: 'ขอเข้าพื้นที่ช่วงบ่าย', status: 'borrowed' }
         ],
         repairs: [
           { id: 1, equipment_id: 8, equipment_name: 'SWING FOG SN50', damage_description: 'ระบบพ่นทำงานผิดปกติ', status: 'repair_approved', technician_id: 3, repair_details: null, cost: null, parts_used: null },
@@ -482,10 +502,11 @@
           state.pendingUsers = state.pendingUsers.filter(u => u.id !== id);
           return true;
         },
-        equipmentList: async (q = '', f = '') => {
+        equipmentList: async (q = '', f = '', t = '') => {
           let list = [...state.equipment];
           if (q) list = list.filter(e => e.name.toLowerCase().includes(q.toLowerCase()) || e.serial.toLowerCase().includes(q.toLowerCase()));
           if (f) list = list.filter(e => e.status === f);
+          if (t) list = list.filter(e => e.type === t);
           return list;
         },
         addEquipment: async (data) => {
@@ -504,13 +525,24 @@
           return true;
         },
         createBorrow: async (payload) => {
-          const eq = state.equipment.find(e => e.id === payload.equipment_id);
-          if (!eq || eq.status !== 'available') throw new Error('อุปกรณ์ไม่ว่างหรือไม่มีอยู่');
-          const due = new Date(payload.borrow_date); due.setDate(due.getDate() + 7);
+          const { equipment_ids, ...details } = payload;
+          if (!equipment_ids || equipment_ids.length === 0) throw new Error('กรุณาเลือกอุปกรณ์อย่างน้อย 1 เครื่อง');
+
+          equipment_ids.forEach(equip_id => {
+            const eq = state.equipment.find(e => e.id === equip_id);
+            if (!eq || eq.status !== 'available') throw new Error(`อุปกรณ์ ${eq.name} ไม่ว่าง`);
+          });
+
+          const due = new Date(details.borrow_date); due.setDate(due.getDate() + 7);
           const due_date = due.toISOString().slice(0, 10);
+
           state.borrows.push({
-            id: state.seq.borrow++, ...payload,
-            user_name: state.user.name, due_date, return_date: null,
+            id: state.seq.borrow++,
+            equipment_ids: equipment_ids,
+            ...details,
+            user_name: state.user.name,
+            due_date,
+            return_date: null,
             status: 'pending_borrow_approval'
           });
           return true;
@@ -524,16 +556,25 @@
         },
         performPreDeliveryCheck: async (id, isFaulty, newEquipId, checklistData) => {
           const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+
+          // For simplicity, this demo applies the check to all items in the request
           b.pre_delivery_checklist = checklistData;
+
           if (isFaulty) {
-            const oldEquip = state.equipment.find(e => e.id === b.equipment_id);
+            // In a real app, you'd specify which item is faulty. Here, we'll assume the first one.
+            const faultyEquipId = b.equipment_ids[0];
+            const oldEquip = state.equipment.find(e => e.id === faultyEquipId);
             if (oldEquip) oldEquip.status = 'pending_repair_approval';
             state.repairs.push({ id: state.seq.repair++, equipment_id: oldEquip.id, equipment_name: oldEquip.name, damage_description: 'ตรวจพบปัญหาก่อนส่งมอบ', status: 'pending_repair_approval', technician_id: null });
 
-            b.equipment_id = newEquipId;
+            b.equipment_ids[0] = newEquipId;
           }
+
           b.status = 'borrowed';
-          const eq = state.equipment.find(e => e.id === b.equipment_id); if (eq) eq.status = 'borrowed';
+          b.equipment_ids.forEach(equip_id => {
+            const eq = state.equipment.find(e => e.id === equip_id);
+            if (eq) eq.status = 'borrowed';
+          });
           return true;
         },
         rejectBorrow: async (id) => {
@@ -546,15 +587,24 @@
           const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
           b.return_date = new Date().toISOString().slice(0, 10);
           b.post_return_checklist = checklistData;
-          const eq = state.equipment.find(e => e.id === b.equipment_id);
-          if (isDamaged) {
-            b.status = 'returned_damaged';
-            if (eq) eq.status = 'pending_repair_approval';
-            state.repairs.push({ id: state.seq.repair++, equipment_id: b.equipment_id, equipment_name: eq.name, damage_description: notes || 'ชำรุดจากการใช้งาน', status: 'pending_repair_approval', technician_id: null });
-          } else {
-            b.status = 'returned';
-            if (eq) eq.status = 'available';
-          }
+
+          // Logic for returning multiple items
+          b.equipment_ids.forEach((equip_id, index) => {
+            const eq = state.equipment.find(e => e.id === equip_id);
+            if (!eq) return;
+
+            // In a real system, you'd check each item. Here we apply the same logic to all.
+            if (isDamaged) {
+              b.status = 'returned_damaged';
+              eq.status = 'pending_repair_approval';
+              state.repairs.push({ id: state.seq.repair++, equipment_id: eq.id, equipment_name: eq.name, damage_description: `ชำรุดจากการใช้งาน (ชุดยืม #${b.id})`, status: 'pending_repair_approval' });
+            } else {
+              eq.status = 'available';
+            }
+          });
+
+          if (!isDamaged) b.status = 'returned';
+
           return true;
         },
         listRepairs: async () => state.repairs.sort((a, b) => b.id - a.id),
@@ -654,7 +704,8 @@
       // RENDER FUNCTIONS (ฟังก์ชันสำหรับวาด UI)
       // =================================================================================
 
-      async function renderEquipmentLists(isAdminAction = false) {
+      async function renderEquipmentLists(options = {}) {
+        const { forAssessment = false } = options;
         const q1 = $('#equipSearch')?.value || '';
         const f1 = $('#equipFilter')?.value || '';
         const list1 = await api.equipmentList(q1, f1);
@@ -668,7 +719,6 @@
                             <div class="text-sm text-slate-500">S/N: ${e.serial}</div>
                             <span class="mt-2 inline-block text-xs font-medium px-2 py-1 rounded-full ${color}">${text}</span>
                         </div>
-                        ${canBorrow ? `<button onclick="handleBorrowClick(${e.id})" class="mt-3 w-full text-center px-3 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 text-sm">ขอยืม</button>` : ''}
                     </div>
                 `;
         }).join('') || `<p class="text-slate-500">ไม่พบอุปกรณ์</p>`;
@@ -695,20 +745,17 @@
                     `;
           }).join('') || `<p class="text-slate-500">ไม่พบอุปกรณ์</p>`;
 
-          if (isAdminAction || ['admin', 'technician'].includes(state.user.role)) {
-            $('#assessmentEquipList').innerHTML = list2.map(e => `
+          if (forAssessment) {
+            const t3 = $('#assessmentTypeFilter')?.value || '';
+            const list3 = await api.equipmentList('', '', t3);
+            $('#assessmentEquipList').innerHTML = list3.map(e => `
                         <button onclick="handleAssessmentClick(${e.id}, '${e.name}')" class="text-left p-4 rounded-xl border border-slate-200 hover:bg-slate-50">
                             <div class="font-semibold">${e.name}</div>
                             <div class="text-sm text-slate-500">S/N: ${e.serial}</div>
                         </button>
-                    `).join('');
+                    `).join('') || `<p class="text-slate-500 col-span-full">ไม่พบอุปกรณ์ประเภทนี้</p>`;
           }
         }
-      }
-      window.handleBorrowClick = (equipId) => {
-        show('dashboard');
-        setTabs('borrowTab');
-        $('#borrowEquipSelect').value = equipId;
       }
 
       async function renderEquipmentSummary() {
@@ -725,14 +772,11 @@
         if (!state.user || state.user.role !== 'user') return;
 
         const allMyBorrows = await api.myBorrows(state.user.id);
-
-        // Render currently borrowed
         const currentlyBorrowed = allMyBorrows.filter(b => ['borrowed', 'pending_delivery'].includes(b.status));
         $('#currentlyBorrowed').innerHTML = currentlyBorrowed.length === 0
           ? `<p class="text-slate-500 text-sm">ไม่มีเครื่องที่กำลังยืม</p>`
           : currentlyBorrowed.map(b => renderBorrowCard(b)).join('');
 
-        // Render history with filter
         const filter = $('#borrowHistoryFilter .bg-white').dataset.filter;
         let historyBorrows = [];
         if (filter === 'all') {
@@ -749,7 +793,7 @@
       }
 
       function renderBorrowCard(b) {
-        const eq = state.equipment.find(e => e.id === b.equipment_id);
+        const equipments = b.equipment_ids.map(id => state.equipment.find(e => e.id === id));
         let statusText, statusColor;
         switch (b.status) {
           case 'pending_borrow_approval': statusText = 'รออนุมัติ'; statusColor = 'bg-yellow-100 text-yellow-800'; break;
@@ -763,11 +807,13 @@
         return `
                <div class="p-3 rounded-lg border border-slate-200 text-sm">
                    <div class="flex justify-between items-start">
-                      <span class="font-semibold">${eq?.name || 'N/A'}</span>
+                      <span class="font-semibold">คำขอยืม #${b.id} (${b.equipment_ids.length} เครื่อง)</span>
                       <span class="text-xs font-medium px-2 py-1 rounded-full ${statusColor}">${statusText}</span>
                    </div>
-                   <p class="text-slate-600">ยืม: ${b.borrow_date} | คืน: ${b.due_date}</p>
-                   <p class="text-slate-600">วัตถุประสงค์: ${b.purpose}</p>
+                   <ul class="list-disc list-inside text-slate-500 mt-1">
+                        ${equipments.map(eq => `<li>${eq?.name || 'N/A'}</li>`).join('')}
+                   </ul>
+                   <p class="text-slate-600 mt-1">ยืม: ${b.borrow_date} | คืน: ${b.due_date}</p>
                </div>`;
       }
 
@@ -789,15 +835,13 @@
         const borrowReqs = await api.listBorrowRequests();
         $('#approvalBorrowList').innerHTML = borrowReqs.length === 0 ? `<p class="text-slate-500">ไม่มีคำขอยืมรออนุมัติ</p>`
           : borrowReqs.map(b => {
-            const eq = state.equipment.find(e => e.id === b.equipment_id);
+            const equipments = b.equipment_ids.map(id => state.equipment.find(e => e.id === id));
             return `
                 <div class="p-3 rounded-lg border border-slate-200">
-                    <p><span class="font-semibold">${b.user_name}</span> ขอยืม <span class="font-semibold">${eq?.name}</span></p>
+                    <p><span class="font-semibold">${b.user_name}</span> ขอยืม <span class="font-semibold">${b.equipment_ids.length} เครื่อง</span></p>
                     <div class="text-sm text-slate-600 bg-slate-50 p-2 rounded-md mt-1">
-                      <p><strong>วันที่:</strong> ${b.borrow_date} ถึง ${b.due_date}</p>
-                      <p><strong>ผู้ประสานงาน:</strong> ${b.contact_name} (${b.contact_phone})</p>
-                      <p><strong>วัตถุประสงค์:</strong> ${b.purpose}</p>
-                      ${b.notes ? `<p><strong>หมายเหตุ:</strong> ${b.notes}</p>` : ''}
+                        <ul class="list-disc list-inside">${equipments.map(e => `<li>${e?.name}</li>`).join('')}</ul>
+                        <p><strong>วันที่:</strong> ${b.borrow_date} ถึง ${b.due_date}</p>
                     </div>
                     <div class="mt-2 flex gap-2">
                         <button onclick="handleApproveBorrow(${b.id})" class="px-3 py-1 text-sm rounded bg-emerald-500 text-white hover:bg-emerald-600">อนุมัติ</button>
@@ -821,33 +865,25 @@
       async function renderTechnicianQueues() {
         if (!state.user || !['admin', 'technician'].includes(state.user.role)) return;
 
-        // Delivery Queue
         const deliveryQueue = await api.queueForDelivery();
         $('#techDeliveryQueue').innerHTML = deliveryQueue.length === 0 ? `<p class="text-slate-500">ไม่มีรายการรอส่งมอบ</p>`
-          : deliveryQueue.map(b => {
-            const eq = state.equipment.find(e => e.id === b.equipment_id);
-            return `
+          : deliveryQueue.map(b => `
                 <div class="p-3 rounded-lg border border-slate-200 text-sm">
-                    <p>ส่งมอบ <span class="font-semibold">${eq.name}</span></p>
-                    <p class="text-slate-600">ให้กับ: ${b.user_name}</p>
+                    <p>ส่งมอบให้ <span class="font-semibold">${b.user_name}</span></p>
+                    <p class="text-slate-600">จำนวน: ${b.equipment_ids.length} เครื่อง</p>
                     <button onclick="handlePreDeliveryCheck(${b.id})" class="mt-2 w-full px-3 py-1 rounded bg-blue-500 text-white hover:bg-blue-600 text-xs">ตรวจสภาพก่อนส่งมอบ</button>
                 </div>
-                `}).join('');
+                `).join('');
 
-        // Return Queue
         const returnQueue = await api.queueForReturn();
         $('#techReturnQueue').innerHTML = returnQueue.length === 0 ? `<p class="text-slate-500">ไม่มีรายการรอตรวจสภาพ</p>`
-          : returnQueue.map(b => {
-            const eq = state.equipment.find(e => e.id === b.equipment_id);
-            return `
+          : returnQueue.map(b => `
                     <div class="p-3 rounded-lg border border-slate-200 text-sm">
-                        <p><span class="font-semibold">${b.user_name}</span> คืน <span class="font-semibold">${eq?.name}</span></p>
+                        <p><span class="font-semibold">${b.user_name}</span> คืน ${b.equipment_ids.length} เครื่อง</p>
                         <p class="text-slate-600">วันที่ยืม: ${b.borrow_date}</p>
                         <button onclick="handlePostReturnCheck(${b.id})" class="mt-2 w-full px-3 py-1 rounded bg-orange-500 text-white hover:bg-orange-600 text-xs">ตรวจสภาพหลังส่งคืน</button>
-                    </div>`;
-          }).join('');
+                    </div>`).join('');
 
-        // Repair List
         const repairs = await api.listRepairs();
         $('#repairList').innerHTML = repairs.length === 0 ? `<div class="text-slate-500 text-center">ไม่มีประวัติการซ่อม</div>`
           : repairs.map(r => {
@@ -857,7 +893,6 @@
               case 'repair_approved': statusText = 'กำลังซ่อม'; statusColor = 'bg-blue-100 text-blue-800'; break;
               case 'repair_rejected': statusText = 'ไม่อนุมัติซ่อม'; statusColor = 'bg-red-100 text-red-800'; break;
               case 'completed': statusText = 'ซ่อมเสร็จ'; statusColor = 'bg-green-100 text-green-800'; break;
-              default: statusText = 'ไม่ทราบสถานะ'; statusColor = 'bg-gray-100 text-gray-800';
             }
             const canComplete = r.status === 'repair_approved' && (state.user.role === 'technician' || state.user.role === 'admin');
             return `
@@ -888,7 +923,6 @@
       // EVENT HANDLERS (ฟังก์ชันจัดการการกระทำของผู้ใช้)
       // =================================================================================
 
-      // Approvals
       window.handleApproveUser = async (id) => { try { await api.approveUser(id); toast('อนุมัติผู้ใช้สำเร็จ'); fullRender(); } catch (e) { toast(e.message, true); } };
       window.handleRejectUser = async (id) => { try { await api.rejectUser(id); toast('ปฏิเสธผู้ใช้เรียบร้อย'); fullRender(); } catch (e) { toast(e.message, true); } };
       window.handleApproveBorrow = async (id) => { try { await api.approveBorrow(id); toast('อนุมัติการยืมสำเร็จ (รอช่างตรวจ)'); fullRender(); } catch (e) { toast(e.message, true); } };
@@ -896,19 +930,13 @@
       window.handleApproveRepair = async (id) => { try { await api.approveRepair(id); toast('อนุมัติการซ่อมสำเร็จ'); fullRender(); } catch (e) { toast(e.message, true); } };
       window.handleRejectRepair = async (id) => { try { await api.rejectRepair(id); toast('ปฏิเสธการซ่อมเรียบร้อย'); fullRender(); } catch (e) { toast(e.message, true); } };
 
-      // Technicians & Admin
-
       function getChecklistHTML(formId, checklist) {
         return checklist.map(item => `
                 <div class="grid grid-cols-3 items-center border-b py-2">
                     <label for="${formId}-${item.id}" class="text-sm text-slate-700 col-span-2">${item.label}</label>
                     <div class="flex items-center justify-end gap-4">
-                         <label class="flex items-center gap-1">
-                            <input type="radio" name="${item.id}" value="ok" class="h-4 w-4" checked> <span class="text-sm">ปกติ</span>
-                         </label>
-                         <label class="flex items-center gap-1">
-                            <input type="radio" name="${item.id}" value="faulty" class="h-4 w-4"> <span class="text-sm">ผิดปกติ</span>
-                         </label>
+                         <label class="flex items-center gap-1"><input type="radio" name="${item.id}" value="ok" class="h-4 w-4" checked> <span class="text-sm">ปกติ</span></label>
+                         <label class="flex items-center gap-1"><input type="radio" name="${item.id}" value="faulty" class="h-4 w-4"> <span class="text-sm">ผิดปกติ</span></label>
                     </div>
                 </div>
             `).join('');
@@ -916,20 +944,15 @@
 
       window.handlePreDeliveryCheck = (borrowId) => {
         const borrow = state.borrows.find(b => b.id === borrowId);
-        const equip = state.equipment.find(e => e.id === borrow.equipment_id);
         const inspectionChecklist = [
-          { id: 'check_exterior', label: '1. ตรวจสอบสภาพภายนอก' },
-          { id: 'check_fuel_tank', label: '2. ตรวจสอบถังน้ำมันเชื้อเพลิง' },
-          { id: 'check_carburetor', label: '3. ตรวจสอบคาร์บูเรเตอร์' },
-          { id: 'check_spark_plug', label: '4. ตรวจสอบหัวเทียน' },
-          { id: 'check_battery', label: '5. ตรวจสอบแบตเตอรี่' },
-          { id: 'check_chem_pipe', label: '6. ตรวจสอบท่อน้ำยาเคมี' },
+          { id: 'check_exterior', label: '1. ตรวจสอบสภาพภายนอก' }, { id: 'check_fuel_tank', label: '2. ตรวจสอบถังน้ำมันเชื้อเพลิง' },
+          { id: 'check_carburetor', label: '3. ตรวจสอบคาร์บูเรเตอร์' }, { id: 'check_spark_plug', label: '4. ตรวจสอบหัวเทียน' },
+          { id: 'check_battery', label: '5. ตรวจสอบแบตเตอรี่' }, { id: 'check_chem_pipe', label: '6. ตรวจสอบท่อน้ำยาเคมี' },
           { id: 'check_nozzle_system', label: '7. ตรวจสอบระบบพ่น' }
         ];
-
         const content = `
                 <form id="preDeliveryForm" data-id="${borrowId}">
-                    <p class="text-sm text-slate-600 mb-3">ตรวจสภาพ <strong>${equip.name}</strong> ก่อนส่งมอบให้ <strong>${borrow.user_name}</strong></p>
+                    <p class="text-sm text-slate-600 mb-3">ตรวจสภาพเครื่องทั้งหมด (${borrow.equipment_ids.length} เครื่อง) สำหรับ <strong>${borrow.user_name}</strong></p>
                     <div class="bg-slate-50 p-3 rounded-lg">${getChecklistHTML('preDeliveryForm', inspectionChecklist)}</div>
                      <textarea name="notes" rows="2" placeholder="หมายเหตุเพิ่มเติม" class="mt-3 w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
                 </form>
@@ -942,10 +965,12 @@
       };
 
       window.handleReportFault = (borrowId) => {
+        const borrow = state.borrows.find(b => b.id === borrowId);
+        const faultyEquipId = borrow.equipment_ids[0]; // Assume first one is faulty for demo
         const availableEquip = state.equipment.filter(e => e.status === 'available');
         const content = `
                 <form id="replaceEquipForm" data-id="${borrowId}">
-                    <p class="text-sm text-slate-600 mb-3">เครื่องเดิมจะถูกส่งซ่อม กรุณาเลือกเครื่องใหม่เพื่อทดแทน</p>
+                    <p class="text-sm text-slate-600 mb-3">เครื่อง ${state.equipment.find(e => e.id === faultyEquipId).name} จะถูกส่งซ่อม กรุณาเลือกเครื่องใหม่เพื่อทดแทน</p>
                     <select name="new_equip_id" class="w-full px-3 py-2 rounded-lg border border-slate-300" required>
                         <option value="">-- เลือกเครื่องทดแทน --</option>
                         ${availableEquip.map(e => `<option value="${e.id}">${e.name} (S/N: ${e.serial})</option>`).join('')}
@@ -959,21 +984,18 @@
 
       window.handlePostReturnCheck = (id) => {
         const inspectionChecklist = [
-          { id: 'check_exterior', label: '1. ตรวจสอบสภาพภายนอก' },
-          { id: 'check_fuel_tank', label: '2. ตรวจสอบถังน้ำมันเชื้อเพลิง' },
-          { id: 'check_carburetor', label: '3. ตรวจสอบคาร์บูเรเตอร์' },
-          { id: 'check_spark_plug', label: '4. ตรวจสอบหัวเทียน' },
-          { id: 'check_battery', label: '5. ตรวจสอบแบตเตอรี่' },
-          { id: 'check_chem_pipe', label: '6. ตรวจสอบท่อน้ำยาเคมี' },
+          { id: 'check_exterior', label: '1. ตรวจสอบสภาพภายนอก' }, { id: 'check_fuel_tank', label: '2. ตรวจสอบถังน้ำมันเชื้อเพลิง' },
+          { id: 'check_carburetor', label: '3. ตรวจสอบคาร์บูเรเตอร์' }, { id: 'check_spark_plug', label: '4. ตรวจสอบหัวเทียน' },
+          { id: 'check_battery', label: '5. ตรวจสอบแบตเตอรี่' }, { id: 'check_chem_pipe', label: '6. ตรวจสอบท่อน้ำยาเคมี' },
           { id: 'check_nozzle_system', label: '7. ตรวจสอบระบบพ่น' }
         ];
         const content = `
                 <form id="postReturnForm" data-id="${id}">
                     <div class="bg-slate-50 p-3 rounded-lg">${getChecklistHTML('postReturnForm', inspectionChecklist)}</div>
-                    <label class="block text-sm font-medium text-slate-700 mt-4">สรุปผล</label>
+                    <label class="block text-sm font-medium text-slate-700 mt-4">สรุปผล (สำหรับทุกเครื่อง)</label>
                     <select name="isDamaged" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm">
                         <option value="false">ปกติ</option>
-                        <option value="true">ชำรุด</option>
+                        <option value="true">ชำรุด (อย่างน้อย 1 เครื่อง)</option>
                     </select>
                     <textarea name="notes" rows="2" placeholder="หมายเหตุ (หากชำรุด กรุณาระบุอาการ)" class="mt-2 w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
                 </form>
@@ -991,10 +1013,7 @@
                          <input name="repair_date" type="date" value="${new Date().toISOString().slice(0, 10)}" required class="w-full px-3 py-2 rounded-lg border border-slate-200">
                          <input name="repair_by" required placeholder="ผู้ดำเนินการซ่อม" value="${state.user.name}" class="w-full px-3 py-2 rounded-lg border border-slate-200">
                     </div>
-                    <div>
-                        <label class="font-medium">อาการชำรุด:</label>
-                        <p class="p-2 bg-slate-50 rounded-md">${repair.damage_description}</p>
-                    </div>
+                    <div><label class="font-medium">อาการชำรุด:</label><p class="p-2 bg-slate-50 rounded-md">${repair.damage_description}</p></div>
                     <textarea name="repair_details" required rows="3" placeholder="การดำเนินการซ่อม" class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
                     <textarea name="parts_used" rows="2" placeholder="รายการวัสดุ/อะไหล่ที่ใช้" class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
                     <input name="cost" type="number" placeholder="จำนวนเงิน (บาท)" class="w-full px-3 py-2 rounded-lg border border-slate-200">
@@ -1006,40 +1025,23 @@
       };
 
       window.handleAssessmentClick = (id, name) => {
+        const equip = state.equipment.find(e => e.id === id);
         const content = `
                 <form id="assessmentForm" data-id="${id}" class="text-sm">
-                    <p class="text-base text-slate-600 mb-3">สำหรับ: <strong>${name}</strong></p>
+                    <p class="text-base text-slate-600 mb-3">สำหรับ: <strong>${name} (S/N: ${equip.serial})</strong></p>
                     <div class="grid md:grid-cols-2 gap-x-6 gap-y-3">
-                        <div>
-                            <label class="font-medium">สภาพภายนอกเครื่องพ่น</label>
-                            <div class="flex gap-4 mt-1"><label><input type="radio" name="exterior_condition" value="new"> ใหม่</label><label><input type="radio" name="exterior_condition" value="mid" checked> ปานกลาง</label><label><input type="radio" name="exterior_condition" value="old"> เก่า</label></div>
-                        </div>
-                        <div>
-                            <label class="font-medium">การติดเครื่องยนต์</label>
-                            <div class="flex gap-4 mt-1"><label><input type="radio" name="engine_start" value="easy" checked> ติดง่าย</label><label><input type="radio" name="engine_start" value="hard"> ติดยาก</label></div>
-                        </div>
+                        <div><label class="font-medium">สภาพภายนอก</label><div class="flex gap-4 mt-1"><label><input type="radio" name="exterior_condition" value="new"> ใหม่</label><label><input type="radio" name="exterior_condition" value="mid" checked> ปานกลาง</label><label><input type="radio" name="exterior_condition" value="old"> เก่า</label></div></div>
+                        <div><label class="font-medium">การติดเครื่องยนต์</label><div class="flex gap-4 mt-1"><label><input type="radio" name="engine_start" value="easy" checked> ติดง่าย</label><label><input type="radio" name="engine_start" value="hard"> ติดยาก</label></div></div>
                         <div class="md:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-2 rounded-md">
                             <label class="font-medium col-span-full">ความสะอาดภายใน</label>
-                            <label><input type="checkbox" name="clean_pipe"> ท่อพ่น</label>
-                            <label><input type="checkbox" name="clean_chem_line"> สายส่งน้ำยา</label>
-                            <label><input type="checkbox" name="clean_gas_tank"> ถังเบนซิน</label>
-                            <label><input type="checkbox" name="clean_chem_tank"> ถังเคมี</label>
+                            <label><input type="checkbox" name="clean_pipe"> ท่อพ่น</label> <label><input type="checkbox" name="clean_chem_line"> สายส่งน้ำยา</label>
+                            <label><input type="checkbox" name="clean_gas_tank"> ถังเบนซิน</label> <label><input type="checkbox" name="clean_chem_tank"> ถังเคมี</label>
                         </div>
-                         <div class="md:col-span-2">
-                             <h4 class="font-semibold mt-2">ข้อมูลสารเคมีที่ทดสอบ</h4>
-                             <div class="grid sm:grid-cols-3 gap-3 mt-1">
-                                <input name="chem_name" placeholder="ชื่อสารเคมี" class="w-full px-3 py-2 rounded-lg border">
-                                <input name="chem_concentration" placeholder="ความเข้มข้น (%)" class="w-full px-3 py-2 rounded-lg border">
-                                <input name="chem_mix_ratio" placeholder="อัตราส่วนผสม" class="w-full px-3 py-2 rounded-lg border">
-                             </div>
-                        </div>
-                         <div class="md:col-span-2">
-                             <h4 class="font-semibold mt-2">สรุปผลการทดสอบ</h4>
-                             <div class="grid sm:grid-cols-2 gap-3 mt-1">
-                                <input name="result_temp" placeholder="อุณหภูมิปลายท่อ (°C)" class="w-full px-3 py-2 rounded-lg border">
-                                <input name="result_flow_rate" placeholder="อัตราการไหลเฉลี่ย (มล./นาที)" class="w-full px-3 py-2 rounded-lg border">
-                             </div>
-                        </div>
+                         <div class="md:col-span-2"><h4 class="font-semibold mt-2">ข้อมูลสารเคมีที่ทดสอบ</h4><div class="grid sm:grid-cols-3 gap-3 mt-1">
+                                <input name="chem_name" placeholder="ชื่อสารเคมี" class="w-full px-3 py-2 rounded-lg border"><input name="chem_concentration" placeholder="ความเข้มข้น (%)" class="w-full px-3 py-2 rounded-lg border">
+                                <input name="chem_mix_ratio" placeholder="อัตราส่วนผสม" class="w-full px-3 py-2 rounded-lg border"></div></div>
+                         <div class="md:col-span-2"><h4 class="font-semibold mt-2">สรุปผลการทดสอบ</h4><div class="grid sm:grid-cols-2 gap-3 mt-1">
+                                <input name="result_temp" placeholder="อุณหภูมิปลายท่อ (°C)" class="w-full px-3 py-2 rounded-lg border"><input name="result_flow_rate" placeholder="อัตราการไหลเฉลี่ย (มล./นาที)" class="w-full px-3 py-2 rounded-lg border"></div></div>
                         <textarea name="notes" placeholder="ข้อเสนอแนะ" rows="2" class="w-full px-3 py-2 rounded-lg border md:col-span-2"></textarea>
                     </div>
                 </form>
@@ -1054,6 +1056,9 @@
                 <form id="addEquipForm" class="space-y-3">
                     <input name="name" required placeholder="ชื่อ/ยี่ห้อ" class="w-full px-3 py-2 rounded-lg border border-slate-200">
                     <input name="serial" required placeholder="เลขที่/รหัส" class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                    <input name="type" required placeholder="ประเภทเครื่อง" class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                    <input name="acquisition_date" type="date" required placeholder="วันที่ได้มา" class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                    <textarea name="notes" placeholder="หมายเหตุ" rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
                 </form>
             `;
         const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100">ยกเลิก</button>
@@ -1067,6 +1072,9 @@
                 <form id="editEquipForm" data-id="${id}" class="space-y-3">
                     <input name="name" required value="${equip.name}" class="w-full px-3 py-2 rounded-lg border border-slate-200">
                     <input name="serial" required value="${equip.serial}" class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                    <input name="type" required value="${equip.type}" placeholder="ประเภทเครื่อง" class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                    <input name="acquisition_date" type="date" value="${equip.acquisition_date}" required class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                    <textarea name="notes" placeholder="หมายเหตุ" rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-200">${equip.notes || ''}</textarea>
                 </form>
             `;
         const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100">ยกเลิก</button>
@@ -1074,17 +1082,7 @@
         showModal('แก้ไขข้อมูลอุปกรณ์', content, actions);
       };
 
-      window.handleDeleteEquipmentClick = (id) => {
-        if (confirm('คุณต้องการลบอุปกรณ์นี้ใช่หรือไม่?')) {
-          try {
-            api.deleteEquipment(id);
-            toast('ลบอุปกรณ์สำเร็จ');
-            fullRender();
-          } catch (e) {
-            toast(e.message, true);
-          }
-        }
-      };
+      window.handleDeleteEquipmentClick = (id) => { if (confirm('คุณต้องการลบอุปกรณ์นี้ใช่หรือไม่?')) { try { api.deleteEquipment(id); toast('ลบอุปกรณ์สำเร็จ'); fullRender(); } catch (e) { toast(e.message, true); } } };
 
       // Form Submissions
       async function handleDynamicFormSubmit(e) {
@@ -1097,45 +1095,24 @@
 
         try {
           switch (form.id) {
-            case 'preDeliveryForm':
-              await api.performPreDeliveryCheck(id, false, null, checklistData);
-              toast('บันทึกผลและส่งมอบเรียบร้อย');
-              break;
-            case 'replaceEquipForm':
-              await api.performPreDeliveryCheck(id, true, parseInt(data.new_equip_id), checklistData);
-              toast('เปลี่ยนเครื่องและบันทึกผลเรียบร้อย');
-              break;
-            case 'postReturnForm':
-              await api.techInspectReturn(id, data.isDamaged === 'true', data.notes, checklistData);
-              toast('บันทึกผลการตรวจสภาพสำเร็จ');
-              break;
-            case 'completeRepairForm':
-              await api.completeRepair(id, data);
-              toast('บันทึกรายละเอียดการซ่อมเรียบร้อย');
-              break;
-            case 'assessmentForm':
-              await api.createAssessment({ equipment_id: id, ...data });
-              toast('บันทึกผลการประเมินสำเร็จ');
-              break;
-            case 'addEquipForm':
-              await api.addEquipment(data);
-              toast('เพิ่มอุปกรณ์สำเร็จ');
-              break;
-            case 'editEquipForm':
-              await api.updateEquipment(id, data);
-              toast('แก้ไขข้อมูลสำเร็จ');
-              break;
+            case 'preDeliveryForm': await api.performPreDeliveryCheck(id, false, null, checklistData); toast('บันทึกผลและส่งมอบเรียบร้อย'); break;
+            case 'replaceEquipForm': await api.performPreDeliveryCheck(id, true, parseInt(data.new_equip_id), checklistData); toast('เปลี่ยนเครื่องและบันทึกผลเรียบร้อย'); break;
+            case 'postReturnForm': await api.techInspectReturn(id, data.isDamaged === 'true', data.notes, checklistData); toast('บันทึกผลการตรวจสภาพสำเร็จ'); break;
+            case 'completeRepairForm': await api.completeRepair(id, data); toast('บันทึกรายละเอียดการซ่อมเรียบร้อย'); break;
+            case 'assessmentForm': await api.createAssessment({ equipment_id: id, ...data }); toast('บันทึกผลการประเมินสำเร็จ'); break;
+            case 'addEquipForm': await api.addEquipment(data); toast('เพิ่มอุปกรณ์สำเร็จ'); break;
+            case 'editEquipForm': await api.updateEquipment(id, data); toast('แก้ไขข้อมูลสำเร็จ'); break;
           }
           hideModal();
           fullRender();
-        } catch (err) {
-          toast(err.message, true);
-        }
+        } catch (err) { toast(err.message, true); }
       }
       async function handleLogin(e) { e.preventDefault(); const d = Object.fromEntries(new FormData(e.target).entries()); try { const user = await api.login(d.email, d.password); state.user = user; localStorage.setItem('yonchuw_user', JSON.stringify(user)); toast(`ยินดีต้อนรับ, ${user.name}`); show('dashboard'); fullRender(); } catch (err) { toast(err.message, true); } e.target.reset(); }
       async function handleRegister(e) { e.preventDefault(); const d = Object.fromEntries(new FormData(e.target).entries()); if (d.password.length < 6) { toast('รหัสผ่านต้องมี 6 ตัวอักษรขึ้นไป', true); return; } try { const res = await api.register(d); toast(res.message); show('loginPage'); } catch (err) { toast(err.message, true); } e.target.reset(); }
-      function handleLogout() { state.user = null; localStorage.removeItem('yonchuw_user'); toast('ออกจากระบบสำเร็จ'); show('home'); applyRoleVisibility(); }
-      async function handleBorrowSubmit(e) { e.preventDefault(); const btn = e.target.querySelector('button'); const formData = new FormData(e.target); try { btn.disabled = true; const payload = { equipment_id: parseInt(formData.get('borrowEquipSelect')), ...Object.fromEntries(formData.entries()), user_id: state.user.id }; if (!payload.equipment_id || !payload.borrow_date || !payload.purpose || !payload.contact_name) { throw new Error('กรุณากรอกข้อมูลสำคัญให้ครบถ้วน'); } await api.createBorrow(payload); toast('ส่งคำขอยืมสำเร็จ'); e.target.reset(); fullRender(); } catch (err) { toast(err.message, true); } finally { btn.disabled = false; } }
+      function handleLogout() { state.user = null; localStorage.removeItem('yonchuw_user'); toast('ออกจากระบบสำเร็จ'); $('#demoModeBanner').classList.add('hidden'); show('home'); applyRoleVisibility(); }
+      async function handleDemoLogin() { try { const user = await api.login('user@example.com', 'password'); state.user = user; localStorage.setItem('yonchuw_user', JSON.stringify(user)); toast(`เข้าสู่ระบบจำลองในฐานะผู้ใช้ทั่วไป`); show('dashboard'); $('#demoModeBanner').classList.remove('hidden'); fullRender(); } catch (err) { toast(err.message, true); } }
+      async function handleBorrowSubmit(e) { e.preventDefault(); const btn = e.target.querySelector('button'); const formData = new FormData(e.target); try { btn.disabled = true; const selectedEquipIds = Array.from(e.target.querySelectorAll('input[name="equipment_ids"]:checked')).map(cb => parseInt(cb.value)); const details = Object.fromEntries(formData.entries()); delete details.equipment_ids; const payload = { equipment_ids: selectedEquipIds, ...details, user_id: state.user.id }; if (!payload.equipment_ids.length || !payload.borrow_date || !payload.purpose || !payload.contact_name) { throw new Error('กรุณากรอกข้อมูลสำคัญและเลือกเครื่องอย่างน้อย 1 รายการ'); } await api.createBorrow(payload); toast('ส่งคำขอยืมสำเร็จ'); e.target.reset(); fullRender(); } catch (err) { toast(err.message, true); } finally { btn.disabled = false; } }
+      function handleExitDemo() { state.user = null; localStorage.removeItem('yonchuw_user'); toast('ออกจากโหมดทดสอบสำเร็จ'); $('#demoModeBanner').classList.add('hidden'); show('home'); applyRoleVisibility(); }
 
       // =================================================================================
       // INITIALIZATION (ฟังก์ชันเริ่มต้นและตั้งค่า)
@@ -1146,49 +1123,28 @@
         $('#btnRegister').classList.toggle('hidden', loggedIn);
         $('#userInfo').classList.toggle('hidden', !loggedIn);
         $('#userInfo').classList.toggle('flex', loggedIn);
-
         $$('.tab-btn').forEach(b => b.classList.add('hidden'));
-
         if (loggedIn) {
           $('#userNameDisplay').textContent = state.user.name;
           const role = state.user.role;
-
-          if (role === 'admin') {
-            $$('.tab-btn').forEach(b => b.classList.remove('hidden'));
-          } else if (role === 'user') {
-            $('[data-tab="equipmentTab"]').classList.remove('hidden');
-            $('[data-tab="borrowTab"]').classList.remove('hidden');
-          } else if (role === 'approver') {
-            $('[data-tab="approvalTab"]').classList.remove('hidden');
-            $('[data-tab="reportTab"]').classList.remove('hidden');
-          } else if (role === 'technician') {
-            $('[data-tab="equipmentTab"]').classList.remove('hidden');
-            $('[data-tab="techTab"]').classList.remove('hidden');
-            $('[data-tab="assessmentTab"]').classList.remove('hidden');
-          }
-
+          if (role === 'admin') $$('.tab-btn').forEach(b => b.classList.remove('hidden'));
+          else if (role === 'user') { $('[data-tab="equipmentTab"]').classList.remove('hidden'); $('[data-tab="borrowTab"]').classList.remove('hidden'); }
+          else if (role === 'approver') { $('[data-tab="approvalTab"]').classList.remove('hidden'); $('[data-tab="reportTab"]').classList.remove('hidden'); }
+          else if (role === 'technician') { $('[data-tab="equipmentTab"]').classList.remove('hidden'); $('[data-tab="techTab"]').classList.remove('hidden'); $('[data-tab="assessmentTab"]').classList.remove('hidden'); }
           $('#btnAddEquipDash').classList.toggle('hidden', role !== 'admin');
-
         }
       }
 
       function setupEventListeners() {
         $('#startBtn').addEventListener('click', () => state.user ? show('dashboard') : show('loginPage'));
         $$('.tab-btn').forEach(btn => btn.addEventListener('click', () => setTabs(btn.dataset.tab)));
-        $('#borrowHistoryFilter').addEventListener('click', (e) => {
-          if (e.target.tagName === 'BUTTON') {
-            $$('#borrowHistoryFilter button').forEach(b => b.classList.remove('bg-white', 'shadow'));
-            e.target.classList.add('bg-white', 'shadow');
-            renderMyBorrows();
-          }
-        });
+        $('#borrowHistoryFilter').addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') { $$('#borrowHistoryFilter button').forEach(b => b.classList.remove('bg-white', 'shadow')); e.target.classList.add('bg-white', 'shadow'); renderMyBorrows(); } });
         $('#btnAddEquipDash').addEventListener('click', handleAddEquipmentClick);
-
-        // Re-bind other listeners as they are fine
+        $('#exitDemoBtn').addEventListener('click', handleExitDemo);
         $('#btnLogin').addEventListener('click', () => show('loginPage'));
         $('#btnRegister').addEventListener('click', () => show('registerPage'));
         $('#goRegister').addEventListener('click', (e) => { e.preventDefault(); show('registerPage'); });
-        $('#browseBtn').addEventListener('click', () => show('equipmentShowcase'));
+        $('#browseBtn').addEventListener('click', handleDemoLogin);
         $('#backFromEquip').addEventListener('click', () => show('home'));
         $('#backFromLogin').addEventListener('click', () => show('home'));
         $('#backFromRegister').addEventListener('click', () => show('loginPage'));
@@ -1198,24 +1154,34 @@
         $('#borrowForm').addEventListener('submit', handleBorrowSubmit);
         $('#modalClose').addEventListener('click', hideModal);
         $('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') hideModal() });
-        document.addEventListener('submit', (e) => {
-          if (['preDeliveryForm', 'postReturnForm', 'completeRepairForm', 'assessmentForm', 'addEquipForm', 'editEquipForm', 'replaceEquipForm'].includes(e.target.id)) {
-            handleDynamicFormSubmit(e);
-          }
-        });
-        $('#equipSearch').addEventListener('input', () => renderEquipmentLists(false));
-        $('#equipFilter').addEventListener('change', () => renderEquipmentLists(false));
-        $('#dashEquipSearch').addEventListener('input', () => renderEquipmentLists(true));
-        $('#dashEquipFilter').addEventListener('change', () => renderEquipmentLists(true));
-        $('#borrowDate').addEventListener('change', (e) => {
-          if (e.target.value) { const d = new Date(e.target.value); d.setDate(d.getDate() + 7); $('#dueDate').value = d.toISOString().slice(0, 10); } else { $('#dueDate').value = ''; }
-        });
+        document.addEventListener('submit', (e) => { if (['preDeliveryForm', 'postReturnForm', 'completeRepairForm', 'assessmentForm', 'addEquipForm', 'editEquipForm', 'replaceEquipForm'].includes(e.target.id)) { handleDynamicFormSubmit(e); } });
+        $('#equipSearch').addEventListener('input', () => renderEquipmentLists({ forAssessment: false }));
+        $('#equipFilter').addEventListener('change', () => renderEquipmentLists({ forAssessment: false }));
+        $('#dashEquipSearch').addEventListener('input', () => renderEquipmentLists({ forAssessment: true }));
+        $('#dashEquipFilter').addEventListener('change', () => renderEquipmentLists({ forAssessment: true }));
+        $('#assessmentTypeFilter').addEventListener('change', () => renderEquipmentLists({ forAssessment: true }));
+        $('#borrowDate').addEventListener('change', (e) => { if (e.target.value) { const d = new Date(e.target.value); d.setDate(d.getDate() + 7); $('#dueDate').value = d.toISOString().slice(0, 10); } else { $('#dueDate').value = ''; } });
       }
 
-      function populateBorrowSelect() {
-        const select = $('#borrowEquipSelect');
+      function populateBorrowList() {
+        const listContainer = $('#borrowEquipList');
         const availableEquip = state.equipment.filter(e => e.status === 'available');
-        select.innerHTML = `<option value="">-- เลือกอุปกรณ์ --</option>` + availableEquip.map(e => `<option value="${e.id}">${e.name} (S/N: ${e.serial})</option>`).join('');
+        if (availableEquip.length === 0) {
+          listContainer.innerHTML = `<p class="text-sm text-slate-500">ไม่มีอุปกรณ์ว่างให้ยืม</p>`;
+        } else {
+          listContainer.innerHTML = availableEquip.map(e => `
+                    <label class="flex items-center p-2 rounded-md hover:bg-slate-50 text-sm">
+                        <input type="checkbox" name="equipment_ids" value="${e.id}" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-2">${e.name} <span class="text-slate-500 font-normal">(${e.type})</span> <span class="text-slate-400">(S/N: ${e.serial})</span></span>
+                    </label>
+                `).join('');
+        }
+      }
+
+      function populateAssessmentFilter() {
+        const types = [...new Set(state.equipment.map(e => e.type))];
+        const select = $('#assessmentTypeFilter');
+        select.innerHTML = '<option value="">ทุกประเภท</option>' + types.map(t => `<option value="${t}">${t}</option>`).join('');
       }
 
       function fullRender() {
@@ -1226,31 +1192,24 @@
           if (role === 'approver') defaultTab = 'approvalTab';
           if (role === 'user') defaultTab = 'borrowTab';
           if (role === 'technician') defaultTab = 'techTab';
-
           const currentActiveTab = $('.tab-btn.bg-white')?.dataset?.tab;
-          if (!currentActiveTab || $(`[data-tab="${currentActiveTab}"]`).classList.contains('hidden')) {
-            setTabs(defaultTab);
-          }
-
+          if (!currentActiveTab || $(`[data-tab="${currentActiveTab}"]`).classList.contains('hidden')) { setTabs(defaultTab); }
           renderEquipmentSummary();
           renderMyBorrows();
           renderApprovalLists();
           renderTechnicianQueues();
           renderReports();
-          populateBorrowSelect();
+          populateBorrowList();
+          populateAssessmentFilter();
         }
-        renderEquipmentLists();
+        renderEquipmentLists({ forAssessment: true });
       }
 
       function init() {
         const savedUser = localStorage.getItem('yonchuw_user');
-        if (savedUser) {
-          state.user = JSON.parse(savedUser);
-          show('dashboard');
-        } else {
-          show('home');
-        }
-        setupEventListeners(); cl
+        if (savedUser) { state.user = JSON.parse(savedUser); show('dashboard'); }
+        else { show('home'); }
+        setupEventListeners();
         fullRender();
       }
 
