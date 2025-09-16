@@ -281,6 +281,12 @@
                 <select name="borrowEquipSelect" id="borrowEquipSelect"
                   class="w-full px-3 py-2 rounded-lg border border-slate-200" required></select>
                 <div class="grid sm:grid-cols-2 gap-3">
+                  <input name="ref_doc_no" placeholder="หนังสือเลขที่"
+                    class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                  <input name="ref_doc_topic" placeholder="เรื่อง"
+                    class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                </div>
+                <div class="grid sm:grid-cols-2 gap-3">
                   <input type="date" name="borrow_date" id="borrowDate"
                     class="px-3 py-2 rounded-lg border border-slate-200" required>
                   <input type="date" id="dueDate" class="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50"
@@ -391,7 +397,7 @@
   <div id="modal"
     class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
     <div id="modalContent"
-      class="bg-white rounded-2xl p-6 text-slate-900 w-full max-w-lg max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300">
+      class="bg-white rounded-2xl p-6 text-slate-900 w-full max-w-2xl max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300">
       <div class="flex items-center justify-between">
         <h3 id="modalTitle" class="text-xl font-bold">Modal Title</h3>
         <button id="modalClose" class="text-2xl leading-none text-slate-400 hover:text-slate-800">&times;</button>
@@ -516,8 +522,9 @@
           b.status = 'pending_delivery';
           return true;
         },
-        performPreDeliveryCheck: async (id, isFaulty, newEquipId) => {
+        performPreDeliveryCheck: async (id, isFaulty, newEquipId, checklistData) => {
           const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+          b.pre_delivery_checklist = checklistData;
           if (isFaulty) {
             const oldEquip = state.equipment.find(e => e.id === b.equipment_id);
             if (oldEquip) oldEquip.status = 'pending_repair_approval';
@@ -535,9 +542,10 @@
         },
         queueForDelivery: async () => state.borrows.filter(b => b.status === 'pending_delivery'),
         queueForReturn: async () => state.borrows.filter(b => b.status === 'borrowed' && !b.return_date),
-        techInspectReturn: async (id, isDamaged, notes) => {
+        techInspectReturn: async (id, isDamaged, notes, checklistData) => {
           const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
           b.return_date = new Date().toISOString().slice(0, 10);
+          b.post_return_checklist = checklistData;
           const eq = state.equipment.find(e => e.id === b.equipment_id);
           if (isDamaged) {
             b.status = 'returned_damaged';
@@ -567,9 +575,7 @@
         completeRepair: async (id, details) => {
           const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
           r.status = 'completed';
-          r.repair_details = details.repair_details;
-          r.cost = details.cost;
-          r.parts_used = details.parts_used;
+          Object.assign(r, details);
           const eq = state.equipment.find(e => e.id === r.equipment_id); if (eq) eq.status = 'available';
           return true;
         },
@@ -891,38 +897,48 @@
       window.handleRejectRepair = async (id) => { try { await api.rejectRepair(id); toast('ปฏิเสธการซ่อมเรียบร้อย'); fullRender(); } catch (e) { toast(e.message, true); } };
 
       // Technicians & Admin
-      const checklistItems = [
-        { id: 'c1', label: 'สภาพภายนอกตัวเครื่อง' },
-        { id: 'c2', label: 'ตรวจสอบน้ำมันเชื้อเพลิง' },
-        { id: 'c3', label: 'ทดสอบการสตาร์ทเครื่องยนต์' },
-        { id: 'c4', label: 'ตรวจสอบระบบพ่น' },
-        { id: 'c5', label: 'อุปกรณ์เสริมครบถ้วน' },
-      ];
+
+      function getChecklistHTML(formId, checklist) {
+        return checklist.map(item => `
+                <div class="grid grid-cols-3 items-center border-b py-2">
+                    <label for="${formId}-${item.id}" class="text-sm text-slate-700 col-span-2">${item.label}</label>
+                    <div class="flex items-center justify-end gap-4">
+                         <label class="flex items-center gap-1">
+                            <input type="radio" name="${item.id}" value="ok" class="h-4 w-4" checked> <span class="text-sm">ปกติ</span>
+                         </label>
+                         <label class="flex items-center gap-1">
+                            <input type="radio" name="${item.id}" value="faulty" class="h-4 w-4"> <span class="text-sm">ผิดปกติ</span>
+                         </label>
+                    </div>
+                </div>
+            `).join('');
+      }
 
       window.handlePreDeliveryCheck = (borrowId) => {
         const borrow = state.borrows.find(b => b.id === borrowId);
         const equip = state.equipment.find(e => e.id === borrow.equipment_id);
+        const inspectionChecklist = [
+          { id: 'check_exterior', label: '1. ตรวจสอบสภาพภายนอก' },
+          { id: 'check_fuel_tank', label: '2. ตรวจสอบถังน้ำมันเชื้อเพลิง' },
+          { id: 'check_carburetor', label: '3. ตรวจสอบคาร์บูเรเตอร์' },
+          { id: 'check_spark_plug', label: '4. ตรวจสอบหัวเทียน' },
+          { id: 'check_battery', label: '5. ตรวจสอบแบตเตอรี่' },
+          { id: 'check_chem_pipe', label: '6. ตรวจสอบท่อน้ำยาเคมี' },
+          { id: 'check_nozzle_system', label: '7. ตรวจสอบระบบพ่น' }
+        ];
+
         const content = `
                 <form id="preDeliveryForm" data-id="${borrowId}">
-                    <p class="text-sm text-slate-600 mb-3">ยืนยันการตรวจสภาพ <strong>${equip.name}</strong> ก่อนส่งมอบให้ <strong>${borrow.user_name}</strong></p>
+                    <p class="text-sm text-slate-600 mb-3">ตรวจสภาพ <strong>${equip.name}</strong> ก่อนส่งมอบให้ <strong>${borrow.user_name}</strong></p>
+                    <div class="bg-slate-50 p-3 rounded-lg">${getChecklistHTML('preDeliveryForm', inspectionChecklist)}</div>
+                     <textarea name="notes" rows="2" placeholder="หมายเหตุเพิ่มเติม" class="mt-3 w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
                 </form>
             `;
         const actions = `
-                <button type="button" onclick="handleReportFault(${borrowId})" class="px-4 py-2 rounded-lg bg-amber-500 text-white hover:bg-amber-600">พบปัญหา</button>
-                <button type="button" onclick="handleConfirmDelivery(${borrowId})" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">ยืนยันส่งมอบ</button>
+                <button type="button" onclick="handleReportFault(${borrowId})" class="px-4 py-2 rounded-lg bg-amber-500 text-white hover:bg-amber-600">พบปัญหา/เปลี่ยนเครื่อง</button>
+                <button type="submit" form="preDeliveryForm" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">ยืนยันส่งมอบ (เครื่องปกติ)</button>
             `;
         showModal('ตรวจสภาพก่อนส่งมอบ', content, actions);
-      };
-
-      window.handleConfirmDelivery = async (borrowId) => {
-        try {
-          await api.performPreDeliveryCheck(borrowId, false, null);
-          toast('บันทึกผลและส่งมอบเรียบร้อย');
-          hideModal();
-          fullRender();
-        } catch (e) {
-          toast(e.message, true);
-        }
       };
 
       window.handleReportFault = (borrowId) => {
@@ -942,11 +958,20 @@
       };
 
       window.handlePostReturnCheck = (id) => {
+        const inspectionChecklist = [
+          { id: 'check_exterior', label: '1. ตรวจสอบสภาพภายนอก' },
+          { id: 'check_fuel_tank', label: '2. ตรวจสอบถังน้ำมันเชื้อเพลิง' },
+          { id: 'check_carburetor', label: '3. ตรวจสอบคาร์บูเรเตอร์' },
+          { id: 'check_spark_plug', label: '4. ตรวจสอบหัวเทียน' },
+          { id: 'check_battery', label: '5. ตรวจสอบแบตเตอรี่' },
+          { id: 'check_chem_pipe', label: '6. ตรวจสอบท่อน้ำยาเคมี' },
+          { id: 'check_nozzle_system', label: '7. ตรวจสอบระบบพ่น' }
+        ];
         const content = `
                 <form id="postReturnForm" data-id="${id}">
-                    <p class="text-sm text-slate-600 mb-3">กรุณาตรวจสอบและบันทึกผล</p>
-                    <label class="block text-sm font-medium text-slate-700">สรุปผล</label>
-                    <select name="isDamaged" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <div class="bg-slate-50 p-3 rounded-lg">${getChecklistHTML('postReturnForm', inspectionChecklist)}</div>
+                    <label class="block text-sm font-medium text-slate-700 mt-4">สรุปผล</label>
+                    <select name="isDamaged" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm">
                         <option value="false">ปกติ</option>
                         <option value="true">ชำรุด</option>
                     </select>
@@ -959,11 +984,20 @@
       };
 
       window.handleCompleteRepairClick = (id) => {
+        const repair = state.repairs.find(r => r.id === id);
         const content = `
-                 <form id="completeRepairForm" data-id="${id}" class="space-y-3">
-                    <textarea name="repair_details" required rows="3" placeholder="รายละเอียดการซ่อม" class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
-                    <input name="parts_used" placeholder="อะไหล่ที่ใช้ (ถ้ามี)" class="w-full px-3 py-2 rounded-lg border border-slate-200">
-                    <input name="cost" type="number" placeholder="ค่าใช้จ่าย (บาท)" class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                 <form id="completeRepairForm" data-id="${id}" class="space-y-3 text-sm">
+                    <div class="grid grid-cols-2 gap-3">
+                         <input name="repair_date" type="date" value="${new Date().toISOString().slice(0, 10)}" required class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                         <input name="repair_by" required placeholder="ผู้ดำเนินการซ่อม" value="${state.user.name}" class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                    </div>
+                    <div>
+                        <label class="font-medium">อาการชำรุด:</label>
+                        <p class="p-2 bg-slate-50 rounded-md">${repair.damage_description}</p>
+                    </div>
+                    <textarea name="repair_details" required rows="3" placeholder="การดำเนินการซ่อม" class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
+                    <textarea name="parts_used" rows="2" placeholder="รายการวัสดุ/อะไหล่ที่ใช้" class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
+                    <input name="cost" type="number" placeholder="จำนวนเงิน (บาท)" class="w-full px-3 py-2 rounded-lg border border-slate-200">
                  </form>
             `;
         const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200">ยกเลิก</button>
@@ -972,27 +1006,41 @@
       };
 
       window.handleAssessmentClick = (id, name) => {
-        const assessmentChecklist = [
-          '1. อัตราการไหลของน้ำมันเชื้อเพลิง (มล./นาที)',
-          '2. อัตราการไหลของน้ำยาเคมี (ลิตร/ชม.)',
-          '3. อุณหภูมิที่ปลายท่อพ่น (องศาเซลเซียส)',
-          '4. ขนาดละอองฝอย (ไมครอน)',
-        ];
         const content = `
-                <form id="assessmentForm" data-id="${id}">
-                    <p class="text-sm text-slate-600 mb-3">กรอกผลการประเมินสำหรับ <strong>${name}</strong></p>
-                    <div class="space-y-3">
-                        ${assessmentChecklist.map((item, index) => `
+                <form id="assessmentForm" data-id="${id}" class="text-sm">
+                    <p class="text-base text-slate-600 mb-3">สำหรับ: <strong>${name}</strong></p>
+                    <div class="grid md:grid-cols-2 gap-x-6 gap-y-3">
                         <div>
-                           <label class="block text-sm font-medium text-slate-700">${item}</label>
-                           <input type="text" name="val${index + 1}" required class="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200">
+                            <label class="font-medium">สภาพภายนอกเครื่องพ่น</label>
+                            <div class="flex gap-4 mt-1"><label><input type="radio" name="exterior_condition" value="new"> ใหม่</label><label><input type="radio" name="exterior_condition" value="mid" checked> ปานกลาง</label><label><input type="radio" name="exterior_condition" value="old"> เก่า</label></div>
                         </div>
-                        `).join('')}
-                         <select name="result" class="block w-full px-3 py-2 bg-white border border-slate-300 rounded-md">
-                            <option value="ผ่าน">สรุปผล: ผ่าน</option>
-                            <option value="ไม่ผ่าน">สรุปผล: ไม่ผ่าน</option>
-                        </select>
-                        <textarea name="notes" placeholder="ข้อเสนอแนะ" rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
+                        <div>
+                            <label class="font-medium">การติดเครื่องยนต์</label>
+                            <div class="flex gap-4 mt-1"><label><input type="radio" name="engine_start" value="easy" checked> ติดง่าย</label><label><input type="radio" name="engine_start" value="hard"> ติดยาก</label></div>
+                        </div>
+                        <div class="md:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-2 rounded-md">
+                            <label class="font-medium col-span-full">ความสะอาดภายใน</label>
+                            <label><input type="checkbox" name="clean_pipe"> ท่อพ่น</label>
+                            <label><input type="checkbox" name="clean_chem_line"> สายส่งน้ำยา</label>
+                            <label><input type="checkbox" name="clean_gas_tank"> ถังเบนซิน</label>
+                            <label><input type="checkbox" name="clean_chem_tank"> ถังเคมี</label>
+                        </div>
+                         <div class="md:col-span-2">
+                             <h4 class="font-semibold mt-2">ข้อมูลสารเคมีที่ทดสอบ</h4>
+                             <div class="grid sm:grid-cols-3 gap-3 mt-1">
+                                <input name="chem_name" placeholder="ชื่อสารเคมี" class="w-full px-3 py-2 rounded-lg border">
+                                <input name="chem_concentration" placeholder="ความเข้มข้น (%)" class="w-full px-3 py-2 rounded-lg border">
+                                <input name="chem_mix_ratio" placeholder="อัตราส่วนผสม" class="w-full px-3 py-2 rounded-lg border">
+                             </div>
+                        </div>
+                         <div class="md:col-span-2">
+                             <h4 class="font-semibold mt-2">สรุปผลการทดสอบ</h4>
+                             <div class="grid sm:grid-cols-2 gap-3 mt-1">
+                                <input name="result_temp" placeholder="อุณหภูมิปลายท่อ (°C)" class="w-full px-3 py-2 rounded-lg border">
+                                <input name="result_flow_rate" placeholder="อัตราการไหลเฉลี่ย (มล./นาที)" class="w-full px-3 py-2 rounded-lg border">
+                             </div>
+                        </div>
+                        <textarea name="notes" placeholder="ข้อเสนอแนะ" rows="2" class="w-full px-3 py-2 rounded-lg border md:col-span-2"></textarea>
                     </div>
                 </form>
             `;
@@ -1045,14 +1093,20 @@
         const id = parseInt(form.dataset.id);
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+        const checklistData = Object.fromEntries(Array.from(formData.keys()).filter(k => k.startsWith('check_')).map(k => [k, formData.get(k)]));
+
         try {
           switch (form.id) {
+            case 'preDeliveryForm':
+              await api.performPreDeliveryCheck(id, false, null, checklistData);
+              toast('บันทึกผลและส่งมอบเรียบร้อย');
+              break;
             case 'replaceEquipForm':
-              await api.performPreDeliveryCheck(id, true, parseInt(data.new_equip_id));
+              await api.performPreDeliveryCheck(id, true, parseInt(data.new_equip_id), checklistData);
               toast('เปลี่ยนเครื่องและบันทึกผลเรียบร้อย');
               break;
             case 'postReturnForm':
-              await api.techInspectReturn(id, data.isDamaged === 'true', data.notes);
+              await api.techInspectReturn(id, data.isDamaged === 'true', data.notes, checklistData);
               toast('บันทึกผลการตรวจสภาพสำเร็จ');
               break;
             case 'completeRepairForm':
@@ -1081,7 +1135,7 @@
       async function handleLogin(e) { e.preventDefault(); const d = Object.fromEntries(new FormData(e.target).entries()); try { const user = await api.login(d.email, d.password); state.user = user; localStorage.setItem('yonchuw_user', JSON.stringify(user)); toast(`ยินดีต้อนรับ, ${user.name}`); show('dashboard'); fullRender(); } catch (err) { toast(err.message, true); } e.target.reset(); }
       async function handleRegister(e) { e.preventDefault(); const d = Object.fromEntries(new FormData(e.target).entries()); if (d.password.length < 6) { toast('รหัสผ่านต้องมี 6 ตัวอักษรขึ้นไป', true); return; } try { const res = await api.register(d); toast(res.message); show('loginPage'); } catch (err) { toast(err.message, true); } e.target.reset(); }
       function handleLogout() { state.user = null; localStorage.removeItem('yonchuw_user'); toast('ออกจากระบบสำเร็จ'); show('home'); applyRoleVisibility(); }
-      async function handleBorrowSubmit(e) { e.preventDefault(); const btn = e.target.querySelector('button'); const formData = new FormData(e.target); try { btn.disabled = true; const payload = { equipment_id: parseInt(formData.get('borrowEquipSelect')), borrow_date: formData.get('borrow_date'), purpose: formData.get('purpose'), contact_name: formData.get('contact_name'), contact_phone: formData.get('contact_phone'), notes: formData.get('notes'), user_id: state.user.id }; if (!payload.equipment_id || !payload.borrow_date || !payload.purpose || !payload.contact_name) { throw new Error('กรุณากรอกข้อมูลสำคัญให้ครบถ้วน'); } await api.createBorrow(payload); toast('ส่งคำขอยืมสำเร็จ'); e.target.reset(); fullRender(); } catch (err) { toast(err.message, true); } finally { btn.disabled = false; } }
+      async function handleBorrowSubmit(e) { e.preventDefault(); const btn = e.target.querySelector('button'); const formData = new FormData(e.target); try { btn.disabled = true; const payload = { equipment_id: parseInt(formData.get('borrowEquipSelect')), ...Object.fromEntries(formData.entries()), user_id: state.user.id }; if (!payload.equipment_id || !payload.borrow_date || !payload.purpose || !payload.contact_name) { throw new Error('กรุณากรอกข้อมูลสำคัญให้ครบถ้วน'); } await api.createBorrow(payload); toast('ส่งคำขอยืมสำเร็จ'); e.target.reset(); fullRender(); } catch (err) { toast(err.message, true); } finally { btn.disabled = false; } }
 
       // =================================================================================
       // INITIALIZATION (ฟังก์ชันเริ่มต้นและตั้งค่า)
