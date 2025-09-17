@@ -2,425 +2,513 @@
 <html lang="th">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Yonchuw – ระบบจอง ยืม-คืน และซ่อมบำรุง</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet">
-  <style>
-    /* ใช้ฟอนต์ Noto Sans Thai เป็นหลัก */
-    body {
-      font-family: 'Noto Sans Thai', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yonchuw – ระบบจอง ยืม-คืน และซ่อมบำรุง</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ใช้ฟอนต์ Noto Sans Thai เป็นหลัก */
+        body {
+            font-family: 'Noto Sans Thai', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+        }
 
-    /* พื้นหลังแบบไล่ระดับสีเพื่อความสวยงาม */
-    .bg-grad {
-      background: radial-gradient(1200px 600px at 80% -10%, rgba(79, 70, 229, .18), transparent 60%), linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #7c3aed 100%);
-    }
+        /* พื้นหลังแบบไล่ระดับสีเพื่อความสวยงาม */
+        .bg-grad {
+            background: radial-gradient(1200px 600px at 80% -10%, rgba(79, 70, 229, .18), transparent 60%), linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #7c3aed 100%);
+        }
 
-    /* เอฟเฟกต์กระจกฝ้าสำหรับ Topbar */
-    .glass {
-      backdrop-filter: saturate(140%) blur(10px);
-      background: rgba(255, 255, 255, 0.08);
-    }
+        /* เอฟเฟกต์กระจกฝ้าสำหรับ Topbar */
+        .glass {
+            backdrop-filter: saturate(140%) blur(10px);
+            background: rgba(255, 255, 255, 0.08);
+        }
 
-    /* การ์ดหลักใช้พื้นหลังสีขาวเกือบทึบ */
-    .card {
-      background: rgba(255, 255, 255, 0.96);
-    }
-    
-    /* Animation สำหรับการเปลี่ยนหน้า */
-    .fade-in {
-      animation: fade .35s ease-out;
-    }
+        /* การ์ดหลักใช้พื้นหลังสีขาวเกือบทึบ */
+        .card {
+            background: rgba(255, 255, 255, 0.96);
+        }
 
-    @keyframes fade {
-      from {
-        opacity: 0;
-        transform: translateY(6px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+        /* Animation สำหรับการเปลี่ยนหน้า */
+        .fade-in {
+            animation: fade .35s ease-out;
+        }
 
-    /* สไตล์สำหรับ Chip แสดงคุณสมบัติ */
-    .chip {
-      background: rgba(99, 102, 241, .12);
-      color: #4338ca;
-      font-weight: 500;
-    }
-    /* สไตล์สำหรับปุ่มที่ถูกปิดใช้งาน */
-    button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-    .prose {
-        color: #334155;
-    }
-    .prose h1, .prose h2, .prose h3, .prose h4 {
-        color: #1e293b;
-    }
-    .prose p {
-        margin-top: 0.5em;
-        margin-bottom: 0.5em;
-    }
-    .prose strong {
-        color: #1e293b;
-    }
-    /* Notification dot */
-    .notification-dot::after {
-        content: '';
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background-color: #ef4444; /* red-500 */
-        border: 2px solid white;
-    }
-  </style>
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* สไตล์สำหรับ Chip แสดงคุณสมบัติ */
+        .chip {
+            background: rgba(99, 102, 241, .12);
+            color: #4338ca;
+            font-weight: 500;
+        }
+
+        /* สไตล์สำหรับปุ่มที่ถูกปิดใช้งาน */
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .prose {
+            color: #334155;
+        }
+
+        .prose h1,
+        .prose h2,
+        .prose h3,
+        .prose h4 {
+            color: #1e293b;
+        }
+
+        .prose p {
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+
+        .prose strong {
+            color: #1e293b;
+        }
+
+        /* Notification dot */
+        .notification-dot::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ef4444;
+            /* red-500 */
+            border: 2px solid white;
+        }
+    </style>
 </head>
 
 <body class="min-h-screen bg-grad text-white transition-all duration-300">
-  <!-- Topbar -->
-  <header class="sticky top-0 z-30 glass">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3 cursor-pointer" onclick="show('home')">
-        <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
-          <!-- ไอคอนระบบ -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="m7 11 2-2-2-2"/><path d="M11 13h4"/><path d="m17 11 2 2-2 2"/><path d="M21 12a9 9 0 1 1-6.2-8.7"/></svg>
-        </div>
-        <div>
-          <p class="font-semibold text-lg">Yonchuw</p>
-          <p class="text-white/80 text-xs -mt-0.5">ระบบบริหารจัดการเครื่องพ่นหมอกควัน</p>
-        </div>
-      </div>
-       <div class="flex items-center gap-4">
-         <!-- Notification Bell -->
-         <div id="notificationArea" class="relative hidden">
-            <button id="notificationBtn" class="p-2 rounded-full hover:bg-white/20 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-            </button>
-            <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg text-slate-800 z-50 text-sm">
-                <div class="p-3 font-semibold border-b">การแจ้งเตือน</div>
-                <div id="notificationList" class="p-2 max-h-80 overflow-y-auto">
-                    <!-- Notifications here -->
+    <!-- Topbar -->
+    <header class="sticky top-0 z-30 glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="show('home')">
+                <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
+                    <!-- ไอคอนระบบ -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="text-white">
+                        <path d="m7 11 2-2-2-2" />
+                        <path d="M11 13h4" />
+                        <path d="m17 11 2 2-2 2" />
+                        <path d="M21 12a9 9 0 1 1-6.2-8.7" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-semibold text-lg">Yonchuw</p>
+                    <p class="text-white/80 text-xs -mt-0.5">ระบบบริหารจัดการเครื่องพ่นหมอกควัน</p>
                 </div>
             </div>
-         </div>
-         <!-- Login/Register Buttons -->
-        <nav class="hidden md:flex items-center gap-2" id="nav-actions">
-            <button id="btnLogin" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">เข้าสู่ระบบ</button>
-            <button id="btnRegister" class="px-4 py-2 rounded-lg bg-white text-slate-900 font-semibold hover:opacity-90 transition">ลงทะเบียน</button>
-            <div id="userInfo" class="hidden items-center gap-3">
-                <span id="userNameDisplay" class="text-sm font-medium"></span>
-                <button id="btnLogout" class="px-4 py-2 rounded-lg bg-red-500/20 text-red-100 hover:bg-red-500/40 transition text-sm">ออกจากระบบ</button>
-            </div>
-        </nav>
-        <!-- Hamburger Menu Button for Mobile -->
-        <button id="hamburgerBtn" class="md:hidden p-2 rounded-lg bg-white/10 hover:bg-white/20 hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- หน้าแรก / Hero Section -->
-    <section id="home" class="fade-in">
-      <div class="grid md:grid-cols-2 gap-8 items-start">
-        <div>
-          <h1 class="text-4xl sm:text-5xl font-bold leading-tight tracking-tighter">ระบบจอง ยืม-คืน และซ่อมบำรุง</h1>
-          <p class="mt-4 text-lg text-white/90">ลดขั้นตอนงานเอกสาร เพิ่มประสิทธิภาพการทำงาน ติดตามสถานะอุปกรณ์ได้แบบเรียลไทม์</p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <button id="startBtn" class="px-6 py-3 rounded-xl bg-white text-slate-900 font-semibold hover:opacity-90 transition-transform hover:scale-105">เริ่มต้นใช้งาน</button>
-            <button id="browseBtn" class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition">ทดสอบระบบ (ผู้ใช้ทั่วไป)</button>
-          </div>
-          <div class="mt-6 flex items-center gap-3 text-sm">
-            <span class="chip px-3 py-1 rounded-full">Responsive</span>
-            <span class="chip px-3 py-1 rounded-full">Role-based</span>
-            <span class="chip px-3 py-1 rounded-full">Real-time</span>
-          </div>
-        </div>
-        <!-- คู่มือการใช้งาน -->
-        <div class="card rounded-2xl p-6 text-slate-900 shadow-xl">
-          <div class="flex items-center justify-between">
-            <p class="font-semibold">คู่มือใช้งานอย่างย่อ</p>
-            <span class="text-xs px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 font-medium">Demo</span>
-          </div>
-          <ol class="mt-4 space-y-2.5 text-sm text-slate-700 list-decimal list-inside">
-            <li><strong>ลงทะเบียน:</strong> ผู้ใช้ใหม่ลงทะเบียน → สถานะเป็น “รอตรวจสอบ”</li>
-            <li><strong>อนุมัติบัญชี:</strong> ผู้อนุมัติทำการอนุมัติ → ผู้ใช้จึงจะเข้าสู่ระบบได้</li>
-            <li><strong>ส่งคำขอยืม:</strong> ผู้ใช้ทั่วไปส่งคำขอยืม (สามารถเลือกได้หลายเครื่อง)</li>
-            <li><strong>อนุมัติการยืม:</strong> ผู้อนุมัติอนุมัติคำขอ → ช่างตรวจสภาพก่อนส่งมอบ</li>
-            <li><strong>คืนอุปกรณ์:</strong> เมื่อคืนอุปกรณ์ ช่างจะตรวจสภาพและตัดสินว่า “เสีย/ไม่เสีย”</li>
-            <li><strong>ขั้นตอนการซ่อม:</strong> หากเสีย → สร้างคำขอซ่อม → อนุมัติซ่อม → ซ่อมเสร็จ → อุปกรณ์กลับมา “ว่าง”</li>
-          </ol>
-          <div class="mt-5 p-3 rounded-lg bg-slate-50 border text-sm text-slate-600">
-            <strong>บัญชีทดสอบ (รหัสผ่าน: password)</strong>
-            <ul class="list-disc list-inside mt-1">
-                <li>admin@example.com (ผู้ดูแลระบบ)</li>
-                <li>approver@example.com (ผู้อนุมัติ)</li>
-                <li>tech@example.com (ช่างเทคนิค)</li>
-                <li>user@example.com (ผู้ใช้ทั่วไป)</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- หน้าแสดงรายการอุปกรณ์ (สำหรับคนทั่วไป) -->
-    <section id="equipmentShowcase" class="hidden fade-in">
-      <div class="flex items-center justify-between mb-6">
-        <button id="backFromEquip" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
-          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8l8 8l1.41-1.41L7.83 13H20v-2z" /></svg>
-          กลับหน้าหลัก
-        </button>
-        <h2 class="text-xl font-semibold">รายการอุปกรณ์ทั้งหมด</h2>
-        <div></div> <!-- Spacer -->
-      </div>
-      <div class="card rounded-2xl p-6 text-slate-900">
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <div class="flex items-center gap-2">
-              <input id="equipSearch" placeholder="ค้นหาชื่อหรือ Serial" class="px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-              <select id="equipFilter" class="px-3 py-2 rounded-lg border border-slate-200">
-                <option value="">สถานะทั้งหมด</option>
-                <option value="available">ว่าง</option>
-                <option value="borrowed">ถูกยืม</option>
-                <option value="under_maintenance">ซ่อมบำรุง</option>
-              </select>
-            </div>
-            <button id="btnAddEquip" class="hidden px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">เพิ่มอุปกรณ์</button>
-          </div>
-          <div id="equipList" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Equipment cards will be rendered here -->
-          </div>
-        </div>
-    </section>
-
-    <!-- หน้าเข้าสู่ระบบ -->
-    <section id="loginPage" class="hidden fade-in">
-      <div class="max-w-md mx-auto card rounded-2xl p-8 text-slate-900 shadow-xl">
-        <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-bold">เข้าสู่ระบบ</h2>
-          <button id="backFromLogin" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm">กลับ</button>
-        </div>
-        <form id="loginForm" class="mt-6 space-y-4">
-          <input name="email" type="email" required placeholder="อีเมล" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-          <input name="password" type="password" required placeholder="รหัสผ่าน" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-          <button type="submit" class="w-full px-4 py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">เข้าสู่ระบบ</button>
-        </form>
-        <p class="mt-4 text-sm text-center text-slate-600">ยังไม่มีบัญชี? <a href="#" id="goRegister" class="font-medium text-indigo-600 hover:underline">ลงทะเบียนที่นี่</a></p>
-      </div>
-    </section>
-
-    <!-- หน้าลงทะเบียน -->
-    <section id="registerPage" class="hidden fade-in">
-      <div class="max-w-xl mx-auto card rounded-2xl p-8 text-slate-900 shadow-xl">
-        <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-bold">ลงทะเบียนผู้ใช้งานใหม่</h2>
-          <button id="backFromRegister" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm">กลับ</button>
-        </div>
-        <form id="registerForm" class="mt-6 grid sm:grid-cols-2 gap-4">
-          <input name="full_name" required placeholder="ชื่อ-สกุล" class="px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-          <input name="agency" required placeholder="หน่วยงาน" class="px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-          <input name="phone" type="tel" required placeholder="เบอร์โทรศัพท์" class="px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-          <input name="email" type="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" placeholder="อีเมล" class="px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-          <textarea name="address" placeholder="ที่อยู่หน่วยงาน" rows="2" class="sm:col-span-2 px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
-          <input name="password" type="password" required placeholder="รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)" minlength="8" class="sm:col-span-2 px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-          <button type="submit" class="sm:col-span-2 px-4 py-3 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition">ยืนยันการลงทะเบียน</button>
-        </form>
-        <div class="mt-4 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-3">
-          <strong>หมายเหตุ:</strong> หลังลงทะเบียน บัญชีจะอยู่ในสถานะ “รอตรวจสอบ” และจะใช้งานได้ต่อเมื่อผู้อนุมัติทำการอนุมัติเรียบร้อยแล้ว
-        </div>
-      </div>
-    </section>
-
-    <!-- Dashboard (สำหรับผู้ใช้ที่ login แล้ว) -->
-    <section id="dashboard" class="hidden fade-in">
-        <!-- DEMO MODE BANNER -->
-        <div id="demoModeBanner" class="hidden bg-yellow-400 text-yellow-900 p-3 mb-6 rounded-lg flex items-center justify-between shadow-lg">
-            <div class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-800"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
-                <span class="font-semibold text-sm">คุณกำลังอยู่ในโหมดทดสอบระบบ (Simulation Mode)</span>
-            </div>
-            <button id="exitDemoBtn" class="px-3 py-1 rounded-md bg-white/50 hover:bg-white/80 text-sm font-medium">ออกจากโหมดทดสอบ</button>
-        </div>
-
-        <!-- Tabs -->
-        <div class="mt-4 overflow-x-auto hidden md:block">
-             <div id="desktopTabs" class="inline-flex gap-1 bg-white/10 rounded-xl p-1">
-                <!-- Tabs are populated by JS -->
-            </div>
-        </div>
-
-        <!-- เนื้อหาของแต่ละ Tab -->
-        <div class="mt-6">
-            <!-- Equipment Tab Content -->
-            <div id="equipmentTab" class="tab-content">
-                <div class="grid lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 card rounded-2xl p-6 text-slate-900">
-                        <div class="flex flex-wrap items-center justify-between gap-3">
-                            <h3 class="text-lg font-semibold">รายการอุปกรณ์</h3>
-                             <div class="flex items-center gap-2">
-                                <input id="dashEquipSearch" placeholder="ค้นหา" class="px-3 py-2 w-32 rounded-lg border border-slate-200">
-                                <select id="dashEquipFilter" class="px-3 py-2 rounded-lg border border-slate-200">
-                                    <option value="">ทั้งหมด</option>
-                                    <option value="available">ว่าง</option>
-                                    <option value="borrowed">ถูกยืม</option>
-                                    <option value="under_maintenance">ซ่อมบำรุง</option>
-                                    <option value="pending_repair_approval">รออนุมัติซ่อม</option>
-                                </select>
-                                <button id="btnAddEquipDash" class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 hidden">เพิ่ม</button>
-                            </div>
-                        </div>
-                        <div id="dashEquipList" class="mt-4 grid sm:grid-cols-2 gap-4"></div>
-                    </div>
-                    <div class="card rounded-2xl p-6 text-slate-900 space-y-4">
-                        <div>
-                            <h3 class="text-lg font-semibold">สรุปสถานะ</h3>
-                            <div id="equipmentSummary" class="grid grid-cols-2 gap-4 mt-2"></div>
-                        </div>
-                        <div id="userSummaryContainer">
-                            <h3 class="text-lg font-semibold">ภาพรวมผู้ใช้งาน</h3>
-                            <div id="userSummary" class="grid grid-cols-2 gap-4 mt-2"></div>
-                            <button id="viewAllUsersBtn" class="mt-3 w-full text-center px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm">ดูรายละเอียดผู้ใช้งานทั้งหมด</button>
+            <div class="flex items-center gap-4">
+                <!-- Notification Bell -->
+                <div id="notificationArea" class="relative hidden">
+                    <button id="notificationBtn" class="p-2 rounded-full hover:bg-white/20 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-white">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                    </button>
+                    <div id="notificationDropdown"
+                        class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg text-slate-800 z-50 text-sm">
+                        <div class="p-3 font-semibold border-b">การแจ้งเตือน</div>
+                        <div id="notificationList" class="p-2 max-h-80 overflow-y-auto">
+                            <!-- Notifications here -->
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Borrow Tab Content (User) -->
-            <div id="borrowTab" class="hidden tab-content">
-                 <div class="grid lg:grid-cols-3 gap-6">
-                    <div class="card rounded-2xl p-6 text-slate-900" id="borrowFormContainer">
-                        <h3 class="text-lg font-semibold">สร้างคำขอยืมอุปกรณ์</h3>
-                        <form id="borrowForm" class="mt-4 space-y-3">
-                            <!-- New multi-select equipment list -->
-                            <div class="border rounded-lg p-2 max-h-48 overflow-y-auto">
-                                <p class="text-sm font-medium mb-1">เลือกเครื่องที่ต้องการยืม:</p>
-                                <div id="borrowEquipList" class="space-y-1">
-                                    <!-- Checkboxes will be rendered here -->
-                                </div>
-                            </div>
-                            <div class="grid sm:grid-cols-2 gap-3">
-                                <input type="date" name="borrow_date" id="borrowDate" class="px-3 py-2 rounded-lg border border-slate-200" required>
-                                <input type="date" id="dueDate" class="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50" readonly>
-                            </div>
-                            <input name="purpose" placeholder="วัตถุประสงค์/พื้นที่ปฏิบัติงาน" class="w-full px-3 py-2 rounded-lg border border-slate-200" required>
-                            <div class="grid sm:grid-cols-2 gap-3">
-                                <input name="contact_name" placeholder="ผู้ประสานงาน" class="px-3 py-2 rounded-lg border border-slate-200" required>
-                                <input name="contact_phone" placeholder="เบอร์โทรติดต่อ" class="px-3 py-2 rounded-lg border border-slate-200" required>
-                            </div>
-                            <textarea name="notes" rows="2" placeholder="รายละเอียดเพิ่มเติม (เช่น พื้นที่เสี่ยง, เวลาเริ่มงาน)" class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
-                            <button class="w-full px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700">ส่งคำขอ</button>
-                        </form>
-                        <p class="text-xs text-slate-500 mt-2">หมายเหตุ: ระบบจะกำหนดวันคืนอัตโนมัติ 7 วันนับจากวันที่ยืม</p>
+                <!-- Login/Register Buttons -->
+                <nav class="hidden md:flex items-center gap-2" id="nav-actions">
+                    <button id="btnLogin"
+                        class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">เข้าสู่ระบบ</button>
+                    <button id="btnRegister"
+                        class="px-4 py-2 rounded-lg bg-white text-slate-900 font-semibold hover:opacity-90 transition">ลงทะเบียน</button>
+                    <div id="userInfo" class="hidden items-center gap-3">
+                        <span id="userNameDisplay" class="text-sm font-medium"></span>
+                        <button id="btnLogout"
+                            class="px-4 py-2 rounded-lg bg-red-500/20 text-red-100 hover:bg-red-500/40 transition text-sm">ออกจากระบบ</button>
                     </div>
-                    <div class="lg:col-span-2 card rounded-2xl p-6 text-slate-900">
-                        <div class="mb-4">
-                            <h3 class="text-lg font-semibold">เครื่องที่กำลังยืม</h3>
-                            <div id="currentlyBorrowed" class="mt-2 space-y-3"></div>
-                        </div>
-                        <hr class="my-4">
-                        <div>
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-semibold">ประวัติการยืม-คืน</h3>
-                                <div id="borrowHistoryFilter" class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
-                                    <button data-filter="all" class="px-3 py-1 text-sm rounded-md bg-white shadow">ทั้งหมด</button>
-                                    <button data-filter="borrowed" class="px-3 py-1 text-sm rounded-md">กำลังยืม</button>
-                                    <button data-filter="returned" class="px-3 py-1 text-sm rounded-md">คืนแล้ว</button>
-                                </div>
-                            </div>
-                            <div id="myBorrowsHistory" class="mt-4 space-y-3"></div>
-                        </div>
+                </nav>
+                <!-- Hamburger Menu Button for Mobile -->
+                <button id="hamburgerBtn" class="md:hidden p-2 rounded-lg bg-white/10 hover:bg-white/20 hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- หน้าแรก / Hero Section -->
+        <section id="home" class="fade-in">
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div>
+                    <h1 class="text-4xl sm:text-5xl font-bold leading-tight tracking-tighter">ระบบจอง ยืม-คืน
+                        และซ่อมบำรุง</h1>
+                    <p class="mt-4 text-lg text-white/90">ลดขั้นตอนงานเอกสาร เพิ่มประสิทธิภาพการทำงาน
+                        ติดตามสถานะอุปกรณ์ได้แบบเรียลไทม์</p>
+                    <div class="mt-8 flex flex-wrap gap-4">
+                        <button id="startBtn"
+                            class="px-6 py-3 rounded-xl bg-white text-slate-900 font-semibold hover:opacity-90 transition-transform hover:scale-105">เริ่มต้นใช้งาน</button>
+                        <button id="browseBtn"
+                            class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition">ทดสอบระบบ
+                            (ผู้ใช้ทั่วไป)</button>
+                    </div>
+                    <div class="mt-6 flex items-center gap-3 text-sm">
+                        <span class="chip px-3 py-1 rounded-full">Responsive</span>
+                        <span class="chip px-3 py-1 rounded-full">Role-based</span>
+                        <span class="chip px-3 py-1 rounded-full">Real-time</span>
                     </div>
                 </div>
-            </div>
-
-            <!-- Technician Tab Content -->
-            <div id="techTab" class="hidden tab-content">
-                 <div class="grid lg:grid-cols-3 gap-6">
-                    <div class="card rounded-2xl p-6 text-slate-900">
-                        <h3 class="text-lg font-semibold">รายการรอส่งมอบ</h3>
-                        <div id="techDeliveryQueue" class="mt-4 space-y-3"></div>
-                    </div>
-                    <div class="card rounded-2xl p-6 text-slate-900">
-                        <h3 class="text-lg font-semibold">รายการรอตรวจสภาพ (หลังคืน)</h3>
-                        <div id="techReturnQueue" class="mt-4 space-y-3"></div>
-                    </div>
-                    <div class="card rounded-2xl p-6 text-slate-900">
-                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold">รายการซ่อมบำรุง</h3>
-                            <button id="exportRepairsBtn" class="px-3 py-1 text-xs rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300">Export</button>
-                        </div>
-                        <div id="repairList" class="mt-4 space-y-3"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Approval Tab Content -->
-            <div id="approvalTab" class="hidden tab-content">
-                 <div class="grid lg:grid-cols-2 gap-6">
-                    <div class="card rounded-2xl p-6 text-slate-900">
-                        <h3 class="text-lg font-semibold">อนุมัติบัญชีผู้ใช้ใหม่</h3>
-                        <div id="approvalUsers" class="mt-3 space-y-3"></div>
-                    </div>
-                    <div class="card rounded-2xl p-6 text-slate-900">
-                        <h3 class="text-lg font-semibold">อนุมัติการยืม</h3>
-                        <div id="approvalBorrowList" class="mt-3 space-y-3"></div>
-                    </div>
-                    <div class="card rounded-2xl p-6 text-slate-900 lg:col-span-2">
-                        <h3 class="text-lg font-semibold">อนุมัติการซ่อม</h3>
-                        <div id="approvalRepairList" class="mt-3 space-y-3"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Assessment Tab Content -->
-            <div id="assessmentTab" class="hidden tab-content">
-                <div class="card rounded-2xl p-6 text-slate-900">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <h3 class="text-lg font-semibold">ประเมินมาตรฐานเครื่องพ่น</h3>
-                        <div class="flex items-center gap-2">
-                            <select id="assessmentTypeFilter" class="px-3 py-2 rounded-lg border border-slate-200 text-sm">
-                                <option value="">ทุกประเภท</option>
-                            </select>
-                        </div>
-                    </div>
-                    <p class="text-sm text-slate-600 mt-1">เลือกเครื่องพ่นที่ต้องการบันทึกการประเมินประสิทธิภาพ</p>
-                    <div id="assessmentEquipList" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-                </div>
-            </div>
-            
-             <!-- Report Tab Content -->
-            <div id="reportTab" class="hidden tab-content">
-                <div class="card rounded-2xl p-6 text-slate-900 mb-6">
+                <!-- คู่มือการใช้งาน -->
+                <div class="card rounded-2xl p-6 text-slate-900 shadow-xl">
                     <div class="flex items-center justify-between">
-                      <h3 class="text-lg font-semibold">แดชบอร์ดรายงาน</h3>
-                      <button id="exportReportsBtn" class="px-4 py-2 text-sm rounded-lg bg-slate-200 text-slate-800 hover:bg-slate-300">Export รายงานรวม</button>
+                        <p class="font-semibold">คู่มือใช้งานอย่างย่อ</p>
+                        <span
+                            class="text-xs px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 font-medium">Demo</span>
                     </div>
-                    <div id="reportCards" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-                    <div class="mt-6">
-                        <canvas id="borrowChart"></canvas>
+                    <ol class="mt-4 space-y-2.5 text-sm text-slate-700 list-decimal list-inside">
+                        <li><strong>ลงทะเบียน:</strong> ผู้ใช้ใหม่ลงทะเบียน → สถานะเป็น “รอตรวจสอบ”</li>
+                        <li><strong>อนุมัติบัญชี:</strong> ผู้อนุมัติทำการอนุมัติ → ผู้ใช้จึงจะเข้าสู่ระบบได้</li>
+                        <li><strong>ส่งคำขอยืม:</strong> ผู้ใช้ทั่วไปส่งคำขอยืม (สามารถเลือกได้หลายเครื่อง)</li>
+                        <li><strong>อนุมัติการยืม:</strong> ผู้อนุมัติอนุมัติคำขอ → ช่างตรวจสภาพก่อนส่งมอบ</li>
+                        <li><strong>คืนอุปกรณ์:</strong> เมื่อคืนอุปกรณ์ ช่างจะตรวจสภาพและตัดสินว่า “เสีย/ไม่เสีย”</li>
+                        <li><strong>ขั้นตอนการซ่อม:</strong> หากเสีย → สร้างคำขอซ่อม → อนุมัติซ่อม → ซ่อมเสร็จ →
+                            อุปกรณ์กลับมา “ว่าง”</li>
+                    </ol>
+                    <div class="mt-5 p-3 rounded-lg bg-slate-50 border text-sm text-slate-600">
+                        <strong>บัญชีทดสอบ (รหัสผ่าน: password)</strong>
+                        <ul class="list-disc list-inside mt-1">
+                            <li>admin@example.com (ผู้ดูแลระบบ)</li>
+                            <li>approver@example.com (ผู้อนุมัติ)</li>
+                            <li>tech@example.com (ช่างเทคนิค)</li>
+                            <li>user@example.com (ผู้ใช้ทั่วไป)</li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-  </main>
-  
+        </section>
+
+        <!-- หน้าแสดงรายการอุปกรณ์ (สำหรับคนทั่วไป) -->
+        <section id="equipmentShowcase" class="hidden fade-in">
+            <div class="flex items-center justify-between mb-6">
+                <button id="backFromEquip"
+                    class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
+                    <svg width="18" height="18" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8l8 8l1.41-1.41L7.83 13H20v-2z" />
+                    </svg>
+                    กลับหน้าหลัก
+                </button>
+                <h2 class="text-xl font-semibold">รายการอุปกรณ์ทั้งหมด</h2>
+                <div></div> <!-- Spacer -->
+            </div>
+            <div class="card rounded-2xl p-6 text-slate-900">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <input id="equipSearch" placeholder="ค้นหาชื่อหรือ Serial"
+                            class="px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                        <select id="equipFilter" class="px-3 py-2 rounded-lg border border-slate-200">
+                            <option value="">สถานะทั้งหมด</option>
+                            <option value="available">ว่าง</option>
+                            <option value="borrowed">ถูกยืม</option>
+                            <option value="under_maintenance">ซ่อมบำรุง</option>
+                        </select>
+                    </div>
+                    <button id="btnAddEquip"
+                        class="hidden px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">เพิ่มอุปกรณ์</button>
+                </div>
+                <div id="equipList" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Equipment cards will be rendered here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- หน้าเข้าสู่ระบบ -->
+        <section id="loginPage" class="hidden fade-in">
+            <div class="max-w-md mx-auto card rounded-2xl p-8 text-slate-900 shadow-xl">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold">เข้าสู่ระบบ</h2>
+                    <button id="backFromLogin"
+                        class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm">กลับ</button>
+                </div>
+                <form id="loginForm" class="mt-6 space-y-4">
+                    <input name="email" type="email" required placeholder="อีเมล"
+                        class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <input name="password" type="password" required placeholder="รหัสผ่าน"
+                        class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <button type="submit"
+                        class="w-full px-4 py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">เข้าสู่ระบบ</button>
+                </form>
+                <p class="mt-4 text-sm text-center text-slate-600">ยังไม่มีบัญชี? <a href="#" id="goRegister"
+                        class="font-medium text-indigo-600 hover:underline">ลงทะเบียนที่นี่</a></p>
+            </div>
+        </section>
+
+        <!-- หน้าลงทะเบียน -->
+        <section id="registerPage" class="hidden fade-in">
+            <div class="max-w-xl mx-auto card rounded-2xl p-8 text-slate-900 shadow-xl">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold">ลงทะเบียนผู้ใช้งานใหม่</h2>
+                    <button id="backFromRegister"
+                        class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm">กลับ</button>
+                </div>
+                <form id="registerForm" class="mt-6 grid sm:grid-cols-2 gap-4">
+                    <input name="full_name" required placeholder="ชื่อ-สกุล"
+                        class="px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <input name="agency" required placeholder="หน่วยงาน"
+                        class="px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <input name="phone" type="tel" required placeholder="เบอร์โทรศัพท์"
+                        class="px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <input name="email" type="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                        placeholder="อีเมล"
+                        class="px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <textarea name="address" placeholder="ที่อยู่หน่วยงาน" rows="2"
+                        class="sm:col-span-2 px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
+                    <input name="password" type="password" required placeholder="รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)"
+                        minlength="8"
+                        class="sm:col-span-2 px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <button type="submit"
+                        class="sm:col-span-2 px-4 py-3 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition">ยืนยันการลงทะเบียน</button>
+                </form>
+                <div class="mt-4 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-3">
+                    <strong>หมายเหตุ:</strong> หลังลงทะเบียน บัญชีจะอยู่ในสถานะ “รอตรวจสอบ”
+                    และจะใช้งานได้ต่อเมื่อผู้อนุมัติทำการอนุมัติเรียบร้อยแล้ว
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard (สำหรับผู้ใช้ที่ login แล้ว) -->
+        <section id="dashboard" class="hidden fade-in">
+            <!-- DEMO MODE BANNER -->
+            <div id="demoModeBanner"
+                class="hidden bg-yellow-400 text-yellow-900 p-3 mb-6 rounded-lg flex items-center justify-between shadow-lg">
+                <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="text-yellow-800">
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                    <span class="font-semibold text-sm">คุณกำลังอยู่ในโหมดทดสอบระบบ (Simulation Mode)</span>
+                </div>
+                <button id="exitDemoBtn"
+                    class="px-3 py-1 rounded-md bg-white/50 hover:bg-white/80 text-sm font-medium">ออกจากโหมดทดสอบ</button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="mt-4 overflow-x-auto hidden md:block">
+                <div id="desktopTabs" class="inline-flex gap-1 bg-white/10 rounded-xl p-1">
+                    <!-- Tabs are populated by JS -->
+                </div>
+            </div>
+
+            <!-- เนื้อหาของแต่ละ Tab -->
+            <div class="mt-6">
+                <!-- Equipment Tab Content -->
+                <div id="equipmentTab" class="tab-content">
+                    <div class="grid lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 card rounded-2xl p-6 text-slate-900">
+                            <div class="flex flex-wrap items-center justify-between gap-3">
+                                <h3 class="text-lg font-semibold">รายการอุปกรณ์</h3>
+                                <div class="flex items-center gap-2">
+                                    <input id="dashEquipSearch" placeholder="ค้นหา"
+                                        class="px-3 py-2 w-32 rounded-lg border border-slate-200">
+                                    <select id="dashEquipFilter" class="px-3 py-2 rounded-lg border border-slate-200">
+                                        <option value="">ทั้งหมด</option>
+                                        <option value="available">ว่าง</option>
+                                        <option value="borrowed">ถูกยืม</option>
+                                        <option value="under_maintenance">ซ่อมบำรุง</option>
+                                        <option value="pending_repair_approval">รออนุมัติซ่อม</option>
+                                    </select>
+                                    <button id="btnAddEquipDash"
+                                        class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 hidden">เพิ่ม</button>
+                                </div>
+                            </div>
+                            <div id="dashEquipList" class="mt-4 grid sm:grid-cols-2 gap-4"></div>
+                        </div>
+                        <div class="card rounded-2xl p-6 text-slate-900 space-y-4">
+                            <div>
+                                <h3 class="text-lg font-semibold">สรุปสถานะ</h3>
+                                <div id="equipmentSummary" class="grid grid-cols-2 gap-4 mt-2"></div>
+                            </div>
+                            <div id="userSummaryContainer">
+                                <h3 class="text-lg font-semibold">ภาพรวมผู้ใช้งาน</h3>
+                                <div id="userSummary" class="grid grid-cols-2 gap-4 mt-2"></div>
+                                <button id="viewAllUsersBtn"
+                                    class="mt-3 w-full text-center px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm">ดูรายละเอียดผู้ใช้งานทั้งหมด</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Borrow Tab Content (User) -->
+                <div id="borrowTab" class="hidden tab-content">
+                    <div class="grid lg:grid-cols-3 gap-6">
+                        <div class="card rounded-2xl p-6 text-slate-900" id="borrowFormContainer">
+                            <h3 class="text-lg font-semibold">สร้างคำขอยืมอุปกรณ์</h3>
+                            <form id="borrowForm" class="mt-4 space-y-3">
+                                <!-- New multi-select equipment list -->
+                                <div class="border rounded-lg p-2 max-h-48 overflow-y-auto">
+                                    <p class="text-sm font-medium mb-1">เลือกเครื่องที่ต้องการยืม:</p>
+                                    <div id="borrowEquipList" class="space-y-1">
+                                        <!-- Checkboxes will be rendered here -->
+                                    </div>
+                                </div>
+                                <div class="grid sm:grid-cols-2 gap-3">
+                                    <input type="date" name="borrow_date" id="borrowDate"
+                                        class="px-3 py-2 rounded-lg border border-slate-200" required>
+                                    <input type="date" id="dueDate"
+                                        class="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50" readonly>
+                                </div>
+                                <input name="purpose" placeholder="วัตถุประสงค์/พื้นที่ปฏิบัติงาน"
+                                    class="w-full px-3 py-2 rounded-lg border border-slate-200" required>
+                                <div class="grid sm:grid-cols-2 gap-3">
+                                    <input name="contact_name" placeholder="ผู้ประสานงาน"
+                                        class="px-3 py-2 rounded-lg border border-slate-200" required>
+                                    <input name="contact_phone" placeholder="เบอร์โทรติดต่อ"
+                                        class="px-3 py-2 rounded-lg border border-slate-200" required>
+                                </div>
+                                <textarea name="notes" rows="2"
+                                    placeholder="รายละเอียดเพิ่มเติม (เช่น พื้นที่เสี่ยง, เวลาเริ่มงาน)"
+                                    class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
+                                <button
+                                    class="w-full px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700">ส่งคำขอ</button>
+                            </form>
+                            <p class="text-xs text-slate-500 mt-2">หมายเหตุ: ระบบจะกำหนดวันคืนอัตโนมัติ 7
+                                วันนับจากวันที่ยืม</p>
+                        </div>
+                        <div class="lg:col-span-2 card rounded-2xl p-6 text-slate-900">
+                            <div class="mb-4">
+                                <h3 class="text-lg font-semibold">เครื่องที่กำลังยืม</h3>
+                                <div id="currentlyBorrowed" class="mt-2 space-y-3"></div>
+                            </div>
+                            <hr class="my-4">
+                            <div>
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-lg font-semibold">ประวัติการยืม-คืน</h3>
+                                    <div id="borrowHistoryFilter"
+                                        class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
+                                        <button data-filter="all"
+                                            class="px-3 py-1 text-sm rounded-md bg-white shadow">ทั้งหมด</button>
+                                        <button data-filter="borrowed"
+                                            class="px-3 py-1 text-sm rounded-md">กำลังยืม</button>
+                                        <button data-filter="returned"
+                                            class="px-3 py-1 text-sm rounded-md">คืนแล้ว</button>
+                                    </div>
+                                </div>
+                                <div id="myBorrowsHistory" class="mt-4 space-y-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technician Tab Content -->
+                <div id="techTab" class="hidden tab-content">
+                    <div class="grid lg:grid-cols-3 gap-6">
+                        <div class="card rounded-2xl p-6 text-slate-900">
+                            <h3 class="text-lg font-semibold">รายการรอส่งมอบ</h3>
+                            <div id="techDeliveryQueue" class="mt-4 space-y-3"></div>
+                        </div>
+                        <div class="card rounded-2xl p-6 text-slate-900">
+                            <h3 class="text-lg font-semibold">รายการรอตรวจสภาพ (หลังคืน)</h3>
+                            <div id="techReturnQueue" class="mt-4 space-y-3"></div>
+                        </div>
+                        <div class="card rounded-2xl p-6 text-slate-900">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold">รายการซ่อมบำรุง</h3>
+                                <button id="exportRepairsBtn"
+                                    class="px-3 py-1 text-xs rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300">Export</button>
+                            </div>
+                            <div id="repairList" class="mt-4 space-y-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approval Tab Content -->
+                <div id="approvalTab" class="hidden tab-content">
+                    <div class="grid lg:grid-cols-2 gap-6">
+                        <div class="card rounded-2xl p-6 text-slate-900">
+                            <h3 class="text-lg font-semibold">อนุมัติบัญชีผู้ใช้ใหม่</h3>
+                            <div id="approvalUsers" class="mt-3 space-y-3"></div>
+                        </div>
+                        <div class="card rounded-2xl p-6 text-slate-900">
+                            <h3 class="text-lg font-semibold">อนุมัติการยืม</h3>
+                            <div id="approvalBorrowList" class="mt-3 space-y-3"></div>
+                        </div>
+                        <div class="card rounded-2xl p-6 text-slate-900 lg:col-span-2">
+                            <h3 class="text-lg font-semibold">อนุมัติการซ่อม</h3>
+                            <div id="approvalRepairList" class="mt-3 space-y-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assessment Tab Content -->
+                <div id="assessmentTab" class="hidden tab-content">
+                    <div class="card rounded-2xl p-6 text-slate-900">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <h3 class="text-lg font-semibold">ประเมินมาตรฐานเครื่องพ่น</h3>
+                            <div class="flex items-center gap-2">
+                                <select id="assessmentTypeFilter"
+                                    class="px-3 py-2 rounded-lg border border-slate-200 text-sm">
+                                    <option value="">ทุกประเภท</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-1">เลือกเครื่องพ่นที่ต้องการบันทึกการประเมินประสิทธิภาพ</p>
+                        <div id="assessmentEquipList" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                    </div>
+                </div>
+
+                <!-- Report Tab Content -->
+                <div id="reportTab" class="hidden tab-content">
+                    <div class="card rounded-2xl p-6 text-slate-900 mb-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold">แดชบอร์ดรายงาน</h3>
+                            <button id="exportReportsBtn"
+                                class="px-4 py-2 text-sm rounded-lg bg-slate-200 text-slate-800 hover:bg-slate-300">Export
+                                รายงานรวม</button>
+                        </div>
+                        <div id="reportCards" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                        <div class="mt-6">
+                            <canvas id="borrowChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
     <!-- Mobile Sidebar -->
     <div id="sidebar" class="fixed inset-0 z-40 md:hidden hidden">
         <!-- Backdrop -->
         <div id="sidebarBackdrop" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
         <!-- Sidebar Content -->
-        <div id="sidebarContent" class="relative z-10 w-64 bg-slate-800 text-white h-full p-4 flex flex-col transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <div id="sidebarContent"
+            class="relative z-10 w-64 bg-slate-800 text-white h-full p-4 flex flex-col transform -translate-x-full transition-transform duration-300 ease-in-out">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="font-semibold text-lg">เมนู</h3>
                 <button id="sidebarCloseBtn" class="p-2 text-2xl leading-none">&times;</button>
@@ -428,409 +516,418 @@
             <nav id="sidebarNav" class="flex flex-col gap-2">
                 <!-- Sidebar tabs will be injected here by JS -->
             </nav>
-             <div class="mt-auto pt-6 border-t border-white/10">
+            <div class="mt-auto pt-6 border-t border-white/10">
                 <div id="sidebarUserInfo" class="hidden flex-col items-start gap-1">
                     <span id="sidebarUserNameDisplay" class="text-sm font-semibold"></span>
-                    <span id="sidebarUserRoleDisplay" class="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white"></span>
-                    <button id="reportProblemBtn" class="mt-4 text-left w-full text-sm text-slate-300 hover:text-white">แจ้งปัญหาระบบ</button>
-                    <button id="sidebarBtnLogout" class="mt-2 px-4 py-2 rounded-lg bg-red-500/20 text-red-100 hover:bg-red-500/40 transition text-sm w-full">ออกจากระบบ</button>
+                    <span id="sidebarUserRoleDisplay"
+                        class="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white"></span>
+                    <button id="reportProblemBtn"
+                        class="mt-4 text-left w-full text-sm text-slate-300 hover:text-white">แจ้งปัญหาระบบ</button>
+                    <button id="sidebarBtnLogout"
+                        class="mt-2 px-4 py-2 rounded-lg bg-red-500/20 text-red-100 hover:bg-red-500/40 transition text-sm w-full">ออกจากระบบ</button>
                 </div>
                 <div id="sidebarLoginActions">
-                    <button id="sidebarBtnLogin" class="w-full px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">เข้าสู่ระบบ</button>
-                    <button id="sidebarBtnRegister" class="mt-2 w-full px-4 py-2 rounded-lg bg-white text-slate-900 font-semibold hover:opacity-90 transition">ลงทะเบียน</button>
+                    <button id="sidebarBtnLogin"
+                        class="w-full px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">เข้าสู่ระบบ</button>
+                    <button id="sidebarBtnRegister"
+                        class="mt-2 w-full px-4 py-2 rounded-lg bg-white text-slate-900 font-semibold hover:opacity-90 transition">ลงทะเบียน</button>
                 </div>
             </div>
         </div>
     </div>
 
 
-  <!-- Modal -->
-    <div id="modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
-      <div id="modalContent" class="bg-white rounded-2xl p-6 text-slate-900 w-full max-w-2xl max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300">
-        <div class="flex items-center justify-between">
-          <h3 id="modalTitle" class="text-xl font-bold">Modal Title</h3>
-          <button id="modalClose" class="text-2xl leading-none text-slate-400 hover:text-slate-800">&times;</button>
+    <!-- Modal -->
+    <div id="modal"
+        class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+        <div id="modalContent"
+            class="bg-white rounded-2xl p-6 text-slate-900 w-full max-w-2xl max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300">
+            <div class="flex items-center justify-between">
+                <h3 id="modalTitle" class="text-xl font-bold">Modal Title</h3>
+                <button id="modalClose"
+                    class="text-2xl leading-none text-slate-400 hover:text-slate-800">&times;</button>
+            </div>
+            <div id="modalBody" class="mt-4">
+                <!-- Dynamic content goes here -->
+            </div>
         </div>
-        <div id="modalBody" class="mt-4">
-          <!-- Dynamic content goes here -->
-        </div>
-      </div>
     </div>
 
 
-  <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-lg text-white text-sm font-medium shadow-lg hidden transition-all duration-300">
-  </div>
-  
-  <footer class="text-center py-8 px-4 text-white/60 text-xs">
-    <div class="max-w-4xl mx-auto border-t border-white/20 pt-8">
-        <p class="font-semibold">หน่วยควบคุมโรคติดต่อนำโดยแมลงที่ 12.4.4</p>
-        <p>11 ถนนระแงะมรรคา ตำบลบางนาค อำเภอเมืองนราธิวาส จังหวัดนราธิวาส 96000</p>
-        <p>โทรศัพท์: 073-514-960</p>
+    <!-- Toast Notification -->
+    <div id="toast"
+        class="fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-lg text-white text-sm font-medium shadow-lg hidden transition-all duration-300">
     </div>
-  </footer>
+
+    <footer class="text-center py-8 px-4 text-white/60 text-xs">
+        <div class="max-w-4xl mx-auto border-t border-white/20 pt-8">
+            <p class="font-semibold">หน่วยควบคุมโรคติดต่อนำโดยแมลงที่ 12.4.4</p>
+            <p>11 ถนนระแงะมรรคา ตำบลบางนาค อำเภอเมืองนราธิวาส จังหวัดนราธิวาส 96000</p>
+            <p>โทรศัพท์: 073-514-960</p>
+        </div>
+    </footer>
 
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
-        // =================================================================================
-        // MOCK STATE & API (ส่วนจำลองฐานข้อมูลและ Backend)
-        // =================================================================================
-        const state = {
-            user: null, // {id, name, role}
-            equipment: [
-                { id: 1, serial: '0334 0418 0044', name: 'HUDSON X-PERT SPRAYER', type: 'เครื่องพ่นเคมีอัดลม', acquisition_date: '2023-01-25', status: 'available', notes: '' },
-                { id: 2, serial: '0334 0418 0045', name: 'HUDSON X-PERT SPRAYER', type: 'เครื่องพ่นเคมีอัดลม', acquisition_date: '2023-01-25', status: 'available', notes: '' },
-                { id: 3, serial: 'สคร.0334 0429 0863 0124', name: 'IK VECTOR CONTROL SUPER', type: 'เครื่องพ่นเคมีอัดลม', acquisition_date: '2023-03-10', status: 'available', notes: '' },
-                { id: 4, serial: 'สคร.0334 0429 0465 0140', name: 'IK VECTOR CONTROL SUPER', type: 'เครื่องพ่นเคมีอัดลม', acquisition_date: '2023-03-10', status: 'available', notes: '' },
-                { id: 5, serial: '51 6640 007 00005 (67)', name: 'Micron CS10', type: 'เครื่องพ่นฝอยละออง', acquisition_date: '2024-05-20', status: 'available', notes: '' },
-                { id: 6, serial: '0332 048 0001 (8666)', name: 'SWING FOG SN 50', type: 'เครื่องพ่นหมอกควัน', acquisition_date: '2022-11-30', status: 'borrowed', notes: '' },
-                { id: 7, serial: '0332 012.4 0010 (NR070542604)', name: 'IGEBA PORT 123 ULV', type: 'เครื่องพ่นฝอยละออง ULV', acquisition_date: '2022-11-30', status: 'available', notes: '' },
-                { id: 8, serial: '0332 012.4 0012', name: 'SWING FOG SN50', type: 'เครื่องพ่นหมอกควัน', acquisition_date: '2022-11-30', status: 'under_maintenance', notes: '' },
-                { id: 9, serial: '0332 0418 0098 (TL 060545)', name: 'TWISTER XL BY DYNAFOG', type: 'เครื่องพ่นละอองฝอย', acquisition_date: '2024-08-05', status: 'available', notes: '' },
-                { id: 10, serial: 'สคร.0332 0418 0105 (154710)', name: 'Swingtec ULV', type: 'เครื่องพ่นฝอยละออง ULV', acquisition_date: '2025-05-10', status: 'available', notes: '' },
-                { id: 11, serial: 'สคร.0332 0418 0121', name: 'FONTAN PORTASTARS', type: 'เครื่องพ่นละอองฝอย', acquisition_date: '2025-05-29', status: 'pending_repair_approval', notes: '' },
-                { id: 12, serial: 'สคร.0332 0418 0122', name: 'FONTAN PORTASTARS', type: 'เครื่องพ่นละอองฝอย', acquisition_date: '2025-05-29', status: 'available', notes: '' },
-            ],
-            borrows: [
-                { id: 1, equipment_ids: [6], user_id: 4, user_name: 'ผู้ใช้ทั่วไป', borrow_date: '2025-09-10', due_date: '2025-09-17', return_date: null, purpose: 'พ่นป้องกันไข้เลือดออก หมู่บ้านจัดสรร', contact_name: 'คุณสมศรี', contact_phone: '081-234-5678', notes: 'ขอเข้าพื้นที่ช่วงบ่าย', status: 'borrowed' }
-            ],
-            repairs: [
-                { id: 1, equipment_id: 8, equipment_name: 'SWING FOG SN50', damage_description: 'ระบบพ่นทำงานผิดปกติ', status: 'repair_approved', technician_id: 3, repair_details: null, cost: null, parts_used: null},
-                { id: 2, equipment_id: 11, equipment_name: 'FONTAN PORTASTARS', damage_description: 'สตาร์ทไม่ติด', status: 'pending_repair_approval', technician_id: null, repair_details: null, cost: null, parts_used: null},
-                { id: 3, equipment_id: 8, equipment_name: 'SWING FOG SN50', damage_description: 'หัวเทียนบอด', status: 'completed', technician_id: 3, repair_date: '2025-08-20', repair_details: 'เปลี่ยนหัวเทียนใหม่', parts_used: 'หัวเทียน BKR6E-11', cost: 350},
-                { id: 4, equipment_id: 11, equipment_name: 'FONTAN PORTASTARS', damage_description: 'ท่อน้ำยาตัน', status: 'completed', technician_id: 3, repair_date: '2025-09-01', repair_details: 'ทำความสะอาดท่อส่งน้ำยาเคมี', parts_used: '-', cost: 150},
-            ],
-            users: [
-                { id: 1, full_name: 'ผู้ดูแลระบบ', email: 'admin@example.com', role: 'admin', status: 'active', agency: 'ส่วนกลาง', address: '-' },
-                { id: 2, full_name: 'ผู้อนุมัติ', email: 'approver@example.com', role: 'approver', status: 'active', agency: 'สำนักงานใหญ่', address: '-' },
-                { id: 3, full_name: 'ช่างเทคนิค', email: 'tech@example.com', role: 'technician', status: 'active', agency: 'แผนกซ่อมบำรุง', address: '-' },
-                { id: 4, full_name: 'ผู้ใช้ทั่วไป', email: 'user@example.com', role: 'user', status: 'active', agency: 'อบต. ตัวอย่าง', address: '123 ถ.สุขุมวิท' },
-            ],
-            pendingUsers: [
-                { id: 5, full_name: 'สมชาย ใจดี', email: 'somchai@example.com', role: 'user', status: 'pending_approval', agency: 'เทศบาลนคร', address: '456 ถ.เพชรเกษม'}
-            ],
-            assessments: [],
-            notifications: [],
-            seq: { borrow: 2, repair: 5, user: 6, equip: 15, assessment: 1, notification: 1 }
-        };
-        let audioCtx; // For notification sound
-
-        const api = {
-            login: async (email, password) => {
-                const u = state.users.find(x => x.email === email);
-                if (!u || password !== 'password') throw new Error('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
-                if (u.status !== 'active') throw new Error('บัญชียังไม่เปิดใช้งาน');
-                return { id: u.id, name: u.full_name, role: u.role };
-            },
-            register: async (data) => {
-                if (state.users.some(u => u.email === data.email) || state.pendingUsers.some(u => u.email === data.email)) throw new Error('อีเมลนี้ถูกใช้แล้ว');
-                state.pendingUsers.push({ id: state.seq.user++, ...data, role: 'user', status: 'pending_approval' });
-                addNotification('มีผู้ใช้ใหม่ลงทะเบียน', ['admin', 'approver']);
-                return { message: 'ลงทะเบียนสำเร็จ กำลังรอผู้อนุมัติอนุมัติ' };
-            },
-            listAllUsers: async () => [...state.users, ...state.pendingUsers].sort((a,b) => a.id - b.id),
-            listPendingUsers: async () => state.pendingUsers,
-            approveUser: async (id) => {
-                const idx = state.pendingUsers.findIndex(u => u.id === id);
-                if (idx < 0) throw new Error('ไม่พบบัญชี');
-                const [u] = state.pendingUsers.splice(idx, 1);
-                state.users.push({ ...u, status: 'active' });
-                addNotification(`บัญชีของคุณ ${u.full_name} ได้รับการอนุมัติแล้ว`, [u.id]);
-                return true;
-            },
-            rejectUser: async (id) => {
-                state.pendingUsers = state.pendingUsers.filter(u => u.id !== id);
-                return true;
-            },
-            equipmentList: async (q = '', f = '', t = '') => {
-                let list = [...state.equipment];
-                if (q) list = list.filter(e => e.name.toLowerCase().includes(q.toLowerCase()) || e.serial.toLowerCase().includes(q.toLowerCase()));
-                if (f) list = list.filter(e => e.status === f);
-                if (t) list = list.filter(e => e.type === t);
-                return list;
-            },
-            addEquipment: async (data) => {
-                if(state.equipment.some(e => e.serial === data.serial)) throw new Error('Serial number นี้มีอยู่แล้ว');
-                state.equipment.push({id: state.seq.equip++, ...data, status: 'available'});
-                addNotification(`เพิ่มอุปกรณ์ใหม่: ${data.name}`, ['admin', 'technician']);
-                return true;
-            },
-            updateEquipment: async (id, data) => {
-                const equip = state.equipment.find(e => e.id === id);
-                if(!equip) throw new Error('ไม่พบอุปกรณ์');
-                Object.assign(equip, data);
-                return true;
-            },
-            deleteEquipment: async (id) => {
-                state.equipment = state.equipment.filter(e => e.id !== id);
-                return true;
-            },
-            createBorrow: async (payload) => {
-                const { equipment_ids, ...details } = payload;
-                if (!equipment_ids || equipment_ids.length === 0) throw new Error('กรุณาเลือกอุปกรณ์อย่างน้อย 1 เครื่อง');
-                
-                equipment_ids.forEach(equip_id => {
-                    const eq = state.equipment.find(e => e.id === equip_id);
-                    if (!eq || eq.status !== 'available') throw new Error(`อุปกรณ์ ${eq.name} ไม่ว่าง`);
-                });
-
-                const due = new Date(details.borrow_date); due.setDate(due.getDate() + 7);
-                const due_date = due.toISOString().slice(0, 10);
-                
-                state.borrows.push({
-                    id: state.seq.borrow++, 
-                    equipment_ids: equipment_ids, 
-                    ...details,
-                    user_name: state.user.name, 
-                    due_date, 
-                    return_date: null,
-                    status: 'pending_borrow_approval'
-                });
-                addNotification(`มีคำขอยืมใหม่จาก ${state.user.name}`, ['admin', 'approver']);
-                return true;
-            },
-            myBorrows: async (user_id) => state.borrows.filter(b => b.user_id === user_id).sort((a,b) => b.id - a.id),
-            listBorrowRequests: async () => state.borrows.filter(b => b.status === 'pending_borrow_approval'),
-            approveBorrow: async (id) => {
-                const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
-                b.status = 'pending_delivery';
-                addNotification(`คำขอยืม #${id} ได้รับการอนุมัติแล้ว`, ['admin', 'technician', b.user_id]);
-                return true;
-            },
-            adminCancelBorrow: async (id) => {
-                 const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
-                 b.status = 'cancelled';
-                 addNotification(`คำขอยืม #${id} ถูกยกเลิกโดย Admin`, [b.user_id]);
-                 return true;
-            },
-            performPreDeliveryCheck: async (id, isFaulty, newEquipId, checklistData) => {
-                const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
-                
-                b.pre_delivery_checklist = checklistData;
-
-                if(isFaulty) {
-                    const faultyEquipId = b.equipment_ids[0];
-                    const oldEquip = state.equipment.find(e => e.id === faultyEquipId);
-                    if(oldEquip) oldEquip.status = 'pending_repair_approval';
-                    state.repairs.push({ id: state.seq.repair++, equipment_id: oldEquip.id, equipment_name: oldEquip.name, damage_description: 'ตรวจพบปัญหาก่อนส่งมอบ', status: 'pending_repair_approval', technician_id: null });
-                    addNotification(`พบปัญหาที่ ${oldEquip.name} ก่อนส่งมอบ`, ['admin', 'approver']);
-                    b.equipment_ids[0] = newEquipId;
-                }
-
-                b.status = 'borrowed';
-                b.equipment_ids.forEach(equip_id => {
-                    const eq = state.equipment.find(e => e.id === equip_id);
-                    if (eq) eq.status = 'borrowed';
-                });
-                addNotification(`เครื่องในคำขอยืม #${id} ถูกส่งมอบแล้ว`, [b.user_id]);
-                return true;
-            },
-            rejectBorrow: async (id) => {
-                const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
-                b.status = 'rejected';
-                addNotification(`คำขอยืม #${id} ถูกปฏิเสธ`, [b.user_id]);
-                return true;
-            },
-            queueForDelivery: async() => state.borrows.filter(b => b.status === 'pending_delivery'),
-            queueForReturn: async () => state.borrows.filter(b => b.status === 'borrowed' && !b.return_date),
-            techInspectReturn: async (id, isDamaged, notes, checklistData, lateReason) => {
-                const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
-                const today = new Date();
-                const dueDate = new Date(b.due_date);
-                b.actual_return_date = today.toISOString().slice(0, 10);
-                b.post_return_checklist = checklistData;
-                
-                if(today > dueDate) {
-                    b.late_return_reason = lateReason;
-                    b.status = 'returned_late';
-                } else {
-                    b.status = 'returned_early';
-                }
-
-                b.equipment_ids.forEach((equip_id) => {
-                    const eq = state.equipment.find(e => e.id === equip_id);
-                    if(!eq) return;
-                    if (isDamaged) {
-                        eq.status = 'pending_repair_approval';
-                        state.repairs.push({ id: state.seq.repair++, equipment_id: eq.id, equipment_name: eq.name, damage_description: `ชำรุดจากการใช้งาน (ชุดยืม #${b.id})`, status: 'pending_repair_approval' });
-                         addNotification(`พบเครื่องชำรุด: ${eq.name}`, ['admin', 'approver']);
-                    } else {
-                        eq.status = 'available';
-                    }
-                });
-
-                if(isDamaged) b.status = 'returned_damaged';
-                addNotification(`ผู้ใช้ ${b.user_name} ได้คืนเครื่องแล้ว`, ['admin', b.user_id]);
-                return true;
-            },
-            listRepairs: async () => state.repairs.sort((a,b) => b.id - a.id),
-            listRepairRequests: async () => state.repairs.filter(r => r.status === 'pending_repair_approval'),
-            approveRepair: async (id) => {
-                const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
-                r.status = 'repair_approved';
-                r.technician_id = state.user.role === 'technician' ? state.user.id : null;
-                const eq = state.equipment.find(e => e.id === r.equipment_id); if (eq) eq.status = 'under_maintenance';
-                addNotification(`คำขอซ่อม ${r.equipment_name} ได้รับการอนุมัติ`, ['admin', 'technician']);
-                return true;
-            },
-            rejectRepair: async (id) => {
-                const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
-                r.status = 'repair_rejected'; 
-                const eq = state.equipment.find(e => e.id === r.equipment_id); if(eq) eq.status = 'available';
-                return true;
-            },
-            completeRepair: async (id, details) => {
-                const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
-                r.status = 'completed';
-                Object.assign(r, details);
-                const eq = state.equipment.find(e => e.id === r.equipment_id); if (eq) eq.status = 'available';
-                addNotification(`${r.equipment_name} ซ่อมเสร็จแล้ว`, ['admin', 'approver']);
-                return true;
-            },
-            createAssessment: async (data) => {
-                state.assessments.push({ id: state.seq.assessment++, ...data, date: new Date().toISOString().slice(0,10) });
-                return true;
-            },
-            getRepairReport: async () => {
-                const completedRepairs = state.repairs.filter(r => r.status === 'completed' && r.cost);
-                const totalCost = completedRepairs.reduce((sum, r) => sum + Number(r.cost), 0);
-                const count = completedRepairs.length;
-                const averageCost = count > 0 ? totalCost / count : 0;
-                return {
-                    totalCost: totalCost,
-                    averageCost: averageCost,
-                    count: count
-                };
-            }
-        };
-
-        // =================================================================================
-        // UTILS (ฟังก์ชันช่วยเหลือทั่วไป)
-        // =================================================================================
-        const $ = (selector) => document.querySelector(selector);
-        const $$ = (selector) => document.querySelectorAll(selector);
-        
-        const toast = (msg, isError = false) => {
-            const el = $('#toast');
-            el.textContent = msg;
-            el.className = `fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-lg text-white text-sm font-medium shadow-lg transition-all duration-300 ${isError ? 'bg-red-600' : 'bg-slate-800'}`;
-            el.classList.remove('hidden');
-            setTimeout(() => el.classList.add('hidden'), 2500);
-        };
-
-        const show = (id) => {
-            $$('main section').forEach(s => s.classList.add('hidden'));
-            const section = $(`#${id}`);
-            if (section) {
-                section.classList.remove('hidden');
-            }
-        };
-        
-        const setTabs = (tabId) => {
-            $$('.tab-btn').forEach(b => {
-                const isSelected = b.dataset.tab === tabId;
-                b.classList.toggle('bg-white', isSelected);
-                b.classList.toggle('text-slate-900', isSelected);
-                b.classList.toggle('font-semibold', isSelected);
-                if (b.closest('#sidebarNav')) {
-                    b.classList.toggle('bg-white/10', !isSelected);
-                } else {
-                    b.classList.toggle('hover:bg-white/20', !isSelected);
-                }
-            });
-            $$('.tab-content').forEach(c => c.classList.toggle('hidden', c.id !== tabId));
-        };
-
-        const showModal = (title, content, actions) => {
-            $('#modalTitle').textContent = title;
-            $('#modalBody').innerHTML = content + (actions ? `<div class="mt-6 flex justify-end gap-3">${actions}</div>` : '');
-            $('#modal').classList.remove('hidden');
-            setTimeout(() => {
-                $('#modal').style.opacity = '1';
-                $('#modalContent').classList.remove('scale-95');
-            }, 10);
-        };
-
-        const hideModal = () => {
-            $('#modal').style.opacity = '0';
-            $('#modalContent').classList.add('scale-95');
-            setTimeout(() => $('#modal').classList.add('hidden'), 300);
-        };
-        
-        const statusMap = {
-            available: { text: 'ว่าง', color: 'bg-emerald-100 text-emerald-800' },
-            borrowed: { text: 'ถูกยืม', color: 'bg-indigo-100 text-indigo-800' },
-            under_maintenance: { text: 'ซ่อมบำรุง', color: 'bg-amber-100 text-amber-800' },
-            pending_repair_approval: { text: 'รออนุมัติซ่อม', color: 'bg-rose-100 text-rose-800' }
-        };
-
-        const roleMap = {
-            admin: 'ผู้ดูแลระบบ',
-            approver: 'ผู้อนุมัติ',
-            technician: 'ช่างเทคนิค',
-            user: 'ผู้ใช้ทั่วไป'
-        };
-        
-        function playNotificationSound() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
-            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
-            oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.5);
-        }
-
-        function addNotification(message, target) { // target can be role string or user id array
-            const newNotif = {
-                id: state.seq.notification++,
-                message,
-                target,
-                timestamp: new Date(),
-                read: false,
+            // =================================================================================
+            // MOCK STATE & API (ส่วนจำลองฐานข้อมูลและ Backend)
+            // =================================================================================
+            const state = {
+                user: null, // {id, name, role}
+                equipment: [
+                    { id: 1, serial: '0334 0418 0044', name: 'HUDSON X-PERT SPRAYER', type: 'เครื่องพ่นเคมีอัดลม', acquisition_date: '2023-01-25', status: 'available', notes: '' },
+                    { id: 2, serial: '0334 0418 0045', name: 'HUDSON X-PERT SPRAYER', type: 'เครื่องพ่นเคมีอัดลม', acquisition_date: '2023-01-25', status: 'available', notes: '' },
+                    { id: 3, serial: 'สคร.0334 0429 0863 0124', name: 'IK VECTOR CONTROL SUPER', type: 'เครื่องพ่นเคมีอัดลม', acquisition_date: '2023-03-10', status: 'available', notes: '' },
+                    { id: 4, serial: 'สคร.0334 0429 0465 0140', name: 'IK VECTOR CONTROL SUPER', type: 'เครื่องพ่นเคมีอัดลม', acquisition_date: '2023-03-10', status: 'available', notes: '' },
+                    { id: 5, serial: '51 6640 007 00005 (67)', name: 'Micron CS10', type: 'เครื่องพ่นฝอยละออง', acquisition_date: '2024-05-20', status: 'available', notes: '' },
+                    { id: 6, serial: '0332 048 0001 (8666)', name: 'SWING FOG SN 50', type: 'เครื่องพ่นหมอกควัน', acquisition_date: '2022-11-30', status: 'borrowed', notes: '' },
+                    { id: 7, serial: '0332 012.4 0010 (NR070542604)', name: 'IGEBA PORT 123 ULV', type: 'เครื่องพ่นฝอยละออง ULV', acquisition_date: '2022-11-30', status: 'available', notes: '' },
+                    { id: 8, serial: '0332 012.4 0012', name: 'SWING FOG SN50', type: 'เครื่องพ่นหมอกควัน', acquisition_date: '2022-11-30', status: 'under_maintenance', notes: '' },
+                    { id: 9, serial: '0332 0418 0098 (TL 060545)', name: 'TWISTER XL BY DYNAFOG', type: 'เครื่องพ่นละอองฝอย', acquisition_date: '2024-08-05', status: 'available', notes: '' },
+                    { id: 10, serial: 'สคร.0332 0418 0105 (154710)', name: 'Swingtec ULV', type: 'เครื่องพ่นฝอยละออง ULV', acquisition_date: '2025-05-10', status: 'available', notes: '' },
+                    { id: 11, serial: 'สคร.0332 0418 0121', name: 'FONTAN PORTASTARS', type: 'เครื่องพ่นละอองฝอย', acquisition_date: '2025-05-29', status: 'pending_repair_approval', notes: '' },
+                    { id: 12, serial: 'สคร.0332 0418 0122', name: 'FONTAN PORTASTARS', type: 'เครื่องพ่นละอองฝอย', acquisition_date: '2025-05-29', status: 'available', notes: '' },
+                ],
+                borrows: [
+                    { id: 1, equipment_ids: [6], user_id: 4, user_name: 'ผู้ใช้ทั่วไป', borrow_date: '2025-09-10', due_date: '2025-09-17', return_date: null, purpose: 'พ่นป้องกันไข้เลือดออก หมู่บ้านจัดสรร', contact_name: 'คุณสมศรี', contact_phone: '081-234-5678', notes: 'ขอเข้าพื้นที่ช่วงบ่าย', status: 'borrowed' }
+                ],
+                repairs: [
+                    { id: 1, equipment_id: 8, equipment_name: 'SWING FOG SN50', damage_description: 'ระบบพ่นทำงานผิดปกติ', status: 'repair_approved', technician_id: 3, repair_details: null, cost: null, parts_used: null },
+                    { id: 2, equipment_id: 11, equipment_name: 'FONTAN PORTASTARS', damage_description: 'สตาร์ทไม่ติด', status: 'pending_repair_approval', technician_id: null, repair_details: null, cost: null, parts_used: null },
+                    { id: 3, equipment_id: 8, equipment_name: 'SWING FOG SN50', damage_description: 'หัวเทียนบอด', status: 'completed', technician_id: 3, repair_date: '2025-08-20', repair_details: 'เปลี่ยนหัวเทียนใหม่', parts_used: 'หัวเทียน BKR6E-11', cost: 350 },
+                    { id: 4, equipment_id: 11, equipment_name: 'FONTAN PORTASTARS', damage_description: 'ท่อน้ำยาตัน', status: 'completed', technician_id: 3, repair_date: '2025-09-01', repair_details: 'ทำความสะอาดท่อส่งน้ำยาเคมี', parts_used: '-', cost: 150 },
+                ],
+                users: [
+                    { id: 1, full_name: 'ผู้ดูแลระบบ', email: 'admin@example.com', role: 'admin', status: 'active', agency: 'ส่วนกลาง', address: '-' },
+                    { id: 2, full_name: 'ผู้อนุมัติ', email: 'approver@example.com', role: 'approver', status: 'active', agency: 'สำนักงานใหญ่', address: '-' },
+                    { id: 3, full_name: 'ช่างเทคนิค', email: 'tech@example.com', role: 'technician', status: 'active', agency: 'แผนกซ่อมบำรุง', address: '-' },
+                    { id: 4, full_name: 'ผู้ใช้ทั่วไป', email: 'user@example.com', role: 'user', status: 'active', agency: 'อบต. ตัวอย่าง', address: '123 ถ.สุขุมวิท' },
+                ],
+                pendingUsers: [
+                    { id: 5, full_name: 'สมชาย ใจดี', email: 'somchai@example.com', role: 'user', status: 'pending_approval', agency: 'เทศบาลนคร', address: '456 ถ.เพชรเกษม' }
+                ],
+                assessments: [],
+                notifications: [],
+                seq: { borrow: 2, repair: 5, user: 6, equip: 15, assessment: 1, notification: 1 }
             };
-            state.notifications.unshift(newNotif);
-            playNotificationSound();
-            renderNotifications();
-        }
+            let audioCtx; // For notification sound
 
-        function toggleNotificationDropdown() {
-            const dropdown = $('#notificationDropdown');
-            dropdown.classList.toggle('hidden');
-            if (!dropdown.classList.contains('hidden')) {
-                // Mark notifications as read
-                state.notifications.forEach(n => {
-                    const isTargeted = Array.isArray(n.target) && (n.target.includes(state.user.role) || n.target.includes(state.user.id));
-                    if(isTargeted) {
-                        n.read = true;
+            const api = {
+                login: async (email, password) => {
+                    const u = state.users.find(x => x.email === email);
+                    if (!u || password !== 'password') throw new Error('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+                    if (u.status !== 'active') throw new Error('บัญชียังไม่เปิดใช้งาน');
+                    return { id: u.id, name: u.full_name, role: u.role };
+                },
+                register: async (data) => {
+                    if (state.users.some(u => u.email === data.email) || state.pendingUsers.some(u => u.email === data.email)) throw new Error('อีเมลนี้ถูกใช้แล้ว');
+                    state.pendingUsers.push({ id: state.seq.user++, ...data, role: 'user', status: 'pending_approval' });
+                    addNotification('มีผู้ใช้ใหม่ลงทะเบียน', ['admin', 'approver']);
+                    return { message: 'ลงทะเบียนสำเร็จ กำลังรอผู้อนุมัติอนุมัติ' };
+                },
+                listAllUsers: async () => [...state.users, ...state.pendingUsers].sort((a, b) => a.id - b.id),
+                listPendingUsers: async () => state.pendingUsers,
+                approveUser: async (id) => {
+                    const idx = state.pendingUsers.findIndex(u => u.id === id);
+                    if (idx < 0) throw new Error('ไม่พบบัญชี');
+                    const [u] = state.pendingUsers.splice(idx, 1);
+                    state.users.push({ ...u, status: 'active' });
+                    addNotification(`บัญชีของคุณ ${u.full_name} ได้รับการอนุมัติแล้ว`, [u.id]);
+                    return true;
+                },
+                rejectUser: async (id) => {
+                    state.pendingUsers = state.pendingUsers.filter(u => u.id !== id);
+                    return true;
+                },
+                equipmentList: async (q = '', f = '', t = '') => {
+                    let list = [...state.equipment];
+                    if (q) list = list.filter(e => e.name.toLowerCase().includes(q.toLowerCase()) || e.serial.toLowerCase().includes(q.toLowerCase()));
+                    if (f) list = list.filter(e => e.status === f);
+                    if (t) list = list.filter(e => e.type === t);
+                    return list;
+                },
+                addEquipment: async (data) => {
+                    if (state.equipment.some(e => e.serial === data.serial)) throw new Error('Serial number นี้มีอยู่แล้ว');
+                    state.equipment.push({ id: state.seq.equip++, ...data, status: 'available' });
+                    addNotification(`เพิ่มอุปกรณ์ใหม่: ${data.name}`, ['admin', 'technician']);
+                    return true;
+                },
+                updateEquipment: async (id, data) => {
+                    const equip = state.equipment.find(e => e.id === id);
+                    if (!equip) throw new Error('ไม่พบอุปกรณ์');
+                    Object.assign(equip, data);
+                    return true;
+                },
+                deleteEquipment: async (id) => {
+                    state.equipment = state.equipment.filter(e => e.id !== id);
+                    return true;
+                },
+                createBorrow: async (payload) => {
+                    const { equipment_ids, ...details } = payload;
+                    if (!equipment_ids || equipment_ids.length === 0) throw new Error('กรุณาเลือกอุปกรณ์อย่างน้อย 1 เครื่อง');
+
+                    equipment_ids.forEach(equip_id => {
+                        const eq = state.equipment.find(e => e.id === equip_id);
+                        if (!eq || eq.status !== 'available') throw new Error(`อุปกรณ์ ${eq.name} ไม่ว่าง`);
+                    });
+
+                    const due = new Date(details.borrow_date); due.setDate(due.getDate() + 7);
+                    const due_date = due.toISOString().slice(0, 10);
+
+                    state.borrows.push({
+                        id: state.seq.borrow++,
+                        equipment_ids: equipment_ids,
+                        ...details,
+                        user_name: state.user.name,
+                        due_date,
+                        return_date: null,
+                        status: 'pending_borrow_approval'
+                    });
+                    addNotification(`มีคำขอยืมใหม่จาก ${state.user.name}`, ['admin', 'approver']);
+                    return true;
+                },
+                myBorrows: async (user_id) => state.borrows.filter(b => b.user_id === user_id).sort((a, b) => b.id - a.id),
+                listBorrowRequests: async () => state.borrows.filter(b => b.status === 'pending_borrow_approval'),
+                approveBorrow: async (id) => {
+                    const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+                    b.status = 'pending_delivery';
+                    addNotification(`คำขอยืม #${id} ได้รับการอนุมัติแล้ว`, ['admin', 'technician', b.user_id]);
+                    return true;
+                },
+                adminCancelBorrow: async (id) => {
+                    const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+                    b.status = 'cancelled';
+                    addNotification(`คำขอยืม #${id} ถูกยกเลิกโดย Admin`, [b.user_id]);
+                    return true;
+                },
+                performPreDeliveryCheck: async (id, isFaulty, newEquipId, checklistData) => {
+                    const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+
+                    b.pre_delivery_checklist = checklistData;
+
+                    if (isFaulty) {
+                        const faultyEquipId = b.equipment_ids[0];
+                        const oldEquip = state.equipment.find(e => e.id === faultyEquipId);
+                        if (oldEquip) oldEquip.status = 'pending_repair_approval';
+                        state.repairs.push({ id: state.seq.repair++, equipment_id: oldEquip.id, equipment_name: oldEquip.name, damage_description: 'ตรวจพบปัญหาก่อนส่งมอบ', status: 'pending_repair_approval', technician_id: null });
+                        addNotification(`พบปัญหาที่ ${oldEquip.name} ก่อนส่งมอบ`, ['admin', 'approver']);
+                        b.equipment_ids[0] = newEquipId;
+                    }
+
+                    b.status = 'borrowed';
+                    b.equipment_ids.forEach(equip_id => {
+                        const eq = state.equipment.find(e => e.id === equip_id);
+                        if (eq) eq.status = 'borrowed';
+                    });
+                    addNotification(`เครื่องในคำขอยืม #${id} ถูกส่งมอบแล้ว`, [b.user_id]);
+                    return true;
+                },
+                rejectBorrow: async (id) => {
+                    const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+                    b.status = 'rejected';
+                    addNotification(`คำขอยืม #${id} ถูกปฏิเสธ`, [b.user_id]);
+                    return true;
+                },
+                queueForDelivery: async () => state.borrows.filter(b => b.status === 'pending_delivery'),
+                queueForReturn: async () => state.borrows.filter(b => b.status === 'borrowed' && !b.return_date),
+                techInspectReturn: async (id, isDamaged, notes, checklistData, lateReason) => {
+                    const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+                    const today = new Date();
+                    const dueDate = new Date(b.due_date);
+                    b.actual_return_date = today.toISOString().slice(0, 10);
+                    b.post_return_checklist = checklistData;
+
+                    if (today > dueDate) {
+                        b.late_return_reason = lateReason;
+                        b.status = 'returned_late';
+                    } else {
+                        b.status = 'returned_early';
+                    }
+
+                    b.equipment_ids.forEach((equip_id) => {
+                        const eq = state.equipment.find(e => e.id === equip_id);
+                        if (!eq) return;
+                        if (isDamaged) {
+                            eq.status = 'pending_repair_approval';
+                            state.repairs.push({ id: state.seq.repair++, equipment_id: eq.id, equipment_name: eq.name, damage_description: `ชำรุดจากการใช้งาน (ชุดยืม #${b.id})`, status: 'pending_repair_approval' });
+                            addNotification(`พบเครื่องชำรุด: ${eq.name}`, ['admin', 'approver']);
+                        } else {
+                            eq.status = 'available';
+                        }
+                    });
+
+                    if (isDamaged) b.status = 'returned_damaged';
+                    addNotification(`ผู้ใช้ ${b.user_name} ได้คืนเครื่องแล้ว`, ['admin', b.user_id]);
+                    return true;
+                },
+                listRepairs: async () => state.repairs.sort((a, b) => b.id - a.id),
+                listRepairRequests: async () => state.repairs.filter(r => r.status === 'pending_repair_approval'),
+                approveRepair: async (id) => {
+                    const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
+                    r.status = 'repair_approved';
+                    r.technician_id = state.user.role === 'technician' ? state.user.id : null;
+                    const eq = state.equipment.find(e => e.id === r.equipment_id); if (eq) eq.status = 'under_maintenance';
+                    addNotification(`คำขอซ่อม ${r.equipment_name} ได้รับการอนุมัติ`, ['admin', 'technician']);
+                    return true;
+                },
+                rejectRepair: async (id) => {
+                    const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
+                    r.status = 'repair_rejected';
+                    const eq = state.equipment.find(e => e.id === r.equipment_id); if (eq) eq.status = 'available';
+                    return true;
+                },
+                completeRepair: async (id, details) => {
+                    const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
+                    r.status = 'completed';
+                    Object.assign(r, details);
+                    const eq = state.equipment.find(e => e.id === r.equipment_id); if (eq) eq.status = 'available';
+                    addNotification(`${r.equipment_name} ซ่อมเสร็จแล้ว`, ['admin', 'approver']);
+                    return true;
+                },
+                createAssessment: async (data) => {
+                    state.assessments.push({ id: state.seq.assessment++, ...data, date: new Date().toISOString().slice(0, 10) });
+                    return true;
+                },
+                getRepairReport: async () => {
+                    const completedRepairs = state.repairs.filter(r => r.status === 'completed' && r.cost);
+                    const totalCost = completedRepairs.reduce((sum, r) => sum + Number(r.cost), 0);
+                    const count = completedRepairs.length;
+                    const averageCost = count > 0 ? totalCost / count : 0;
+                    return {
+                        totalCost: totalCost,
+                        averageCost: averageCost,
+                        count: count
+                    };
+                }
+            };
+
+            // =================================================================================
+            // UTILS (ฟังก์ชันช่วยเหลือทั่วไป)
+            // =================================================================================
+            const $ = (selector) => document.querySelector(selector);
+            const $$ = (selector) => document.querySelectorAll(selector);
+
+            const toast = (msg, isError = false) => {
+                const el = $('#toast');
+                el.textContent = msg;
+                el.className = `fixed bottom-5 left-1/2 -translate-x-1/2 px-5 py-3 rounded-lg text-white text-sm font-medium shadow-lg transition-all duration-300 ${isError ? 'bg-red-600' : 'bg-slate-800'}`;
+                el.classList.remove('hidden');
+                setTimeout(() => el.classList.add('hidden'), 2500);
+            };
+
+            const show = (id) => {
+                $$('main section').forEach(s => s.classList.add('hidden'));
+                const section = $(`#${id}`);
+                if (section) {
+                    section.classList.remove('hidden');
+                }
+            };
+
+            const setTabs = (tabId) => {
+                $$('.tab-btn').forEach(b => {
+                    const isSelected = b.dataset.tab === tabId;
+                    b.classList.toggle('bg-white', isSelected);
+                    b.classList.toggle('text-slate-900', isSelected);
+                    b.classList.toggle('font-semibold', isSelected);
+                    if (b.closest('#sidebarNav')) {
+                        b.classList.toggle('bg-white/10', !isSelected);
+                    } else {
+                        b.classList.toggle('hover:bg-white/20', !isSelected);
                     }
                 });
-                renderNotifications(); // Re-render to remove dot
+                $$('.tab-content').forEach(c => c.classList.toggle('hidden', c.id !== tabId));
+            };
+
+            const showModal = (title, content, actions) => {
+                $('#modalTitle').textContent = title;
+                $('#modalBody').innerHTML = content + (actions ? `<div class="mt-6 flex justify-end gap-3">${actions}</div>` : '');
+                $('#modal').classList.remove('hidden');
+                setTimeout(() => {
+                    $('#modal').style.opacity = '1';
+                    $('#modalContent').classList.remove('scale-95');
+                }, 10);
+            };
+
+            const hideModal = () => {
+                $('#modal').style.opacity = '0';
+                $('#modalContent').classList.add('scale-95');
+                setTimeout(() => $('#modal').classList.add('hidden'), 300);
+            };
+
+            const statusMap = {
+                available: { text: 'ว่าง', color: 'bg-emerald-100 text-emerald-800' },
+                borrowed: { text: 'ถูกยืม', color: 'bg-indigo-100 text-indigo-800' },
+                under_maintenance: { text: 'ซ่อมบำรุง', color: 'bg-amber-100 text-amber-800' },
+                pending_repair_approval: { text: 'รออนุมัติซ่อม', color: 'bg-rose-100 text-rose-800' }
+            };
+
+            const roleMap = {
+                admin: 'ผู้ดูแลระบบ',
+                approver: 'ผู้อนุมัติ',
+                technician: 'ช่างเทคนิค',
+                user: 'ผู้ใช้ทั่วไป'
+            };
+
+            function playNotificationSound() {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
+                oscillator.start(audioCtx.currentTime);
+                oscillator.stop(audioCtx.currentTime + 0.5);
             }
-        }
+
+            function addNotification(message, target) { // target can be role string or user id array
+                const newNotif = {
+                    id: state.seq.notification++,
+                    message,
+                    target,
+                    timestamp: new Date(),
+                    read: false,
+                };
+                state.notifications.unshift(newNotif);
+                playNotificationSound();
+                renderNotifications();
+            }
+
+            function toggleNotificationDropdown() {
+                const dropdown = $('#notificationDropdown');
+                dropdown.classList.toggle('hidden');
+                if (!dropdown.classList.contains('hidden')) {
+                    // Mark notifications as read
+                    state.notifications.forEach(n => {
+                        const isTargeted = Array.isArray(n.target) && (n.target.includes(state.user.role) || n.target.includes(state.user.id));
+                        if (isTargeted) {
+                            n.read = true;
+                        }
+                    });
+                    renderNotifications(); // Re-render to remove dot
+                }
+            }
 
 
-        // =================================================================================
-        // RENDER FUNCTIONS (ฟังก์ชันสำหรับวาด UI)
-        // =================================================================================
-        
-        async function renderEquipmentLists(options = {}) {
-            const { forAssessment = false } = options;
-            const q1 = $('#equipSearch')?.value || '';
-            const f1 = $('#equipFilter')?.value || '';
-            if ($('#equipList')) {
-                const list1 = await api.equipmentList(q1, f1);
-                $('#equipList').innerHTML = list1.map(e => {
-                    const { text, color } = statusMap[e.status] || { text: 'N/A', color: 'bg-gray-100' };
-                    return `
+            // =================================================================================
+            // RENDER FUNCTIONS (ฟังก์ชันสำหรับวาด UI)
+            // =================================================================================
+
+            async function renderEquipmentLists(options = {}) {
+                const { forAssessment = false } = options;
+                const q1 = $('#equipSearch')?.value || '';
+                const f1 = $('#equipFilter')?.value || '';
+                if ($('#equipList')) {
+                    const list1 = await api.equipmentList(q1, f1);
+                    $('#equipList').innerHTML = list1.map(e => {
+                        const { text, color } = statusMap[e.status] || { text: 'N/A', color: 'bg-gray-100' };
+                        return `
                         <div class="rounded-xl border border-slate-200 p-4 bg-white flex flex-col justify-between">
                             <div>
                                 <div class="font-semibold">${e.name}</div>
@@ -839,22 +936,22 @@
                             </div>
                         </div>
                     `;
-                }).join('') || `<p class="text-slate-500">ไม่พบอุปกรณ์</p>`;
-            }
-            
-            if (state.user && $('#dashEquipList')) {
-                const q2 = $('#dashEquipSearch')?.value || '';
-                const f2 = $('#dashEquipFilter')?.value || '';
-                const list2 = await api.equipmentList(q2, f2);
-                 $('#dashEquipList').innerHTML = list2.map(e => {
-                    const { text, color } = statusMap[e.status] || { text: 'N/A', color: 'bg-gray-100' };
-                    const adminButtons = state.user.role === 'admin' ? `
+                    }).join('') || `<p class="text-slate-500">ไม่พบอุปกรณ์</p>`;
+                }
+
+                if (state.user && $('#dashEquipList')) {
+                    const q2 = $('#dashEquipSearch')?.value || '';
+                    const f2 = $('#dashEquipFilter')?.value || '';
+                    const list2 = await api.equipmentList(q2, f2);
+                    $('#dashEquipList').innerHTML = list2.map(e => {
+                        const { text, color } = statusMap[e.status] || { text: 'N/A', color: 'bg-gray-100' };
+                        const adminButtons = state.user.role === 'admin' ? `
                         <div class="mt-2 flex gap-2">
                             <button onclick="handleEditEquipmentClick(${e.id})" class="text-xs text-blue-600 hover:underline">แก้ไข</button>
                             <button onclick="handleDeleteEquipmentClick(${e.id})" class="text-xs text-red-600 hover:underline">ลบ</button>
                         </div>
                     ` : '';
-                    return `
+                        return `
                         <div class="rounded-xl border border-slate-200 p-4 bg-white">
                             <div class="font-semibold">${e.name}</div>
                             <div class="text-sm text-slate-500">S/N: ${e.serial}</div>
@@ -863,92 +960,92 @@
                             ${adminButtons}
                         </div>
                     `;
-                }).join('') || `<p class="text-slate-500">ไม่พบอุปกรณ์</p>`;
-                
-                if (forAssessment && $('#assessmentEquipList')) {
-                    const t3 = $('#assessmentTypeFilter')?.value || '';
-                    const list3 = await api.equipmentList('', '', t3);
-                    $('#assessmentEquipList').innerHTML = list3.map(e => `
+                    }).join('') || `<p class="text-slate-500">ไม่พบอุปกรณ์</p>`;
+
+                    if (forAssessment && $('#assessmentEquipList')) {
+                        const t3 = $('#assessmentTypeFilter')?.value || '';
+                        const list3 = await api.equipmentList('', '', t3);
+                        $('#assessmentEquipList').innerHTML = list3.map(e => `
                         <button onclick="handleAssessmentClick(${e.id}, '${e.name}')" class="text-left p-4 rounded-xl border border-slate-200 hover:bg-slate-50">
                             <div class="font-semibold">${e.name}</div>
                             <div class="text-sm text-slate-500">S/N: ${e.serial}</div>
                         </button>
                     `).join('') || `<p class="text-slate-500 col-span-full">ไม่พบอุปกรณ์ประเภทนี้</p>`;
+                    }
                 }
             }
-        }
-        
-        async function renderSummaries() {
-            if (!$('#equipmentSummary')) return;
-            // Equipment Summary
-            const equipSummary = await api.equipmentList();
-            const total = equipSummary.length;
-            const borrowed = equipSummary.filter(e => e.status === 'borrowed').length;
-            const maintenance = equipSummary.filter(e => ['under_maintenance', 'pending_repair_approval'].includes(e.status)).length;
-            const available = equipSummary.filter(e => e.status === 'available').length;
-             $('#equipmentSummary').innerHTML = `
+
+            async function renderSummaries() {
+                if (!$('#equipmentSummary')) return;
+                // Equipment Summary
+                const equipSummary = await api.equipmentList();
+                const total = equipSummary.length;
+                const borrowed = equipSummary.filter(e => e.status === 'borrowed').length;
+                const maintenance = equipSummary.filter(e => ['under_maintenance', 'pending_repair_approval'].includes(e.status)).length;
+                const available = equipSummary.filter(e => e.status === 'available').length;
+                $('#equipmentSummary').innerHTML = `
                 <div class="rounded-xl p-4 bg-blue-100 text-blue-800"><div class="text-sm">ทั้งหมด</div><div class="text-2xl font-bold mt-1">${total}</div></div>
                 <div class="rounded-xl p-4 bg-emerald-100 text-emerald-800"><div class="text-sm">ว่าง</div><div class="text-2xl font-bold mt-1">${available}</div></div>
                 <div class="rounded-xl p-4 bg-indigo-100 text-indigo-800"><div class="text-sm">กำลังใช้งาน</div><div class="text-2xl font-bold mt-1">${borrowed}</div></div>
                 <div class="rounded-xl p-4 bg-amber-100 text-amber-800"><div class="text-sm">รอ/กำลังซ่อม</div><div class="text-2xl font-bold mt-1">${maintenance}</div></div>
             `;
 
-            // User Summary
-            const userSummaryContainer = $('#userSummaryContainer');
-            if (!state.user || !['admin', 'approver'].includes(state.user.role)) {
-                if(userSummaryContainer) userSummaryContainer.classList.add('hidden');
-            } else {
-                if(userSummaryContainer) userSummaryContainer.classList.remove('hidden');
-                const allUsers = await api.listAllUsers();
-                const activeCount = allUsers.filter(u => u.status === 'active').length;
-                const pendingCount = allUsers.filter(u => u.status === 'pending_approval').length;
-                $('#userSummary').innerHTML = `
+                // User Summary
+                const userSummaryContainer = $('#userSummaryContainer');
+                if (!state.user || !['admin', 'approver'].includes(state.user.role)) {
+                    if (userSummaryContainer) userSummaryContainer.classList.add('hidden');
+                } else {
+                    if (userSummaryContainer) userSummaryContainer.classList.remove('hidden');
+                    const allUsers = await api.listAllUsers();
+                    const activeCount = allUsers.filter(u => u.status === 'active').length;
+                    const pendingCount = allUsers.filter(u => u.status === 'pending_approval').length;
+                    $('#userSummary').innerHTML = `
                     <div class="rounded-xl p-4 bg-green-100 text-green-800"><div class="text-sm">ใช้งานได้</div><div class="text-2xl font-bold mt-1">${activeCount}</div></div>
                     <div class="rounded-xl p-4 bg-yellow-100 text-yellow-800"><div class="text-sm">รออนุมัติ</div><div class="text-2xl font-bold mt-1">${pendingCount}</div></div>
                 `;
-            }
-        }
-        
-        async function renderMyBorrows() {
-            if (!state.user || state.user.role !== 'user' || !$('#currentlyBorrowed')) return;
-
-            const allMyBorrows = await api.myBorrows(state.user.id);
-            const currentlyBorrowed = allMyBorrows.filter(b => ['borrowed', 'pending_delivery'].includes(b.status));
-            $('#currentlyBorrowed').innerHTML = currentlyBorrowed.length === 0 
-                ? `<p class="text-slate-500 text-sm">ไม่มีเครื่องที่กำลังยืม</p>` 
-                : currentlyBorrowed.map(b => renderBorrowCard(b)).join('');
-
-            const filter = $('#borrowHistoryFilter .bg-white').dataset.filter;
-            let historyBorrows = [];
-            if (filter === 'all') {
-                historyBorrows = allMyBorrows;
-            } else if (filter === 'borrowed') {
-                historyBorrows = allMyBorrows.filter(b => ['pending_borrow_approval', 'pending_delivery', 'borrowed'].includes(b.status));
-            } else if (filter === 'returned') {
-                historyBorrows = allMyBorrows.filter(b => !['pending_borrow_approval', 'pending_delivery', 'borrowed'].includes(b.status));
+                }
             }
 
-            $('#myBorrowsHistory').innerHTML = historyBorrows.length === 0 
-                ? `<p class="text-slate-500 text-sm">ไม่มีประวัติ</p>`
-                : historyBorrows.map(b => renderBorrowCard(b)).join('');
-        }
-        
-        function renderBorrowCard(b) {
-            const equipments = b.equipment_ids.map(id => state.equipment.find(e => e.id === id));
-            let statusText, statusColor;
-            switch(b.status){
-                case 'pending_borrow_approval': statusText = 'รออนุมัติ'; statusColor = 'bg-yellow-100 text-yellow-800'; break;
-                case 'pending_delivery': statusText = 'รอช่างตรวจ'; statusColor = 'bg-cyan-100 text-cyan-800'; break;
-                case 'borrowed': statusText = 'ยืมอยู่'; statusColor = 'bg-blue-100 text-blue-800'; break;
-                case 'rejected': statusText = 'ไม่อนุมัติ'; statusColor = 'bg-red-100 text-red-800'; break;
-                case 'cancelled': statusText = 'ยกเลิก'; statusColor = 'bg-gray-100 text-gray-800'; break;
-                case 'returned_early': statusText = 'คืนก่อนกำหนด'; statusColor = 'bg-teal-100 text-teal-800'; break;
-                case 'returned_late': statusText = 'คืนล่าช้า'; statusColor = 'bg-orange-100 text-orange-800'; break;
-                case 'returned': statusText = 'คืนแล้ว'; statusColor = 'bg-green-100 text-green-800'; break;
-                case 'returned_damaged': statusText = 'คืน (ชำรุด)'; statusColor = 'bg-orange-100 text-orange-800'; break;
-                default: statusText = 'ไม่ทราบสถานะ'; statusColor = 'bg-gray-100 text-gray-800';
+            async function renderMyBorrows() {
+                if (!state.user || state.user.role !== 'user' || !$('#currentlyBorrowed')) return;
+
+                const allMyBorrows = await api.myBorrows(state.user.id);
+                const currentlyBorrowed = allMyBorrows.filter(b => ['borrowed', 'pending_delivery'].includes(b.status));
+                $('#currentlyBorrowed').innerHTML = currentlyBorrowed.length === 0
+                    ? `<p class="text-slate-500 text-sm">ไม่มีเครื่องที่กำลังยืม</p>`
+                    : currentlyBorrowed.map(b => renderBorrowCard(b)).join('');
+
+                const filter = $('#borrowHistoryFilter .bg-white').dataset.filter;
+                let historyBorrows = [];
+                if (filter === 'all') {
+                    historyBorrows = allMyBorrows;
+                } else if (filter === 'borrowed') {
+                    historyBorrows = allMyBorrows.filter(b => ['pending_borrow_approval', 'pending_delivery', 'borrowed'].includes(b.status));
+                } else if (filter === 'returned') {
+                    historyBorrows = allMyBorrows.filter(b => !['pending_borrow_approval', 'pending_delivery', 'borrowed'].includes(b.status));
+                }
+
+                $('#myBorrowsHistory').innerHTML = historyBorrows.length === 0
+                    ? `<p class="text-slate-500 text-sm">ไม่มีประวัติ</p>`
+                    : historyBorrows.map(b => renderBorrowCard(b)).join('');
             }
-            return `
+
+            function renderBorrowCard(b) {
+                const equipments = b.equipment_ids.map(id => state.equipment.find(e => e.id === id));
+                let statusText, statusColor;
+                switch (b.status) {
+                    case 'pending_borrow_approval': statusText = 'รออนุมัติ'; statusColor = 'bg-yellow-100 text-yellow-800'; break;
+                    case 'pending_delivery': statusText = 'รอช่างตรวจ'; statusColor = 'bg-cyan-100 text-cyan-800'; break;
+                    case 'borrowed': statusText = 'ยืมอยู่'; statusColor = 'bg-blue-100 text-blue-800'; break;
+                    case 'rejected': statusText = 'ไม่อนุมัติ'; statusColor = 'bg-red-100 text-red-800'; break;
+                    case 'cancelled': statusText = 'ยกเลิก'; statusColor = 'bg-gray-100 text-gray-800'; break;
+                    case 'returned_early': statusText = 'คืนก่อนกำหนด'; statusColor = 'bg-teal-100 text-teal-800'; break;
+                    case 'returned_late': statusText = 'คืนล่าช้า'; statusColor = 'bg-orange-100 text-orange-800'; break;
+                    case 'returned': statusText = 'คืนแล้ว'; statusColor = 'bg-green-100 text-green-800'; break;
+                    case 'returned_damaged': statusText = 'คืน (ชำรุด)'; statusColor = 'bg-orange-100 text-orange-800'; break;
+                    default: statusText = 'ไม่ทราบสถานะ'; statusColor = 'bg-gray-100 text-gray-800';
+                }
+                return `
                <div class="p-3 rounded-lg border border-slate-200 text-sm">
                    <div class="flex justify-between items-start">
                       <span class="font-semibold">คำขอยืม #${b.id} (${b.equipment_ids.length} เครื่อง)</span>
@@ -960,14 +1057,14 @@
                    <p class="text-slate-600 mt-1">ยืม: ${b.borrow_date} | คืน: ${b.due_date}</p>
                    ${b.late_return_reason ? `<p class="text-xs text-red-600 mt-1">เหตุผลที่คืนช้า: ${b.late_return_reason}</p>` : ''}
                </div>`;
-        }
+            }
 
-        async function renderApprovalLists() {
-             if (!state.user || !['admin', 'approver'].includes(state.user.role) || !$('#approvalUsers')) return;
-            
-            const pendingUsers = await api.listPendingUsers();
-            $('#approvalUsers').innerHTML = pendingUsers.length === 0 ? `<p class="text-slate-500">ไม่มีบัญชีรออนุมัติ</p>`
-                : pendingUsers.map(u => `
+            async function renderApprovalLists() {
+                if (!state.user || !['admin', 'approver'].includes(state.user.role) || !$('#approvalUsers')) return;
+
+                const pendingUsers = await api.listPendingUsers();
+                $('#approvalUsers').innerHTML = pendingUsers.length === 0 ? `<p class="text-slate-500">ไม่มีบัญชีรออนุมัติ</p>`
+                    : pendingUsers.map(u => `
                 <div class="p-3 rounded-lg border border-slate-200">
                     <p class="font-semibold">${u.full_name} (${u.agency})</p>
                     <div class="text-sm text-slate-600 bg-slate-50 p-2 rounded-md mt-1">
@@ -981,11 +1078,11 @@
                     </div>
                 </div>`).join('');
 
-            const borrowReqs = await api.listBorrowRequests();
-            $('#approvalBorrowList').innerHTML = borrowReqs.length === 0 ? `<p class="text-slate-500">ไม่มีคำขอยืมรออนุมัติ</p>`
-                : borrowReqs.map(b => {
-                const equipments = b.equipment_ids.map(id => state.equipment.find(e => e.id === id));
-                return `
+                const borrowReqs = await api.listBorrowRequests();
+                $('#approvalBorrowList').innerHTML = borrowReqs.length === 0 ? `<p class="text-slate-500">ไม่มีคำขอยืมรออนุมัติ</p>`
+                    : borrowReqs.map(b => {
+                        const equipments = b.equipment_ids.map(id => state.equipment.find(e => e.id === id));
+                        return `
                 <div class="p-3 rounded-lg border border-slate-200">
                     <p><span class="font-semibold">${b.user_name}</span> ขอยืม <span class="font-semibold">${b.equipment_ids.length} เครื่อง</span></p>
                     <div class="text-sm text-slate-600 bg-slate-50 p-2 rounded-md mt-1">
@@ -1000,9 +1097,9 @@
                     </div>
                 </div>`}).join('');
 
-            const repairReqs = await api.listRepairRequests();
-            $('#approvalRepairList').innerHTML = repairReqs.length === 0 ? `<p class="text-slate-500">ไม่มีคำขอซ่อมรออนุมัติ</p>`
-                : repairReqs.map(r => `
+                const repairReqs = await api.listRepairRequests();
+                $('#approvalRepairList').innerHTML = repairReqs.length === 0 ? `<p class="text-slate-500">ไม่มีคำขอซ่อมรออนุมัติ</p>`
+                    : repairReqs.map(r => `
                 <div class="p-3 rounded-lg border border-slate-200">
                     <p>คำขอซ่อม <span class="font-semibold">${r.equipment_name}</span></p>
                     <p class="text-sm text-slate-500">อาการ: ${r.damage_description}</p>
@@ -1011,14 +1108,14 @@
                         <button onclick="handleRejectRepair(${r.id})" class="px-3 py-1 text-sm rounded bg-rose-500 text-white hover:bg-rose-600">ไม่อนุมัติ</button>
                     </div>
                 </div>`).join('');
-        }
+            }
 
-        async function renderTechnicianQueues() {
-             if (!state.user || !['admin', 'technician'].includes(state.user.role) || !$('#techDeliveryQueue')) return;
+            async function renderTechnicianQueues() {
+                if (!state.user || !['admin', 'technician'].includes(state.user.role) || !$('#techDeliveryQueue')) return;
 
-             const deliveryQueue = await api.queueForDelivery();
-             $('#techDeliveryQueue').innerHTML = deliveryQueue.length === 0 ? `<p class="text-slate-500">ไม่มีรายการรอส่งมอบ</p>`
-                : deliveryQueue.map(b => `
+                const deliveryQueue = await api.queueForDelivery();
+                $('#techDeliveryQueue').innerHTML = deliveryQueue.length === 0 ? `<p class="text-slate-500">ไม่มีรายการรอส่งมอบ</p>`
+                    : deliveryQueue.map(b => `
                 <div class="p-3 rounded-lg border border-slate-200 text-sm">
                     <div class="flex justify-between">
                         <p>ส่งมอบให้ <span class="font-semibold">${b.user_name}</span></p>
@@ -1029,31 +1126,31 @@
                 </div>
                 `).join('');
 
-             const returnQueue = await api.queueForReturn();
-             $('#techReturnQueue').innerHTML = returnQueue.length === 0 ? `<p class="text-slate-500">ไม่มีรายการรอตรวจสภาพ</p>`
-                : returnQueue.map(b => {
-                const isLate = new Date() > new Date(b.due_date);
-                return `
+                const returnQueue = await api.queueForReturn();
+                $('#techReturnQueue').innerHTML = returnQueue.length === 0 ? `<p class="text-slate-500">ไม่มีรายการรอตรวจสภาพ</p>`
+                    : returnQueue.map(b => {
+                        const isLate = new Date() > new Date(b.due_date);
+                        return `
                     <div class="p-3 rounded-lg border ${isLate ? 'border-red-300 bg-red-50' : 'border-slate-200'} text-sm">
                         <p><span class="font-semibold">${b.user_name}</span> คืน ${b.equipment_ids.length} เครื่อง</p>
                         <p class="text-slate-600">กำหนดคืน: ${b.due_date}</p>
-                        ${isLate ? `<p class="text-xs font-semibold text-red-600">คืนล่าช้า!</p>`: ''}
+                        ${isLate ? `<p class="text-xs font-semibold text-red-600">คืนล่าช้า!</p>` : ''}
                         <button onclick="handleReturnClick(${b.id})" class="mt-2 w-full px-3 py-1 rounded bg-orange-500 text-white hover:bg-orange-600 text-xs">ดำเนินการคืน</button>
                     </div>`
-                }).join('');
-             
-             const repairs = await api.listRepairs();
-             $('#repairList').innerHTML = repairs.length === 0 ? `<div class="text-slate-500 text-center">ไม่มีประวัติการซ่อม</div>`
-                 : repairs.map(r => {
-                 let statusText, statusColor;
-                 switch(r.status){
-                     case 'pending_repair_approval': statusText = 'รออนุมัติซ่อม'; statusColor = 'bg-yellow-100 text-yellow-800'; break;
-                     case 'repair_approved': statusText = 'กำลังซ่อม'; statusColor = 'bg-blue-100 text-blue-800'; break;
-                     case 'repair_rejected': statusText = 'ไม่อนุมัติซ่อม'; statusColor = 'bg-red-100 text-red-800'; break;
-                     case 'completed': statusText = 'ซ่อมเสร็จ'; statusColor = 'bg-green-100 text-green-800'; break;
-                 }
-                 const canComplete = r.status === 'repair_approved' && (state.user.role === 'technician' || state.user.role === 'admin');
-                 return `
+                    }).join('');
+
+                const repairs = await api.listRepairs();
+                $('#repairList').innerHTML = repairs.length === 0 ? `<div class="text-slate-500 text-center">ไม่มีประวัติการซ่อม</div>`
+                    : repairs.map(r => {
+                        let statusText, statusColor;
+                        switch (r.status) {
+                            case 'pending_repair_approval': statusText = 'รออนุมัติซ่อม'; statusColor = 'bg-yellow-100 text-yellow-800'; break;
+                            case 'repair_approved': statusText = 'กำลังซ่อม'; statusColor = 'bg-blue-100 text-blue-800'; break;
+                            case 'repair_rejected': statusText = 'ไม่อนุมัติซ่อม'; statusColor = 'bg-red-100 text-red-800'; break;
+                            case 'completed': statusText = 'ซ่อมเสร็จ'; statusColor = 'bg-green-100 text-green-800'; break;
+                        }
+                        const canComplete = r.status === 'repair_approved' && (state.user.role === 'technician' || state.user.role === 'admin');
+                        return `
                     <div class="p-3 rounded-lg border border-slate-200 text-sm">
                         <div class="flex justify-between items-start">
                            <span class="font-semibold">${r.equipment_name}</span>
@@ -1063,96 +1160,96 @@
                         ${canComplete ? `<button onclick="handleCompleteRepairClick(${r.id})" class="mt-2 px-3 py-1 text-xs rounded bg-indigo-500 text-white hover:bg-indigo-600">บันทึกการซ่อม</button>` : ''}
                         ${r.status === 'completed' ? `<div class="text-xs mt-1 text-slate-500 bg-slate-50 p-1.5 rounded"><strong>รายละเอียด:</strong> ${r.repair_details || '-'} | <strong>ค่าซ่อม:</strong> ${r.cost || 0} บาท</div>` : ''}
                     </div>`;
-             }).join('');
-        }
-        
-        let borrowChartInstance = null;
-        async function renderReports() {
-            if (!state.user || !['admin', 'approver'].includes(state.user.role) || !$('#reportCards')) return;
-            const equipSummary = await api.equipmentList();
-            const total = equipSummary.length;
-            const borrowed = equipSummary.filter(e => e.status === 'borrowed').length;
-            const repairData = await api.getRepairReport();
+                    }).join('');
+            }
 
-            $('#reportCards').innerHTML = `
+            let borrowChartInstance = null;
+            async function renderReports() {
+                if (!state.user || !['admin', 'approver'].includes(state.user.role) || !$('#reportCards')) return;
+                const equipSummary = await api.equipmentList();
+                const total = equipSummary.length;
+                const borrowed = equipSummary.filter(e => e.status === 'borrowed').length;
+                const repairData = await api.getRepairReport();
+
+                $('#reportCards').innerHTML = `
                 <div class="rounded-xl p-4 bg-blue-100 text-blue-800"><div class="text-sm">อุปกรณ์ทั้งหมด</div><div class="text-3xl font-bold mt-1">${total}</div></div>
                 <div class="rounded-xl p-4 bg-indigo-100 text-indigo-800"><div class="text-sm">กำลังใช้งาน</div><div class="text-3xl font-bold mt-1">${borrowed}</div></div>
                 <div class="rounded-xl p-4 bg-red-100 text-red-800"><div class="text-sm">ค่าซ่อมทั้งหมด</div><div class="text-3xl font-bold mt-1">${repairData.totalCost.toLocaleString()}.-</div></div>
             `;
-            
-            // Chart
-            const ctx = document.getElementById('borrowChart').getContext('2d');
-            const monthlyBorrows = state.borrows.reduce((acc, b) => {
-                const month = new Date(b.borrow_date).toLocaleString('th-TH', { month: 'short' });
-                acc[month] = (acc[month] || 0) + 1;
-                return acc;
-            }, {});
-            
-            if (borrowChartInstance) {
-                borrowChartInstance.destroy();
-            }
-            borrowChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(monthlyBorrows),
-                    datasets: [{
-                        label: 'จำนวนการยืมรายเดือน',
-                        data: Object.values(monthlyBorrows),
-                        backgroundColor: 'rgba(79, 70, 229, 0.7)',
-                        borderColor: 'rgba(79, 70, 229, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: { y: { beginAtZero: true } }
+
+                // Chart
+                const ctx = document.getElementById('borrowChart').getContext('2d');
+                const monthlyBorrows = state.borrows.reduce((acc, b) => {
+                    const month = new Date(b.borrow_date).toLocaleString('th-TH', { month: 'short' });
+                    acc[month] = (acc[month] || 0) + 1;
+                    return acc;
+                }, {});
+
+                if (borrowChartInstance) {
+                    borrowChartInstance.destroy();
                 }
-            });
-        }
-        
-        function renderNotifications() {
-            const notificationBtn = $('#notificationBtn');
-            const notificationList = $('#notificationList');
-            if (!state.user || !notificationList) return;
+                borrowChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(monthlyBorrows),
+                        datasets: [{
+                            label: 'จำนวนการยืมรายเดือน',
+                            data: Object.values(monthlyBorrows),
+                            backgroundColor: 'rgba(79, 70, 229, 0.7)',
+                            borderColor: 'rgba(79, 70, 229, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            }
 
-            const userNotifications = state.notifications.filter(n => {
-                return (Array.isArray(n.target) && (n.target.includes(state.user.role) || n.target.includes(state.user.id)));
-            });
+            function renderNotifications() {
+                const notificationBtn = $('#notificationBtn');
+                const notificationList = $('#notificationList');
+                if (!state.user || !notificationList) return;
 
-            if (userNotifications.length === 0) {
-                notificationList.innerHTML = `<p class="p-4 text-center text-slate-500">ไม่มีการแจ้งเตือนใหม่</p>`;
-            } else {
-                notificationList.innerHTML = userNotifications.map(n => `
+                const userNotifications = state.notifications.filter(n => {
+                    return (Array.isArray(n.target) && (n.target.includes(state.user.role) || n.target.includes(state.user.id)));
+                });
+
+                if (userNotifications.length === 0) {
+                    notificationList.innerHTML = `<p class="p-4 text-center text-slate-500">ไม่มีการแจ้งเตือนใหม่</p>`;
+                } else {
+                    notificationList.innerHTML = userNotifications.map(n => `
                     <div class="p-2 border-b border-slate-100 ${n.read ? 'opacity-60' : 'font-semibold'}">
                         <p class="text-slate-700">${n.message}</p>
                         <p class="text-xs text-slate-400 mt-1">${new Date(n.timestamp).toLocaleString('th-TH')}</p>
                     </div>
                 `).join('');
+                }
+
+                const hasUnread = userNotifications.some(n => !n.read);
+                if (hasUnread) {
+                    notificationBtn.classList.add('notification-dot');
+                } else {
+                    notificationBtn.classList.remove('notification-dot');
+                }
             }
 
-            const hasUnread = userNotifications.some(n => !n.read);
-            if (hasUnread) {
-                notificationBtn.classList.add('notification-dot');
-            } else {
-                notificationBtn.classList.remove('notification-dot');
-            }
-        }
 
+            // =================================================================================
+            // EVENT HANDLERS (ฟังก์ชันจัดการการกระทำของผู้ใช้)
+            // =================================================================================
 
-        // =================================================================================
-        // EVENT HANDLERS (ฟังก์ชันจัดการการกระทำของผู้ใช้)
-        // =================================================================================
-        
-        window.handleApproveUser = async (id) => { try { await api.approveUser(id); toast('อนุมัติผู้ใช้สำเร็จ'); fullRender(); } catch (e) { toast(e.message, true); } };
-        window.handleRejectUser = async (id) => { try { await api.rejectUser(id); toast('ปฏิเสธผู้ใช้เรียบร้อย'); fullRender(); } catch (e) { toast(e.message, true); } };
-        window.handleApproveBorrow = async (id) => { try { await api.approveBorrow(id); toast('อนุมัติการยืมสำเร็จ (รอช่างตรวจ)'); fullRender(); } catch (e) { toast(e.message, true); } };
-        window.handleRejectBorrow = async (id) => { try { await api.rejectBorrow(id); toast('ปฏิเสธการยืมเรียบร้อย'); fullRender(); } catch (e) { toast(e.message, true); } };
-        window.handleAdminCancelBorrow = async (id) => { if(confirm('ต้องการยกเลิกคำขอยืมนี้หรือไม่?')) {try { await api.adminCancelBorrow(id); toast('ยกเลิกคำขอยืมสำเร็จ'); fullRender(); } catch (e) { toast(e.message, true); } }};
-        window.handleApproveRepair = async (id) => { try { await api.approveRepair(id); toast('อนุมัติการซ่อมสำเร็จ'); fullRender(); } catch (e) { toast(e.message, true); } };
-        window.handleRejectRepair = async (id) => { try { await api.rejectRepair(id); toast('ปฏิเสธการซ่อมเรียบร้อย'); fullRender(); } catch (e) { toast(e.message, true); } };
-        
-        function getChecklistHTML(formId, checklist) {
-            return checklist.map(item => `
+            window.handleApproveUser = async (id) => { try { await api.approveUser(id); toast('อนุมัติผู้ใช้สำเร็จ'); fullRender(); } catch (e) { toast(e.message, true); } };
+            window.handleRejectUser = async (id) => { try { await api.rejectUser(id); toast('ปฏิเสธผู้ใช้เรียบร้อย'); fullRender(); } catch (e) { toast(e.message, true); } };
+            window.handleApproveBorrow = async (id) => { try { await api.approveBorrow(id); toast('อนุมัติการยืมสำเร็จ (รอช่างตรวจ)'); fullRender(); } catch (e) { toast(e.message, true); } };
+            window.handleRejectBorrow = async (id) => { try { await api.rejectBorrow(id); toast('ปฏิเสธการยืมเรียบร้อย'); fullRender(); } catch (e) { toast(e.message, true); } };
+            window.handleAdminCancelBorrow = async (id) => { if (confirm('ต้องการยกเลิกคำขอยืมนี้หรือไม่?')) { try { await api.adminCancelBorrow(id); toast('ยกเลิกคำขอยืมสำเร็จ'); fullRender(); } catch (e) { toast(e.message, true); } } };
+            window.handleApproveRepair = async (id) => { try { await api.approveRepair(id); toast('อนุมัติการซ่อมสำเร็จ'); fullRender(); } catch (e) { toast(e.message, true); } };
+            window.handleRejectRepair = async (id) => { try { await api.rejectRepair(id); toast('ปฏิเสธการซ่อมเรียบร้อย'); fullRender(); } catch (e) { toast(e.message, true); } };
+
+            function getChecklistHTML(formId, checklist) {
+                return checklist.map(item => `
                 <div class="grid grid-cols-3 items-center border-b py-2">
                     <label for="${formId}-${item.id}" class="text-sm text-slate-700 col-span-2">${item.label}</label>
                     <div class="flex items-center justify-end gap-4">
@@ -1161,71 +1258,71 @@
                     </div>
                 </div>
             `).join('');
-        }
+            }
 
-        window.handlePreDeliveryCheck = (borrowId) => {
-            const borrow = state.borrows.find(b => b.id === borrowId);
-            const inspectionChecklist = [
-                {id: 'check_exterior', label: '1. ตรวจสอบสภาพภายนอก'}, {id: 'check_fuel_tank', label: '2. ตรวจสอบถังน้ำมันเชื้อเพลิง'},
-                {id: 'check_carburetor', label: '3. ตรวจสอบคาร์บูเรเตอร์'}, {id: 'check_spark_plug', label: '4. ตรวจสอบหัวเทียน'},
-                {id: 'check_battery', label: '5. ตรวจสอบแบตเตอรี่'}, {id: 'check_chem_pipe', label: '6. ตรวจสอบท่อน้ำยาเคมี'},
-                {id: 'check_nozzle_system', label: '7. ตรวจสอบระบบพ่น'}
-            ];
-            const content = `
+            window.handlePreDeliveryCheck = (borrowId) => {
+                const borrow = state.borrows.find(b => b.id === borrowId);
+                const inspectionChecklist = [
+                    { id: 'check_exterior', label: '1. ตรวจสอบสภาพภายนอก' }, { id: 'check_fuel_tank', label: '2. ตรวจสอบถังน้ำมันเชื้อเพลิง' },
+                    { id: 'check_carburetor', label: '3. ตรวจสอบคาร์บูเรเตอร์' }, { id: 'check_spark_plug', label: '4. ตรวจสอบหัวเทียน' },
+                    { id: 'check_battery', label: '5. ตรวจสอบแบตเตอรี่' }, { id: 'check_chem_pipe', label: '6. ตรวจสอบท่อน้ำยาเคมี' },
+                    { id: 'check_nozzle_system', label: '7. ตรวจสอบระบบพ่น' }
+                ];
+                const content = `
                 <form id="preDeliveryForm" data-id="${borrowId}">
                     <p class="text-sm text-slate-600 mb-3">ตรวจสภาพเครื่องทั้งหมด (${borrow.equipment_ids.length} เครื่อง) สำหรับ <strong>${borrow.user_name}</strong></p>
                     <div class="bg-slate-50 p-3 rounded-lg">${getChecklistHTML('preDeliveryForm', inspectionChecklist)}</div>
                      <textarea name="notes" rows="2" placeholder="หมายเหตุเพิ่มเติม" class="mt-3 w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
                 </form>
             `;
-            const actions = `
+                const actions = `
                 <button type="button" onclick="handleReportFault(${borrowId})" class="px-4 py-2 rounded-lg bg-amber-500 text-white hover:bg-amber-600">พบปัญหา/เปลี่ยนเครื่อง</button>
                 <button type="submit" id="confirmDeliveryBtn" form="preDeliveryForm" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">ยืนยันส่งมอบ (เครื่องปกติ)</button>
             `;
-            showModal('ตรวจสภาพก่อนส่งมอบ', content, actions);
-            
-            const form = $('#preDeliveryForm');
-            const confirmBtn = $('#confirmDeliveryBtn');
-            form.addEventListener('change', () => {
-                const faultyChecks = form.querySelectorAll('input[value="faulty"]:checked');
-                confirmBtn.disabled = faultyChecks.length > 0;
-            });
-        };
-        
-        window.handleReportFault = (borrowId) => {
-            const borrow = state.borrows.find(b => b.id === borrowId);
-            const faultyEquipId = borrow.equipment_ids[0];
-            const availableEquip = state.equipment.filter(e => e.status === 'available');
-            const content = `
+                showModal('ตรวจสภาพก่อนส่งมอบ', content, actions);
+
+                const form = $('#preDeliveryForm');
+                const confirmBtn = $('#confirmDeliveryBtn');
+                form.addEventListener('change', () => {
+                    const faultyChecks = form.querySelectorAll('input[value="faulty"]:checked');
+                    confirmBtn.disabled = faultyChecks.length > 0;
+                });
+            };
+
+            window.handleReportFault = (borrowId) => {
+                const borrow = state.borrows.find(b => b.id === borrowId);
+                const faultyEquipId = borrow.equipment_ids[0];
+                const availableEquip = state.equipment.filter(e => e.status === 'available');
+                const content = `
                 <form id="replaceEquipForm" data-id="${borrowId}">
-                    <p class="text-sm text-slate-600 mb-3">เครื่อง ${state.equipment.find(e=>e.id===faultyEquipId).name} จะถูกส่งซ่อม กรุณาเลือกเครื่องใหม่เพื่อทดแทน</p>
+                    <p class="text-sm text-slate-600 mb-3">เครื่อง ${state.equipment.find(e => e.id === faultyEquipId).name} จะถูกส่งซ่อม กรุณาเลือกเครื่องใหม่เพื่อทดแทน</p>
                     <select name="new_equip_id" class="w-full px-3 py-2 rounded-lg border border-slate-300" required>
                         <option value="">-- เลือกเครื่องทดแทน --</option>
                         ${availableEquip.map(e => `<option value="${e.id}">${e.name} (S/N: ${e.serial})</option>`).join('')}
                     </select>
                 </form>
             `;
-            const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100">ยกเลิก</button>
+                const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100">ยกเลิก</button>
                              <button type="submit" form="replaceEquipForm" class="px-4 py-2 rounded-lg bg-indigo-600 text-white">ยืนยันการเปลี่ยนเครื่อง</button>`;
-            showModal('เปลี่ยนเครื่องทดแทน', content, actions);
-        };
-        
-        window.handleReturnClick = (id) => {
-            const borrow = state.borrows.find(b => b.id === id);
-            const isLate = new Date() > new Date(borrow.due_date);
-            
-            const lateReasonHTML = isLate ? `
+                showModal('เปลี่ยนเครื่องทดแทน', content, actions);
+            };
+
+            window.handleReturnClick = (id) => {
+                const borrow = state.borrows.find(b => b.id === id);
+                const isLate = new Date() > new Date(borrow.due_date);
+
+                const lateReasonHTML = isLate ? `
                 <label class="block text-sm font-medium text-slate-700 mt-4">เหตุผลที่คืนล่าช้า</label>
                 <textarea name="late_return_reason" rows="2" placeholder="กรุณาระบุเหตุผล..." class="mt-1 w-full px-3 py-2 rounded-lg border border-red-300" required></textarea>
             ` : '';
 
-            const inspectionChecklist = [
-                {id: 'check_exterior', label: '1. ตรวจสอบสภาพภายนอก'}, {id: 'check_fuel_tank', label: '2. ตรวจสอบถังน้ำมันเชื้อเพลิง'},
-                {id: 'check_carburetor', label: '3. ตรวจสอบคาร์บูเรเตอร์'}, {id: 'check_spark_plug', label: '4. ตรวจสอบหัวเทียน'},
-                {id: 'check_battery', label: '5. ตรวจสอบแบตเตอรี่'}, {id: 'check_chem_pipe', label: '6. ตรวจสอบท่อน้ำยาเคมี'},
-                {id: 'check_nozzle_system', label: '7. ตรวจสอบระบบพ่น'}
-            ];
-            const content = `
+                const inspectionChecklist = [
+                    { id: 'check_exterior', label: '1. ตรวจสอบสภาพภายนอก' }, { id: 'check_fuel_tank', label: '2. ตรวจสอบถังน้ำมันเชื้อเพลิง' },
+                    { id: 'check_carburetor', label: '3. ตรวจสอบคาร์บูเรเตอร์' }, { id: 'check_spark_plug', label: '4. ตรวจสอบหัวเทียน' },
+                    { id: 'check_battery', label: '5. ตรวจสอบแบตเตอรี่' }, { id: 'check_chem_pipe', label: '6. ตรวจสอบท่อน้ำยาเคมี' },
+                    { id: 'check_nozzle_system', label: '7. ตรวจสอบระบบพ่น' }
+                ];
+                const content = `
                 <form id="postReturnForm" data-id="${id}">
                     <div class="bg-slate-50 p-3 rounded-lg">${getChecklistHTML('postReturnForm', inspectionChecklist)}</div>
                     <label class="block text-sm font-medium text-slate-700 mt-4">สรุปผล (สำหรับทุกเครื่อง)</label>
@@ -1237,24 +1334,24 @@
                     ${lateReasonHTML}
                 </form>
             `;
-            const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200">ยกเลิก</button>
+                const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200">ยกเลิก</button>
                              <button type="submit" form="postReturnForm" class="px-4 py-2 rounded-lg bg-orange-600 text-white hover:bg-orange-700">บันทึกผลการคืน</button>`;
-            showModal('ตรวจสภาพหลังส่งคืน', content, actions);
+                showModal('ตรวจสภาพหลังส่งคืน', content, actions);
 
-            const form = $('#postReturnForm');
-            form.addEventListener('change', () => {
-                const faultyChecks = form.querySelectorAll('input[value="faulty"]:checked');
-                const summarySelect = form.querySelector('select[name="isDamaged"]');
-                summarySelect.value = faultyChecks.length > 0 ? 'true' : 'false';
-            });
-        };
+                const form = $('#postReturnForm');
+                form.addEventListener('change', () => {
+                    const faultyChecks = form.querySelectorAll('input[value="faulty"]:checked');
+                    const summarySelect = form.querySelector('select[name="isDamaged"]');
+                    summarySelect.value = faultyChecks.length > 0 ? 'true' : 'false';
+                });
+            };
 
-        window.handleCompleteRepairClick = (id) => {
-            const repair = state.repairs.find(r => r.id === id);
-            const content = `
+            window.handleCompleteRepairClick = (id) => {
+                const repair = state.repairs.find(r => r.id === id);
+                const content = `
                  <form id="completeRepairForm" data-id="${id}" class="space-y-3 text-sm">
                     <div class="grid grid-cols-2 gap-3">
-                         <input name="repair_date" type="date" value="${new Date().toISOString().slice(0,10)}" required class="w-full px-3 py-2 rounded-lg border border-slate-200">
+                         <input name="repair_date" type="date" value="${new Date().toISOString().slice(0, 10)}" required class="w-full px-3 py-2 rounded-lg border border-slate-200">
                          <input name="repair_by" required placeholder="ผู้ดำเนินการซ่อม" value="${state.user.name}" class="w-full px-3 py-2 rounded-lg border border-slate-200">
                     </div>
                     <div><label class="font-medium">อาการชำรุด:</label><p class="p-2 bg-slate-50 rounded-md">${repair.damage_description}</p></div>
@@ -1263,14 +1360,14 @@
                     <input name="cost" type="number" placeholder="จำนวนเงิน (บาท)" class="w-full px-3 py-2 rounded-lg border border-slate-200">
                  </form>
             `;
-            const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200">ยกเลิก</button>
+                const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200">ยกเลิก</button>
                              <button type="submit" form="completeRepairForm" class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">บันทึกการซ่อม</button>`;
-            showModal('บันทึกรายละเอียดการซ่อม', content, actions);
-        };
+                showModal('บันทึกรายละเอียดการซ่อม', content, actions);
+            };
 
-        window.handleAssessmentClick = (id, name) => {
-            const equip = state.equipment.find(e => e.id === id);
-            const content = `
+            window.handleAssessmentClick = (id, name) => {
+                const equip = state.equipment.find(e => e.id === id);
+                const content = `
                 <form id="assessmentForm" data-id="${id}" class="text-sm">
                     <p class="text-base text-slate-600 mb-3">สำหรับ: <strong>${name} (S/N: ${equip.serial})</strong></p>
                     <div class="grid md:grid-cols-2 gap-x-6 gap-y-3">
@@ -1290,13 +1387,13 @@
                     </div>
                 </form>
             `;
-            const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200">ยกเลิก</button>
+                const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200">ยกเลิก</button>
                              <button type="submit" form="assessmentForm" class="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700">บันทึกผลประเมิน</button>`;
-            showModal('แบบรายงานการประเมินมาตรฐานเครื่องพ่น', content, actions);
-        };
+                showModal('แบบรายงานการประเมินมาตรฐานเครื่องพ่น', content, actions);
+            };
 
-        window.handleAddEquipmentClick = () => {
-             const content = `
+            window.handleAddEquipmentClick = () => {
+                const content = `
                 <form id="addEquipForm" class="space-y-3">
                     <input name="name" required placeholder="ชื่อ/ยี่ห้อ" class="w-full px-3 py-2 rounded-lg border border-slate-200">
                     <input name="serial" required placeholder="เลขที่/รหัส" class="w-full px-3 py-2 rounded-lg border border-slate-200">
@@ -1305,14 +1402,14 @@
                     <textarea name="notes" placeholder="หมายเหตุ" rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-200"></textarea>
                 </form>
             `;
-            const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100">ยกเลิก</button>
+                const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100">ยกเลิก</button>
                              <button type="submit" form="addEquipForm" class="px-4 py-2 rounded-lg bg-indigo-600 text-white">เพิ่มอุปกรณ์</button>`;
-            showModal('เพิ่มอุปกรณ์ใหม่', content, actions);
-        };
+                showModal('เพิ่มอุปกรณ์ใหม่', content, actions);
+            };
 
-        window.handleEditEquipmentClick = (id) => {
-            const equip = state.equipment.find(e => e.id === id);
-            const content = `
+            window.handleEditEquipmentClick = (id) => {
+                const equip = state.equipment.find(e => e.id === id);
+                const content = `
                 <form id="editEquipForm" data-id="${id}" class="space-y-3">
                     <input name="name" required value="${equip.name}" class="w-full px-3 py-2 rounded-lg border border-slate-200">
                     <input name="serial" required value="${equip.serial}" class="w-full px-3 py-2 rounded-lg border border-slate-200">
@@ -1321,14 +1418,14 @@
                     <textarea name="notes" placeholder="หมายเหตุ" rows="2" class="w-full px-3 py-2 rounded-lg border border-slate-200">${equip.notes || ''}</textarea>
                 </form>
             `;
-            const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100">ยกเลิก</button>
+                const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100">ยกเลิก</button>
                              <button type="submit" form="editEquipForm" class="px-4 py-2 rounded-lg bg-indigo-600 text-white">บันทึก</button>`;
-            showModal('แก้ไขข้อมูลอุปกรณ์', content, actions);
-        };
+                showModal('แก้ไขข้อมูลอุปกรณ์', content, actions);
+            };
 
-        window.handleViewUsersClick = async () => {
-            const allUsers = await api.listAllUsers();
-            const content = `
+            window.handleViewUsersClick = async () => {
+                const allUsers = await api.listAllUsers();
+                const content = `
                 <div class="max-h-96 overflow-y-auto">
                     <table class="w-full text-sm text-left text-slate-500">
                         <thead class="text-xs text-slate-700 uppercase bg-slate-50">
@@ -1356,306 +1453,161 @@
                     </table>
                 </div>
             `;
-            showModal('รายชื่อผู้ใช้งานในระบบ', content, '');
-        };
+                showModal('รายชื่อผู้ใช้งานในระบบ', content, '');
+            };
 
-        window.handleDeleteEquipmentClick = (id) => { if(confirm('คุณต้องการลบอุปกรณ์นี้ใช่หรือไม่?')) { try { api.deleteEquipment(id); toast('ลบอุปกรณ์สำเร็จ'); fullRender(); } catch(e) { toast(e.message, true); } } };
-        
-        window.handleReportProblem = () => {
-            const content = `
+            window.handleDeleteEquipmentClick = (id) => { if (confirm('คุณต้องการลบอุปกรณ์นี้ใช่หรือไม่?')) { try { api.deleteEquipment(id); toast('ลบอุปกรณ์สำเร็จ'); fullRender(); } catch (e) { toast(e.message, true); } } };
+
+            window.handleReportProblem = () => {
+                const content = `
                 <form id="reportProblemForm">
                     <p class="text-sm text-slate-600 mb-3">กรุณาอธิบายปัญหาที่พบ หรือให้ข้อเสนอแนะเพื่อการพัฒนา</p>
                     <textarea name="problem_description" rows="5" class="w-full px-3 py-2 rounded-lg border border-slate-200" required placeholder="อธิบายปัญหา..."></textarea>
                 </form>
             `;
-            const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100">ยกเลิก</button>
+                const actions = `<button type="button" onclick="hideModal()" class="px-4 py-2 rounded-lg bg-slate-100">ยกเลิก</button>
                              <button type="submit" form="reportProblemForm" class="px-4 py-2 rounded-lg bg-indigo-600 text-white">ส่งข้อความ</button>`;
-            showModal('แจ้งปัญหาระบบ / ข้อเสนอแนะ', content, actions);
-        };
-        
-        // Form Submissions
-        async function handleDynamicFormSubmit(e) {
-            e.preventDefault();
-            const form = e.target;
-            const id = parseInt(form.dataset.id);
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-            const checklistData = Object.fromEntries(Array.from(formData.keys()).filter(k => k.startsWith('check_')).map(k => [k, formData.get(k)]));
+                showModal('แจ้งปัญหาระบบ / ข้อเสนอแนะ', content, actions);
+            };
 
-            try {
-                switch(form.id) {
-                    case 'preDeliveryForm': await api.performPreDeliveryCheck(id, false, null, checklistData); toast('บันทึกผลและส่งมอบเรียบร้อย'); break;
-                    case 'replaceEquipForm': await api.performPreDeliveryCheck(id, true, parseInt(data.new_equip_id), checklistData); toast('เปลี่ยนเครื่องและบันทึกผลเรียบร้อย'); break;
-                    case 'postReturnForm': await api.techInspectReturn(id, data.isDamaged === 'true', data.notes, checklistData, data.late_return_reason); toast('บันทึกผลการตรวจสภาพสำเร็จ'); break;
-                    case 'completeRepairForm': await api.completeRepair(id, data); toast('บันทึกรายละเอียดการซ่อมเรียบร้อย'); break;
-                    case 'assessmentForm': await api.createAssessment({ equipment_id: id, ...data }); toast('บันทึกผลการประเมินสำเร็จ'); break;
-                    case 'addEquipForm': await api.addEquipment(data); toast('เพิ่มอุปกรณ์สำเร็จ'); break;
-                    case 'editEquipForm': await api.updateEquipment(id, data); toast('แก้ไขข้อมูลสำเร็จ'); break;
-                    case 'reportProblemForm': toast('ขอบคุณสำหรับข้อเสนอแนะ!'); break;
-                }
-                hideModal();
-                fullRender();
-            } catch (err) { toast(err.message, true); }
-        }
-        async function handleLogin(e) { e.preventDefault(); const d = Object.fromEntries(new FormData(e.target).entries()); try { const user = await api.login(d.email, d.password); state.user = user; localStorage.setItem('yonchuw_user', JSON.stringify(user)); toast(`ยินดีต้อนรับ, ${user.name}`); show('dashboard'); fullRender(); } catch (err) { toast(err.message, true); } e.target.reset(); }
-        async function handleRegister(e) { e.preventDefault(); const d = Object.fromEntries(new FormData(e.target).entries()); if(!d.email.includes('@')) {toast('รูปแบบอีเมลไม่ถูกต้อง', true); return;} if(d.password.length<8) {toast('รหัสผ่านต้องมี 8 ตัวอักษรขึ้นไป',true); return;} try { const res = await api.register(d); toast(res.message); show('loginPage'); } catch (err) { toast(err.message, true); } e.target.reset(); }
-        function handleLogout() { state.user = null; localStorage.removeItem('yonchuw_user'); toast('ออกจากระบบสำเร็จ'); $('#demoModeBanner').classList.add('hidden'); show('home'); applyRoleVisibility(); }
-        async function handleDemoLogin() { try { const user = await api.login('user@example.com', 'password'); state.user = user; localStorage.setItem('yonchuw_user', JSON.stringify(user)); toast(`เข้าสู่ระบบจำลองในฐานะผู้ใช้ทั่วไป`); show('dashboard'); $('#demoModeBanner').classList.remove('hidden'); fullRender(); } catch (err) { toast(err.message, true); } }
-        async function handleBorrowSubmit(e) { 
-            e.preventDefault(); 
-            const btn = e.target.querySelector('button');
-            const isDemoMode = !$('#demoModeBanner').classList.contains('hidden');
-            if (isDemoMode) {
-                toast('จำลองการส่งคำขอยืมสำเร็จ!');
-                e.target.reset();
-                return;
+            // Form Submissions
+            async function handleDynamicFormSubmit(e) {
+                e.preventDefault();
+                const form = e.target;
+                const id = parseInt(form.dataset.id);
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                const checklistData = Object.fromEntries(Array.from(formData.keys()).filter(k => k.startsWith('check_')).map(k => [k, formData.get(k)]));
+
+                try {
+                    switch (form.id) {
+                        case 'preDeliveryForm': await api.performPreDeliveryCheck(id, false, null, checklistData); toast('บันทึกผลและส่งมอบเรียบร้อย'); break;
+                        case 'replaceEquipForm': await api.performPreDeliveryCheck(id, true, parseInt(data.new_equip_id), checklistData); toast('เปลี่ยนเครื่องและบันทึกผลเรียบร้อย'); break;
+                        case 'postReturnForm': await api.techInspectReturn(id, data.isDamaged === 'true', data.notes, checklistData, data.late_return_reason); toast('บันทึกผลการตรวจสภาพสำเร็จ'); break;
+                        case 'completeRepairForm': await api.completeRepair(id, data); toast('บันทึกรายละเอียดการซ่อมเรียบร้อย'); break;
+                        case 'assessmentForm': await api.createAssessment({ equipment_id: id, ...data }); toast('บันทึกผลการประเมินสำเร็จ'); break;
+                        case 'addEquipForm': await api.addEquipment(data); toast('เพิ่มอุปกรณ์สำเร็จ'); break;
+                        case 'editEquipForm': await api.updateEquipment(id, data); toast('แก้ไขข้อมูลสำเร็จ'); break;
+                        case 'reportProblemForm': toast('ขอบคุณสำหรับข้อเสนอแนะ!'); break;
+                    }
+                    hideModal();
+                    fullRender();
+                } catch (err) { toast(err.message, true); }
             }
-            const formData = new FormData(e.target); 
-            try { 
-                btn.disabled = true; 
-                const selectedEquipIds = Array.from(e.target.querySelectorAll('input[name="equipment_ids"]:checked')).map(cb => parseInt(cb.value)); 
-                const details = Object.fromEntries(formData.entries()); 
-                delete details.equipment_ids; 
-                const payload = { equipment_ids: selectedEquipIds, ...details, user_id: state.user.id }; 
-                if (!payload.equipment_ids.length || !payload.borrow_date || !payload.purpose || !payload.contact_name) { 
-                    throw new Error('กรุณากรอกข้อมูลสำคัญและเลือกเครื่องอย่างน้อย 1 รายการ'); 
-                } 
-                await api.createBorrow(payload); 
-                toast('ส่งคำขอยืมสำเร็จ'); 
-                e.target.reset(); 
-                fullRender(); 
-            } catch (err) { 
-                toast(err.message, true); 
-            } finally { 
-                btn.disabled = false; 
-            } 
-        }
-        function handleExitDemo() { state.user = null; localStorage.removeItem('yonchuw_user'); toast('ออกจากโหมดทดสอบสำเร็จ'); $('#demoModeBanner').classList.add('hidden'); show('home'); applyRoleVisibility(); }
-        
-        async function handleAiAnalysisClick(e) {
-            const btn = e.target.closest('button');
-            const resultDiv = $('#aiAnalysisResult');
-            btn.disabled = true;
-            resultDiv.innerHTML = 'กำลังวิเคราะห์ข้อมูลด้วย AI...';
-
-            try {
-                const completedRepairs = state.repairs.filter(r => r.status === 'completed');
-                if (completedRepairs.length === 0) {
-                    resultDiv.innerHTML = 'ยังไม่มีข้อมูลการซ่อมที่เสร็จสมบูรณ์เพียงพอสำหรับการวิเคราะห์';
+            async function handleLogin(e) { e.preventDefault(); const d = Object.fromEntries(new FormData(e.target).entries()); try { const user = await api.login(d.email, d.password); state.user = user; localStorage.setItem('yonchuw_user', JSON.stringify(user)); toast(`ยินดีต้อนรับ, ${user.name}`); show('dashboard'); fullRender(); } catch (err) { toast(err.message, true); } e.target.reset(); }
+            async function handleRegister(e) { e.preventDefault(); const d = Object.fromEntries(new FormData(e.target).entries()); if (!d.email.includes('@')) { toast('รูปแบบอีเมลไม่ถูกต้อง', true); return; } if (d.password.length < 8) { toast('รหัสผ่านต้องมี 8 ตัวอักษรขึ้นไป', true); return; } try { const res = await api.register(d); toast(res.message); show('loginPage'); } catch (err) { toast(err.message, true); } e.target.reset(); }
+            function handleLogout() { state.user = null; localStorage.removeItem('yonchuw_user'); toast('ออกจากระบบสำเร็จ'); $('#demoModeBanner').classList.add('hidden'); show('home'); applyRoleVisibility(); }
+            async function handleDemoLogin() { try { const user = await api.login('user@example.com', 'password'); state.user = user; localStorage.setItem('yonchuw_user', JSON.stringify(user)); toast(`เข้าสู่ระบบจำลองในฐานะผู้ใช้ทั่วไป`); show('dashboard'); $('#demoModeBanner').classList.remove('hidden'); fullRender(); } catch (err) { toast(err.message, true); } }
+            async function handleBorrowSubmit(e) {
+                e.preventDefault();
+                const btn = e.target.querySelector('button');
+                const isDemoMode = !$('#demoModeBanner').classList.contains('hidden');
+                if (isDemoMode) {
+                    toast('จำลองการส่งคำขอยืมสำเร็จ!');
+                    e.target.reset();
                     return;
                 }
-
-                const dataForPrompt = completedRepairs.map(r => 
-                    `- เครื่อง: ${r.equipment_name}, อาการ: ${r.damage_description}, การซ่อม: ${r.repair_details}, ค่าใช้จ่าย: ${r.cost} บาท`
-                ).join('\n');
-
-                const systemPrompt = "คุณคือผู้จัดการฝ่ายซ่อมบำรุง วิเคราะห์ข้อมูลการซ่อมต่อไปนี้และสรุปประเด็นสำคัญใน 2-3 ย่อหน้า ให้มีใจความเกี่ยวกับค่าใช้จ่ายรวม, ปัญหาที่พบบ่อย, และข้อเสนอแนะเพื่อลดค่าใช้จ่ายหรือปรับปรุงการบำรุงรักษาในอนาคต";
-                const userQuery = `นี่คือข้อมูลการซ่อมล่าสุด:\n${dataForPrompt}`;
-                const apiKey = ""; // Canvas will provide this
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-                const payload = {
-                    contents: [{ parts: [{ text: userQuery }] }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                };
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.statusText}`);
-                }
-
-                const result = await response.json();
-                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (text) {
-                     // Simple conversion from markdown-like text to basic HTML for display
-                    resultDiv.innerHTML = text
-                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
-                        .replace(/\n/g, '<br>'); // Newlines
-                } else {
-                    throw new Error('ไม่ได้รับข้อมูลการวิเคราะห์จาก AI');
-                }
-
-            } catch (error) {
-                console.error("AI Analysis Error:", error);
-                resultDiv.innerHTML = `เกิดข้อผิดพลาดในการวิเคราะห์: ${error.message}`;
-            } finally {
-                btn.disabled = false;
-            }
-        }
-
-
-        // =================================================================================
-        // INITIALIZATION (ฟังก์ชันเริ่มต้นและตั้งค่า)
-        // =================================================================================
-        function applyRoleVisibility() {
-            const loggedIn = !!state.user;
-            $('#nav-actions').classList.toggle('hidden', window.innerWidth < 768 && loggedIn);
-            $('#hamburgerBtn')?.classList.toggle('hidden', !loggedIn);
-
-            $('#btnLogin').classList.toggle('hidden', loggedIn);
-            $('#btnRegister').classList.toggle('hidden', loggedIn);
-            $('#userInfo').classList.toggle('hidden', !loggedIn);
-            $('#userInfo').classList.toggle('flex', loggedIn);
-            
-            const sidebarLogin = $('#sidebarLoginActions');
-            const sidebarUserInfo = $('#sidebarUserInfo');
-            if(sidebarLogin) sidebarLogin.classList.toggle('hidden', loggedIn);
-            if(sidebarUserInfo) {
-                sidebarUserInfo.classList.toggle('hidden', !loggedIn);
-                sidebarUserInfo.classList.toggle('flex', loggedIn);
-            }
-            
-            const allTabs = [
-                { id: 'equipmentTab', label: 'ภาพรวมอุปกรณ์', roles: ['admin', 'user', 'technician', 'approver'] },
-                { id: 'borrowTab', label: 'ยืม-คืน', roles: ['admin', 'user'] },
-                { id: 'techTab', label: 'ส่วนงานช่าง', roles: ['admin', 'technician'] },
-                { id: 'approvalTab', label: 'จัดการคำขอ', roles: ['admin', 'approver'] },
-                { id: 'assessmentTab', label: 'ประเมินมาตรฐาน', roles: ['admin', 'technician'] },
-                { id: 'reportTab', label: 'รายงาน', roles: ['admin', 'approver'] }
-            ];
-
-            const desktopTabsContainer = $('#desktopTabs');
-            const sidebarNavContainer = $('#sidebarNav');
-
-            if (loggedIn) {
-                $('#userNameDisplay').textContent = state.user.name;
-                $('#sidebarUserNameDisplay').textContent = state.user.name;
-                const role = state.user.role;
-                $('#sidebarUserRoleDisplay').textContent = `สถานะ: ${roleMap[role] || 'Unknown'}`;
-
-                const visibleTabs = allTabs.filter(tab => tab.roles.includes(role));
-                
-                if(desktopTabsContainer) desktopTabsContainer.innerHTML = visibleTabs.map(tab => `<button data-tab="${tab.id}" class="tab-btn px-4 py-2 rounded-lg">${tab.label}</button>`).join('');
-                if(sidebarNavContainer) sidebarNavContainer.innerHTML = visibleTabs.map(tab => `<button data-tab="${tab.id}" class="tab-btn w-full text-left px-4 py-2 rounded-lg hover:bg-white/10">${tab.label}</button>`).join('');
-                
-                $('#btnAddEquipDash').classList.toggle('hidden', role !== 'admin');
-                $('#notificationArea').classList.remove('hidden');
-
-            } else {
-                 if(desktopTabsContainer) desktopTabsContainer.innerHTML = '';
-                 if(sidebarNavContainer) sidebarNavContainer.innerHTML = '';
-                 $('#notificationArea').classList.add('hidden');
-            }
-        }
-        
-        function setupEventListeners() {
-            const addListener = (selector, event, handler) => {
-                const element = $(selector);
-                if (element) {
-                    element.addEventListener(event, handler);
-                }
-            };
-            
-            // Sidebar controls
-            const openSidebar = () => { 
-                const sidebar = $('#sidebar');
-                if(sidebar) {
-                    sidebar.classList.remove('hidden'); 
-                    setTimeout(() => { 
-                        $('#sidebarBackdrop').style.opacity = '1'; 
-                        $('#sidebarContent').classList.remove('-translate-x-full'); 
-                    }, 10);
-                }
-            };
-            const closeSidebar = () => {
-                const sidebarBackdrop = $('#sidebarBackdrop');
-                const sidebarContent = $('#sidebarContent');
-                if(sidebarBackdrop && sidebarContent) {
-                    sidebarBackdrop.style.opacity = '0'; 
-                    sidebarContent.classList.add('-translate-x-full'); 
-                    setTimeout(() => { $('#sidebar').classList.add('hidden'); }, 300);
-                }
-            };
-            addListener('#hamburgerBtn', 'click', openSidebar);
-            addListener('#sidebarCloseBtn', 'click', closeSidebar);
-            addListener('#sidebarBackdrop', 'click', closeSidebar);
-            
-            // Global click listener for tabs (in sidebar or desktop)
-            document.body.addEventListener('click', (e) => {
-                const target = e.target;
-                if (target.matches('.tab-btn')) {
-                    setTabs(target.dataset.tab);
-                    if (window.innerWidth < 768) closeSidebar();
-                } else if (target.id === 'sidebarBtnLogin') {
-                    closeSidebar(); show('loginPage');
-                } else if (target.id === 'sidebarBtnRegister') {
-                    closeSidebar(); show('registerPage');
-                }
-            });
-
-            addListener('#viewAllUsersBtn', 'click', handleViewUsersClick);
-            addListener('#aiAnalyzeBtn', 'click', handleAiAnalysisClick);
-            addListener('#startBtn', 'click', () => state.user ? show('dashboard') : show('loginPage'));
-            addListener('#borrowHistoryFilter', 'click', (e) => { if(e.target.tagName === 'BUTTON') { $$('#borrowHistoryFilter button').forEach(b => b.classList.remove('bg-white', 'shadow')); e.target.classList.add('bg-white', 'shadow'); renderMyBorrows(); } });
-            addListener('#btnAddEquipDash', 'click', handleAddEquipmentClick);
-            addListener('#exitDemoBtn', 'click', handleExitDemo);
-            addListener('#btnLogin', 'click', () => show('loginPage'));
-            addListener('#btnRegister', 'click', () => show('registerPage'));
-            addListener('#goRegister', 'click', (e) => { e.preventDefault(); show('registerPage'); });
-            addListener('#browseBtn', 'click', handleDemoLogin);
-            addListener('#backFromEquip', 'click', () => show('home'));
-            addListener('#backFromLogin', 'click', () => show('home'));
-            addListener('#backFromRegister', 'click', () => show('loginPage'));
-            addListener('#btnLogout', 'click', handleLogout);
-            addListener('#sidebarBtnLogout', 'click', handleLogout);
-            addListener('#reportProblemBtn', 'click', handleReportProblem);
-            addListener('#loginForm', 'submit', handleLogin);
-            addListener('#registerForm', 'submit', handleRegister);
-            addListener('#borrowForm', 'submit', handleBorrowSubmit);
-            addListener('#modalClose', 'click', hideModal);
-            addListener('#modal', 'click', (e) => { if(e.target.id === 'modal') hideModal() });
-            document.addEventListener('submit', (e) => { if(['preDeliveryForm', 'postReturnForm', 'completeRepairForm', 'assessmentForm', 'addEquipForm', 'editEquipForm', 'replaceEquipForm', 'reportProblemForm'].includes(e.target.id)) { handleDynamicFormSubmit(e); } });
-            addListener('#equipSearch', 'input', () => renderEquipmentLists({ forAssessment: false }));
-            addListener('#equipFilter', 'change', () => renderEquipmentLists({ forAssessment: false }));
-            addListener('#dashEquipSearch', 'input', () => renderEquipmentLists({ forAssessment: true }));
-            addListener('#dashEquipFilter', 'change', () => renderEquipmentLists({ forAssessment: true }));
-            addListener('#assessmentTypeFilter', 'change', () => renderEquipmentLists({ forAssessment: true }));
-            addListener('#borrowDate', 'change', (e) => { if(e.target.value) { const d = new Date(e.target.value); d.setDate(d.getDate() + 7); $('#dueDate').value = d.toISOString().slice(0, 10); } else { $('#dueDate').value = ''; } });
-            addListener('#notificationBtn', 'click', toggleNotificationDropdown);
-        }
-        
-        function populateBorrowList() {
-            const listContainer = $('#borrowEquipList');
-            const availableEquip = state.equipment.filter(e => e.status === 'available');
-            if (listContainer) {
-                if (availableEquip.length === 0) {
-                    listContainer.innerHTML = `<p class="text-sm text-slate-500">ไม่มีอุปกรณ์ว่างให้ยืม</p>`;
-                } else {
-                    listContainer.innerHTML = availableEquip.map(e => `
-                        <label class="flex items-center p-2 rounded-md hover:bg-slate-50 text-sm">
-                            <input type="checkbox" name="equipment_ids" value="${e.id}" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                            <span class="ml-2">${e.name} <span class="text-slate-500 font-normal">(${e.type})</span> <span class="text-slate-400">(S/N: ${e.serial})</span></span>
-                        </label>
-                    `).join('');
+                const formData = new FormData(e.target);
+                try {
+                    btn.disabled = true;
+                    const selectedEquipIds = Array.from(e.target.querySelectorAll('input[name="equipment_ids"]:checked')).map(cb => parseInt(cb.value));
+                    const details = Object.fromEntries(formData.entries());
+                    delete details.equipment_ids;
+                    const payload = { equipment_ids: selectedEquipIds, ...details, user_id: state.user.id };
+                    if (!payload.equipment_ids.length || !payload.borrow_date || !payload.purpose || !payload.contact_name) {
+                        throw new Error('กรุณากรอกข้อมูลสำคัญและเลือกเครื่องอย่างน้อย 1 รายการ');
+                    }
+                    await api.createBorrow(payload);
+                    toast('ส่งคำขอยืมสำเร็จ');
+                    e.target.reset();
+                    fullRender();
+                } catch (err) {
+                    toast(err.message, true);
+                } finally {
+                    btn.disabled = false;
                 }
             }
-        }
-        
-        function populateAssessmentFilter() {
-            const types = [...new Set(state.equipment.map(e => e.type))];
-            const select = $('#assessmentTypeFilter');
-            if (select) {
-                select.innerHTML = '<option value="">ทุกประเภท</option>' + types.map(t => `<option value="${t}">${t}</option>`).join('');
-            }
-        }
+            function handleExitDemo() { state.user = null; localStorage.removeItem('yonchuw_user'); toast('ออกจากโหมดทดสอบสำเร็จ'); $('#demoModeBanner').classList.add('hidden'); show('home'); applyRoleVisibility(); }
 
-        function fullRender() {
-            applyRoleVisibility();
-            if (state.user) {
-                const role = state.user.role;
-                let defaultTab = 'equipmentTab';
-                if(role === 'approver') defaultTab = 'reportTab'; // Change default for approver
-                if(role === 'user') defaultTab = 'borrowTab';
-                if(role === 'technician') defaultTab = 'techTab';
-                
-                const currentActiveTab = $('#desktopTabs .bg-white')?.dataset?.tab;
-                
+            async function handleAiAnalysisClick(e) {
+                const btn = e.target.closest('button');
+                const resultDiv = $('#aiAnalysisResult');
+                btn.disabled = true;
+                resultDiv.innerHTML = 'กำลังวิเคราะห์ข้อมูลด้วย AI...';
+
+                try {
+                    const completedRepairs = state.repairs.filter(r => r.status === 'completed');
+                    if (completedRepairs.length === 0) {
+                        resultDiv.innerHTML = 'ยังไม่มีข้อมูลการซ่อมที่เสร็จสมบูรณ์เพียงพอสำหรับการวิเคราะห์';
+                        return;
+                    }
+
+                    const dataForPrompt = completedRepairs.map(r =>
+                        `- เครื่อง: ${r.equipment_name}, อาการ: ${r.damage_description}, การซ่อม: ${r.repair_details}, ค่าใช้จ่าย: ${r.cost} บาท`
+                    ).join('\n');
+
+                    const systemPrompt = "คุณคือผู้จัดการฝ่ายซ่อมบำรุง วิเคราะห์ข้อมูลการซ่อมต่อไปนี้และสรุปประเด็นสำคัญใน 2-3 ย่อหน้า ให้มีใจความเกี่ยวกับค่าใช้จ่ายรวม, ปัญหาที่พบบ่อย, และข้อเสนอแนะเพื่อลดค่าใช้จ่ายหรือปรับปรุงการบำรุงรักษาในอนาคต";
+                    const userQuery = `นี่คือข้อมูลการซ่อมล่าสุด:\n${dataForPrompt}`;
+                    const apiKey = ""; // Canvas will provide this
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                    const payload = {
+                        contents: [{ parts: [{ text: userQuery }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                    if (text) {
+                        // Simple conversion from markdown-like text to basic HTML for display
+                        resultDiv.innerHTML = text
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
+                            .replace(/\n/g, '<br>'); // Newlines
+                    } else {
+                        throw new Error('ไม่ได้รับข้อมูลการวิเคราะห์จาก AI');
+                    }
+
+                } catch (error) {
+                    console.error("AI Analysis Error:", error);
+                    resultDiv.innerHTML = `เกิดข้อผิดพลาดในการวิเคราะห์: ${error.message}`;
+                } finally {
+                    btn.disabled = false;
+                }
+            }
+
+
+            // =================================================================================
+            // INITIALIZATION (ฟังก์ชันเริ่มต้นและตั้งค่า)
+            // =================================================================================
+            function applyRoleVisibility() {
+                const loggedIn = !!state.user;
+                $('#nav-actions').classList.toggle('hidden', window.innerWidth < 768 && loggedIn);
+                $('#hamburgerBtn')?.classList.toggle('hidden', !loggedIn);
+
+                $('#btnLogin').classList.toggle('hidden', loggedIn);
+                $('#btnRegister').classList.toggle('hidden', loggedIn);
+                $('#userInfo').classList.toggle('hidden', !loggedIn);
+                $('#userInfo').classList.toggle('flex', loggedIn);
+
+                const sidebarLogin = $('#sidebarLoginActions');
+                const sidebarUserInfo = $('#sidebarUserInfo');
+                if (sidebarLogin) sidebarLogin.classList.toggle('hidden', loggedIn);
+                if (sidebarUserInfo) {
+                    sidebarUserInfo.classList.toggle('hidden', !loggedIn);
+                    sidebarUserInfo.classList.toggle('flex', loggedIn);
+                }
+
                 const allTabs = [
                     { id: 'equipmentTab', label: 'ภาพรวมอุปกรณ์', roles: ['admin', 'user', 'technician', 'approver'] },
                     { id: 'borrowTab', label: 'ยืม-คืน', roles: ['admin', 'user'] },
@@ -1664,37 +1616,182 @@
                     { id: 'assessmentTab', label: 'ประเมินมาตรฐาน', roles: ['admin', 'technician'] },
                     { id: 'reportTab', label: 'รายงาน', roles: ['admin', 'approver'] }
                 ];
-                const currentTabInfo = allTabs.find(t => t.id === currentActiveTab);
 
-                if (!currentActiveTab || !currentTabInfo || !currentTabInfo.roles.includes(role) ) { 
-                    setTabs(defaultTab); 
-                } else { 
-                    setTabs(currentActiveTab); 
+                const desktopTabsContainer = $('#desktopTabs');
+                const sidebarNavContainer = $('#sidebarNav');
+
+                if (loggedIn) {
+                    $('#userNameDisplay').textContent = state.user.name;
+                    $('#sidebarUserNameDisplay').textContent = state.user.name;
+                    const role = state.user.role;
+                    $('#sidebarUserRoleDisplay').textContent = `สถานะ: ${roleMap[role] || 'Unknown'}`;
+
+                    const visibleTabs = allTabs.filter(tab => tab.roles.includes(role));
+
+                    if (desktopTabsContainer) desktopTabsContainer.innerHTML = visibleTabs.map(tab => `<button data-tab="${tab.id}" class="tab-btn px-4 py-2 rounded-lg">${tab.label}</button>`).join('');
+                    if (sidebarNavContainer) sidebarNavContainer.innerHTML = visibleTabs.map(tab => `<button data-tab="${tab.id}" class="tab-btn w-full text-left px-4 py-2 rounded-lg hover:bg-white/10">${tab.label}</button>`).join('');
+
+                    $('#btnAddEquipDash').classList.toggle('hidden', role !== 'admin');
+                    $('#notificationArea').classList.remove('hidden');
+
+                } else {
+                    if (desktopTabsContainer) desktopTabsContainer.innerHTML = '';
+                    if (sidebarNavContainer) sidebarNavContainer.innerHTML = '';
+                    $('#notificationArea').classList.add('hidden');
                 }
-
-                renderSummaries();
-                renderMyBorrows();
-                renderApprovalLists();
-                renderTechnicianQueues();
-                renderReports();
-                populateBorrowList();
-                populateAssessmentFilter();
-                renderNotifications();
             }
-            renderEquipmentLists({ forAssessment: true });
-        }
 
-        function init() {
-            const savedUser = localStorage.getItem('yonchuw_user');
-            if (savedUser) { state.user = JSON.parse(savedUser); show('dashboard'); } 
-            else { show('home'); }
-            setupEventListeners();
-            fullRender();
-        }
+            function setupEventListeners() {
+                const addListener = (selector, event, handler) => {
+                    const element = $(selector);
+                    if (element) {
+                        element.addEventListener(event, handler);
+                    }
+                };
 
-        init(); // Start the application
-    });
-  </script>
+                // Sidebar controls
+                const openSidebar = () => {
+                    const sidebar = $('#sidebar');
+                    if (sidebar) {
+                        sidebar.classList.remove('hidden');
+                        setTimeout(() => {
+                            $('#sidebarBackdrop').style.opacity = '1';
+                            $('#sidebarContent').classList.remove('-translate-x-full');
+                        }, 10);
+                    }
+                };
+                const closeSidebar = () => {
+                    const sidebarBackdrop = $('#sidebarBackdrop');
+                    const sidebarContent = $('#sidebarContent');
+                    if (sidebarBackdrop && sidebarContent) {
+                        sidebarBackdrop.style.opacity = '0';
+                        sidebarContent.classList.add('-translate-x-full');
+                        setTimeout(() => { $('#sidebar').classList.add('hidden'); }, 300);
+                    }
+                };
+                addListener('#hamburgerBtn', 'click', openSidebar);
+                addListener('#sidebarCloseBtn', 'click', closeSidebar);
+                addListener('#sidebarBackdrop', 'click', closeSidebar);
+
+                // Global click listener for tabs (in sidebar or desktop)
+                document.body.addEventListener('click', (e) => {
+                    const target = e.target;
+                    if (target.matches('.tab-btn')) {
+                        setTabs(target.dataset.tab);
+                        if (window.innerWidth < 768) closeSidebar();
+                    } else if (target.id === 'sidebarBtnLogin') {
+                        closeSidebar(); show('loginPage');
+                    } else if (target.id === 'sidebarBtnRegister') {
+                        closeSidebar(); show('registerPage');
+                    }
+                });
+
+                addListener('#viewAllUsersBtn', 'click', handleViewUsersClick);
+                addListener('#aiAnalyzeBtn', 'click', handleAiAnalysisClick);
+                addListener('#startBtn', 'click', () => state.user ? show('dashboard') : show('loginPage'));
+                addListener('#borrowHistoryFilter', 'click', (e) => { if (e.target.tagName === 'BUTTON') { $$('#borrowHistoryFilter button').forEach(b => b.classList.remove('bg-white', 'shadow')); e.target.classList.add('bg-white', 'shadow'); renderMyBorrows(); } });
+                addListener('#btnAddEquipDash', 'click', handleAddEquipmentClick);
+                addListener('#exitDemoBtn', 'click', handleExitDemo);
+                addListener('#btnLogin', 'click', () => show('loginPage'));
+                addListener('#btnRegister', 'click', () => show('registerPage'));
+                addListener('#goRegister', 'click', (e) => { e.preventDefault(); show('registerPage'); });
+                addListener('#browseBtn', 'click', handleDemoLogin);
+                addListener('#backFromEquip', 'click', () => show('home'));
+                addListener('#backFromLogin', 'click', () => show('home'));
+                addListener('#backFromRegister', 'click', () => show('loginPage'));
+                addListener('#btnLogout', 'click', handleLogout);
+                addListener('#sidebarBtnLogout', 'click', handleLogout);
+                addListener('#reportProblemBtn', 'click', handleReportProblem);
+                addListener('#loginForm', 'submit', handleLogin);
+                addListener('#registerForm', 'submit', handleRegister);
+                addListener('#borrowForm', 'submit', handleBorrowSubmit);
+                addListener('#modalClose', 'click', hideModal);
+                addListener('#modal', 'click', (e) => { if (e.target.id === 'modal') hideModal() });
+                document.addEventListener('submit', (e) => { if (['preDeliveryForm', 'postReturnForm', 'completeRepairForm', 'assessmentForm', 'addEquipForm', 'editEquipForm', 'replaceEquipForm', 'reportProblemForm'].includes(e.target.id)) { handleDynamicFormSubmit(e); } });
+                addListener('#equipSearch', 'input', () => renderEquipmentLists({ forAssessment: false }));
+                addListener('#equipFilter', 'change', () => renderEquipmentLists({ forAssessment: false }));
+                addListener('#dashEquipSearch', 'input', () => renderEquipmentLists({ forAssessment: true }));
+                addListener('#dashEquipFilter', 'change', () => renderEquipmentLists({ forAssessment: true }));
+                addListener('#assessmentTypeFilter', 'change', () => renderEquipmentLists({ forAssessment: true }));
+                addListener('#borrowDate', 'change', (e) => { if (e.target.value) { const d = new Date(e.target.value); d.setDate(d.getDate() + 7); $('#dueDate').value = d.toISOString().slice(0, 10); } else { $('#dueDate').value = ''; } });
+                addListener('#notificationBtn', 'click', toggleNotificationDropdown);
+            }
+
+            function populateBorrowList() {
+                const listContainer = $('#borrowEquipList');
+                const availableEquip = state.equipment.filter(e => e.status === 'available');
+                if (listContainer) {
+                    if (availableEquip.length === 0) {
+                        listContainer.innerHTML = `<p class="text-sm text-slate-500">ไม่มีอุปกรณ์ว่างให้ยืม</p>`;
+                    } else {
+                        listContainer.innerHTML = availableEquip.map(e => `
+                        <label class="flex items-center p-2 rounded-md hover:bg-slate-50 text-sm">
+                            <input type="checkbox" name="equipment_ids" value="${e.id}" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                            <span class="ml-2">${e.name} <span class="text-slate-500 font-normal">(${e.type})</span> <span class="text-slate-400">(S/N: ${e.serial})</span></span>
+                        </label>
+                    `).join('');
+                    }
+                }
+            }
+
+            function populateAssessmentFilter() {
+                const types = [...new Set(state.equipment.map(e => e.type))];
+                const select = $('#assessmentTypeFilter');
+                if (select) {
+                    select.innerHTML = '<option value="">ทุกประเภท</option>' + types.map(t => `<option value="${t}">${t}</option>`).join('');
+                }
+            }
+
+            function fullRender() {
+                applyRoleVisibility();
+                if (state.user) {
+                    const role = state.user.role;
+                    let defaultTab = 'equipmentTab';
+                    if (role === 'approver') defaultTab = 'reportTab'; // Change default for approver
+                    if (role === 'user') defaultTab = 'borrowTab';
+                    if (role === 'technician') defaultTab = 'techTab';
+
+                    const currentActiveTab = $('#desktopTabs .bg-white')?.dataset?.tab;
+
+                    const allTabs = [
+                        { id: 'equipmentTab', label: 'ภาพรวมอุปกรณ์', roles: ['admin', 'user', 'technician', 'approver'] },
+                        { id: 'borrowTab', label: 'ยืม-คืน', roles: ['admin', 'user'] },
+                        { id: 'techTab', label: 'ส่วนงานช่าง', roles: ['admin', 'technician'] },
+                        { id: 'approvalTab', label: 'จัดการคำขอ', roles: ['admin', 'approver'] },
+                        { id: 'assessmentTab', label: 'ประเมินมาตรฐาน', roles: ['admin', 'technician'] },
+                        { id: 'reportTab', label: 'รายงาน', roles: ['admin', 'approver'] }
+                    ];
+                    const currentTabInfo = allTabs.find(t => t.id === currentActiveTab);
+
+                    if (!currentActiveTab || !currentTabInfo || !currentTabInfo.roles.includes(role)) {
+                        setTabs(defaultTab);
+                    } else {
+                        setTabs(currentActiveTab);
+                    }
+
+                    renderSummaries();
+                    renderMyBorrows();
+                    renderApprovalLists();
+                    renderTechnicianQueues();
+                    renderReports();
+                    populateBorrowList();
+                    populateAssessmentFilter();
+                    renderNotifications();
+                }
+                renderEquipmentLists({ forAssessment: true });
+            }
+
+            function init() {
+                const savedUser = localStorage.getItem('yonchuw_user');
+                if (savedUser) { state.user = JSON.parse(savedUser); show('dashboard'); }
+                else { show('home'); }
+                setupEventListeners();
+                fullRender();
+            }
+
+            init(); // Start the application
+        });
+    </script>
 </body>
-</html>
 
+</html>
