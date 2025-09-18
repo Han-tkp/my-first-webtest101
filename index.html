@@ -94,6 +94,60 @@
             /* red-500 */
             border: 2px solid white;
         }
+
+        /* Responsive improvements */
+        @media (max-width: 640px) {
+
+            .max-w-7xl,
+            .max-w-xl,
+            .max-w-md,
+            .max-w-4xl {
+                max-width: 100vw !important;
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+            }
+
+            .grid,
+            .md\:grid-cols-2,
+            .md\:grid-cols-3,
+            .lg\:grid-cols-2,
+            .lg\:grid-cols-3 {
+                grid-template-columns: 1fr !important;
+            }
+
+            .card,
+            .rounded-2xl,
+            .p-6,
+            .p-8 {
+                padding: 1rem !important;
+                border-radius: 1rem !important;
+            }
+
+            header .flex,
+            .flex.items-center {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.5rem !important;
+            }
+
+            .prose h1,
+            .prose h2,
+            .prose h3 {
+                font-size: 1.25rem !important;
+            }
+
+            .hidden.md\:flex {
+                display: none !important;
+            }
+
+            .md\:hidden {
+                display: block !important;
+            }
+
+            .overflow-x-auto {
+                overflow-x: auto !important;
+            }
+        }
     </style>
 </head>
 
@@ -673,7 +727,8 @@
                         if (!eq || eq.status !== 'available') throw new Error(`อุปกรณ์ ${eq.name} ไม่ว่าง`);
                     });
 
-                    const due = new Date(details.borrow_date); due.setDate(due.getDate() + 7);
+                    const due = new Date(details.borrow_date);
+                    due.setDate(due.getDate() + 7);
                     const due_date = due.toISOString().slice(0, 10);
 
                     state.borrows.push({
@@ -691,19 +746,22 @@
                 myBorrows: async (user_id) => state.borrows.filter(b => b.user_id === user_id).sort((a, b) => b.id - a.id),
                 listBorrowRequests: async () => state.borrows.filter(b => b.status === 'pending_borrow_approval'),
                 approveBorrow: async (id) => {
-                    const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+                    const b = state.borrows.find(x => x.id === id);
+                    if (!b) throw new Error('ไม่พบรายการ');
                     b.status = 'pending_delivery';
                     addNotification(`คำขอยืม #${id} ได้รับการอนุมัติแล้ว`, ['admin', 'technician', b.user_id]);
                     return true;
                 },
                 adminCancelBorrow: async (id) => {
-                    const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+                    const b = state.borrows.find(x => x.id === id);
+                    if (!b) throw new Error('ไม่พบรายการ');
                     b.status = 'cancelled';
                     addNotification(`คำขอยืม #${id} ถูกยกเลิกโดย Admin`, [b.user_id]);
                     return true;
                 },
                 performPreDeliveryCheck: async (id, isFaulty, newEquipId, checklistData) => {
-                    const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+                    const b = state.borrows.find(x => x.id === id);
+                    if (!b) throw new Error('ไม่พบรายการ');
 
                     b.pre_delivery_checklist = checklistData;
 
@@ -725,7 +783,8 @@
                     return true;
                 },
                 rejectBorrow: async (id) => {
-                    const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+                    const b = state.borrows.find(x => x.id === id);
+                    if (!b) throw new Error('ไม่พบรายการ');
                     b.status = 'rejected';
                     addNotification(`คำขอยืม #${id} ถูกปฏิเสธ`, [b.user_id]);
                     return true;
@@ -733,7 +792,8 @@
                 queueForDelivery: async () => state.borrows.filter(b => b.status === 'pending_delivery'),
                 queueForReturn: async () => state.borrows.filter(b => b.status === 'borrowed' && !b.return_date),
                 techInspectReturn: async (id, isDamaged, notes, checklistData, lateReason) => {
-                    const b = state.borrows.find(x => x.id === id); if (!b) throw new Error('ไม่พบรายการ');
+                    const b = state.borrows.find(x => x.id === id);
+                    if (!b) throw new Error('ไม่พบรายการ');
                     const today = new Date();
                     const dueDate = new Date(b.due_date);
                     b.actual_return_date = today.toISOString().slice(0, 10);
@@ -765,24 +825,30 @@
                 listRepairs: async () => state.repairs.sort((a, b) => b.id - a.id),
                 listRepairRequests: async () => state.repairs.filter(r => r.status === 'pending_repair_approval'),
                 approveRepair: async (id) => {
-                    const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
+                    const r = state.repairs.find(x => x.id === id);
+                    if (!r) throw new Error('ไม่พบรายการ');
                     r.status = 'repair_approved';
                     r.technician_id = state.user.role === 'technician' ? state.user.id : null;
-                    const eq = state.equipment.find(e => e.id === r.equipment_id); if (eq) eq.status = 'under_maintenance';
+                    const eq = state.equipment.find(e => e.id === r.equipment_id);
+                    if (eq) eq.status = 'under_maintenance';
                     addNotification(`คำขอซ่อม ${r.equipment_name} ได้รับการอนุมัติ`, ['admin', 'technician']);
                     return true;
                 },
                 rejectRepair: async (id) => {
-                    const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
+                    const r = state.repairs.find(x => x.id === id);
+                    if (!r) throw new Error('ไม่พบรายการ');
                     r.status = 'repair_rejected';
-                    const eq = state.equipment.find(e => e.id === r.equipment_id); if (eq) eq.status = 'available';
+                    const eq = state.equipment.find(e => e.id === r.equipment_id);
+                    if (eq) eq.status = 'available';
                     return true;
                 },
                 completeRepair: async (id, details) => {
-                    const r = state.repairs.find(x => x.id === id); if (!r) throw new Error('ไม่พบรายการ');
+                    const r = state.repairs.find(x => x.id === id);
+                    if (!r) throw new Error('ไม่พบรายการ');
                     r.status = 'completed';
                     Object.assign(r, details);
-                    const eq = state.equipment.find(e => e.id === r.equipment_id); if (eq) eq.status = 'available';
+                    const eq = state.equipment.find(e => e.id === r.equipment_id);
+                    if (eq) eq.status = 'available';
                     addNotification(`${r.equipment_name} ซ่อมเสร็จแล้ว`, ['admin', 'approver']);
                     return true;
                 },
@@ -911,6 +977,10 @@
                         }
                     });
                     renderNotifications(); // Re-render to remove dot
+                    // Auto-close after 3 seconds
+                    setTimeout(() => {
+                        dropdown.classList.add('hidden');
+                    }, 3000);
                 }
             }
 
@@ -1015,7 +1085,7 @@
                     ? `<p class="text-slate-500 text-sm">ไม่มีเครื่องที่กำลังยืม</p>`
                     : currentlyBorrowed.map(b => renderBorrowCard(b)).join('');
 
-                const filter = $('#borrowHistoryFilter .bg-white').dataset.filter;
+                const filter = $('#borrowHistoryFilter .bg-white')?.dataset?.filter;
                 let historyBorrows = [];
                 if (filter === 'all') {
                     historyBorrows = allMyBorrows;
