@@ -1,0 +1,262 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Custom Theme Variables ===== */
+:root {
+  --color-background: #0a0a0f;
+  --color-foreground: #f8fafc;
+
+  /* Indigo Twilight Palette */
+  --color-primary: #6366f1;
+  --color-primary-light: #818cf8;
+  --color-primary-dark: #4f46e5;
+  --color-secondary: #0ea5e9;
+  --color-accent: #7c3aed;
+
+  /* Glass effect colors */
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-blur: 16px;
+
+  /* Card colors */
+  --card-bg: rgba(255, 255, 255, 0.96);
+  --card-dark-bg: rgba(30, 30, 45, 0.9);
+}
+
+/* ===== Base Styles ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  min-height: 100vh;
+}
+
+/* ===== Premium Gradient Backgrounds ===== */
+.bg-gradient-premium {
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(79, 70, 229, 0.18), transparent 60%),
+    linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #7c3aed 100%);
+}
+
+.bg-gradient-dark {
+  background:
+    radial-gradient(ellipse at top right, rgba(99, 102, 241, 0.15), transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(139, 92, 246, 0.1), transparent 50%),
+    linear-gradient(180deg, #0a0a0f 0%, #111827 100%);
+}
+
+/* ===== Glassmorphism ===== */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: saturate(140%) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(140%) blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.1),
+    inset 0 0 30px rgba(255, 255, 255, 0.02);
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+}
+
+/* ===== Premium Cards ===== */
+.card {
+  background: var(--card-bg);
+  border-radius: 1rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.card-hover {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+}
+
+/* ===== Bento Grid ===== */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bento-item {
+  min-height: 200px;
+}
+
+.bento-span-2 {
+  grid-column: span 2;
+}
+
+.bento-span-3 {
+  grid-column: span 3;
+}
+
+.bento-row-2 {
+  grid-row: span 2;
+}
+
+/* ===== Micro-interactions ===== */
+.micro-bounce {
+  transition: transform 0.2s ease;
+}
+
+.micro-bounce:hover {
+  transform: scale(1.05);
+}
+
+.micro-bounce:active {
+  transform: scale(0.98);
+}
+
+.glow {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+}
+
+.glow-animate {
+  animation: glow-pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow-pulse {
+  from {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+  }
+
+  to {
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.8);
+  }
+}
+
+/* ===== Fade Animations ===== */
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Kinetic Typography helpers ===== */
+.kinetic-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+/* ===== Status Chips ===== */
+.chip {
+  background: rgba(99, 102, 241, 0.12);
+  color: #4338ca;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+.chip-success {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.chip-warning {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+}
+
+.chip-danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.7);
+}
+
+/* ===== 3D Canvas Container ===== */
+.canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
