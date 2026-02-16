@@ -5,6 +5,7 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { BentoGrid, BentoItem } from "@/components/ui/BentoGrid";
 import { KineticText } from "@/components/effects/KineticText";
 import { ScrollReveal } from "@/components/effects/ParallaxSection";
+import { SprayLogo } from "@/components/icons/SprayLogo";
 
 // Dynamic import for 3D scene (client-side only)
 const Scene3D = dynamic(
@@ -20,7 +21,7 @@ export default function HomePage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                            <span className="text-2xl">🔄</span>
+                            <SprayLogo className="w-6 h-6 text-white" />
                         </div>
                         <div>
                             <p className="font-bold text-lg">Yonchuw</p>
@@ -171,7 +172,7 @@ export default function HomePage() {
                             { step: 2, title: "อนุมัติบัญชี", desc: "ผู้อนุมัติทำการอนุมัติ → ผู้ใช้จึงจะเข้าสู่ระบบได้", icon: "✅" },
                             { step: 3, title: "ส่งคำขอยืม", desc: "ผู้ใช้ทั่วไปส่งคำขอยืม (สามารถเลือกได้หลายเครื่อง)", icon: "📨" },
                             { step: 4, title: "อนุมัติการยืม", desc: "ผู้อนุมัติอนุมัติคำขอ → ช่างตรวจสภาพก่อนส่งมอบ", icon: "🔍" },
-                            { step: 5, title: "คืนอุปกรณ์", desc: "เมื่อคืนอุปกรณ์ ช่างจะตรวจสภาพและตัดสินว่า \"เสีย/ไม่เสีย\"", icon: "🔄" },
+                            { step: 5, title: "คืนอุปกรณ์", desc: "เมื่อคืนอุปกรณ์ ช่างจะตรวจสภาพและตัดสินว่า \"เสีย/ไม่เสีย\"", icon: "📦" },
                             { step: 6, title: "ซ่อมบำรุง", desc: "หากเสีย → สร้างคำขอซ่อม → อนุมัติ → ซ่อมเสร็จ → กลับมา \"ว่าง\"", icon: "🔧" },
                         ].map((item, index) => (
                             <ScrollReveal key={item.step} delay={index * 0.1} direction="left">

@@ -14,6 +14,20 @@ export const metadata: Metadata = {
     keywords: ["เครื่องพ่นหมอกควัน", "ยืม-คืน", "ซ่อมบำรุง", "Equipment Management"],
     icons: {
         icon: "/favicon.ico",
+        apple: "/icons/icon-192x192.png",
+    },
+    manifest: "/manifest.json",
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "default",
+        title: "Yonchuw",
+    },
+    applicationName: "Yonchuw",
+    themeColor: "#ffffff",
+    viewport: {
+        width: "device-width",
+        initialScale: 1,
+        maximumScale: 1,
     },
 };
 

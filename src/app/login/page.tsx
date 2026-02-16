@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { SprayLogo } from "@/components/icons/SprayLogo";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -46,7 +47,7 @@ export default function LoginPage() {
                 <div className="text-center mb-8">
                     <Link href="/" className="inline-flex items-center gap-3 mb-6">
                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                            <span className="text-2xl">🔄</span>
+                            <SprayLogo className="w-7 h-7 text-white" />
                         </div>
                         <span className="text-2xl font-bold">Yonchuw</span>
                     </Link>

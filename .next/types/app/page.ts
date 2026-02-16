@@ -1,4 +1,4 @@
-// File: C:\Users\h4n\Desktop\my-first-webtest101\src\app\page.tsx
+// File: /home/h4n/Documents/ddc12-4/my-first-webtest101/src/app/page.tsx
 import * as entry from '../../../src/app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

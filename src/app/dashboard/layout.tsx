@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { SprayLogo } from "@/components/icons/SprayLogo";
 
 export default async function DashboardLayout({
     children,
@@ -48,7 +49,7 @@ export default async function DashboardLayout({
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
                     <Link href="/dashboard" className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                            <span className="text-2xl">🔄</span>
+                            <SprayLogo className="w-6 h-6 text-white" />
                         </div>
                         <div>
                             <p className="font-bold text-lg">Yonchuw</p>
