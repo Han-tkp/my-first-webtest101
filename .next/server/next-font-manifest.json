@@ -1,22 +1,6 @@
 {
   "app": {
-    "[project]/src/app/dashboard/page": [
-      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
-      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
-    ],
     "[project]/src/app/dashboard/settings/page": [
-      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
-      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
-    ],
-    "[project]/src/app/dashboard/technician/page": [
-      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
-      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
-    ],
-    "[project]/src/app/login/page": [
-      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
-      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
-    ],
-    "[project]/src/app/page": [
       "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
       "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
     ]
