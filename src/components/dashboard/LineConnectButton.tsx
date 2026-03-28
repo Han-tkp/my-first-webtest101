@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { MessageCircle, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { MessageCircle, CheckCircle2, Loader2 } from "lucide-react";
 
 export function LineConnectButton() {
     const [status, setStatus] = useState<'idle' | 'loading' | 'connected' | 'unlinked'>('idle');
