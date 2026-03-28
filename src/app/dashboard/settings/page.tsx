@@ -1,7 +1,7 @@
 // src/app/dashboard/settings/page.tsx
 import { LineConnectButton } from '@/components/dashboard/LineConnectButton';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { Settings, UserCircle, BellRing, ShieldCheck } from 'lucide-react';
+import { UserCircle, BellRing, ShieldCheck } from "lucide-react";
 
 export default function SettingsPage() {
     return (
