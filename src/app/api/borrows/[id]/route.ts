@@ -1,17 +1,22 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { checkApiRole } from '@/lib/auth';
 
-// GET single borrow
+// GET single borrow - any authenticated active user
 export async function GET(
-    request: Request,
-    { params }: { params: { id: string } }
+    _request: Request,
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { error: authError } = await checkApiRole('admin', 'approver', 'technician', 'user');
+    if (authError) return NextResponse.json({ error: authError.message }, { status: authError.status });
+
+    const { id } = await params;
     const supabase = await createClient();
 
     const { data, error } = await supabase
         .from('borrows')
         .select('*')
-        .eq('id', params.id)
+        .eq('id', id)
         .single();
 
     if (error) {
@@ -21,18 +26,31 @@ export async function GET(
     return NextResponse.json(data);
 }
 
-// PUT update borrow (for status changes, approvals, etc.)
+// PUT update borrow - admin only (specific actions use dedicated routes)
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { error: authError } = await checkApiRole('admin');
+    if (authError) return NextResponse.json({ error: authError.message }, { status: authError.status });
+
+    const { id } = await params;
     const supabase = await createClient();
     const body = await request.json();
 
+    const allowedFields = ['status', 'notes', 'due_date', 'purpose', 'contact_name', 'contact_phone', 'late_return_reason'];
+    const updatePayload = Object.fromEntries(
+        Object.entries(body).filter(([k]) => allowedFields.includes(k))
+    );
+
+    if (Object.keys(updatePayload).length === 0) {
+        return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+    }
+
     const { data, error } = await supabase
         .from('borrows')
-        .update(body)
-        .eq('id', params.id)
+        .update(updatePayload)
+        .eq('id', id)
         .select()
         .single();
 
@@ -41,11 +59,13 @@ export async function PUT(
     }
 
     // Update equipment status based on borrow status
-    if (body.status && data.equipment_ids) {
+    if (updatePayload.status && data.equipment_ids) {
         let equipmentStatus = 'available';
 
-        switch (body.status) {
+        switch (updatePayload.status) {
             case 'pending_delivery':
+                equipmentStatus = 'reserved';
+                break;
             case 'borrowed':
                 equipmentStatus = 'borrowed';
                 break;

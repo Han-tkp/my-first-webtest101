@@ -1,27 +1,13 @@
-import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import AdminView from "@/components/dashboard/AdminView";
-import UserView from "@/components/dashboard/UserView";
-import TechnicianView from "@/components/dashboard/TechnicianView";
 import ApproverView from "@/components/dashboard/ApproverView";
+import TechnicianView from "@/components/dashboard/TechnicianView";
+import UserView from "@/components/dashboard/UserView";
+import { requirePageRole } from "@/lib/auth";
 
 export default async function DashboardPage() {
-    const supabase = await createClient();
+    const profile = await requirePageRole("admin", "approver", "technician", "user");
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/login");
-
-    // Get user profile to determine role
-    const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single();
-
-    const role = profile?.role || "user";
-
-    // Role Dispatcher
-    switch (role) {
+    switch (profile.role) {
         case "admin":
             return <AdminView />;
         case "technician":
@@ -30,6 +16,6 @@ export default async function DashboardPage() {
             return <ApproverView />;
         case "user":
         default:
-            return <UserView userId={user.id} />;
+            return <UserView userId={profile.id} />;
     }
 }

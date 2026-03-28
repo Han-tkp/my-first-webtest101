@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Users/h4n/Desktop/my-first-webtest101/src -type f -name *.css -o -name *.scss)",
+      "Bash(npx next:*)",
+      "Bash(npm outdated:*)",
+      "Bash(rm -rf node_modules package-lock.json)",
+      "Bash(npm install:*)",
+      "Bash(cd:*)",
+      "Bash(ls \"C:\\\\Users\\\\h4n\\\\Desktop\\\\my-first-webtest101\"/.eslintrc*)",
+      "Bash(ls \"C:\\\\Users\\\\h4n\\\\Desktop\\\\my-first-webtest101\"/eslint.config*)",
+      "Bash(ls -la \"C:\\\\Users\\\\h4n\\\\Desktop\\\\my-first-webtest101\"/.eslint*)",
+      "Bash(find /c/Users/h4n/Desktop/my-first-webtest101 -name *.sql -o -name migrations -type d)",
+      "Bash(npm ls:*)",
+      "Bash(grep -E \"\\\\.\\(env|md\\)$\")",
+      "Bash(npm run:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh repo:*)"
+    ]
+  }
+}

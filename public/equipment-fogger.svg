@@ -1,0 +1,17 @@
+<svg width="640" height="420" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="420" rx="32" fill="#F4F8F6"/>
+  <rect x="34" y="34" width="572" height="352" rx="24" fill="#E4F0EC"/>
+  <rect x="116" y="214" width="260" height="82" rx="18" fill="#0F5C6E"/>
+  <rect x="360" y="228" width="120" height="28" rx="14" fill="#2D7A63"/>
+  <rect x="448" y="250" width="102" height="18" rx="9" fill="#173642"/>
+  <rect x="128" y="170" width="118" height="58" rx="16" fill="#2D7A63"/>
+  <rect x="244" y="182" width="110" height="28" rx="14" fill="#DFF0E8"/>
+  <circle cx="188" cy="318" r="28" fill="#173642"/>
+  <circle cx="188" cy="318" r="12" fill="#DFF0E8"/>
+  <circle cx="356" cy="318" r="28" fill="#173642"/>
+  <circle cx="356" cy="318" r="12" fill="#DFF0E8"/>
+  <path d="M500 170C500 152.327 514.327 138 532 138H560C577.673 138 592 152.327 592 170V170C592 187.673 577.673 202 560 202H532C514.327 202 500 187.673 500 170V170Z" fill="#DFF0E8"/>
+  <path d="M520 130C520 112.327 534.327 98 552 98V98C569.673 98 584 112.327 584 130V138H520V130Z" fill="#0F5C6E"/>
+  <text x="68" y="92" fill="#0F5C6E" font-family="Noto Sans Thai, sans-serif" font-size="28" font-weight="700">เครื่องพ่นหมอกควัน</text>
+  <text x="68" y="126" fill="#5F7279" font-family="Noto Sans Thai, sans-serif" font-size="18">รูปประกอบสำหรับแสดงรายการอุปกรณ์</text>
+</svg>

@@ -14,20 +14,20 @@ export function GlassCard({
     children,
     className = "",
     hover = false,
-    glow = false
+    glow = false,
 }: GlassCardProps) {
     return (
         <motion.div
-            className={`
-        glass-card p-6
-        ${hover ? "card-hover" : ""}
-        ${glow ? "glow-animate" : ""}
-        ${className}
-      `}
-            initial={{ opacity: 0, y: 20 }}
+            className={[
+                "glass-card p-6 text-slate-800",
+                hover ? "card-hover" : "",
+                glow ? "glow-animate" : "",
+                className,
+            ].join(" ")}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
+            transition={{ duration: 0.35 }}
+            viewport={{ once: true, margin: "-40px" }}
         >
             {children}
         </motion.div>
@@ -40,9 +40,5 @@ interface CardProps {
 }
 
 export function Card({ children, className = "" }: CardProps) {
-    return (
-        <div className={`card p-6 ${className}`}>
-            {children}
-        </div>
-    );
+    return <div className={`card p-6 ${className}`}>{children}</div>;
 }

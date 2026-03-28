@@ -1,21 +1,51 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
-import { redirect } from 'next/navigation';
+import { checkApiRole } from '@/lib/auth';
+import { notifyBorrowStatusChanged } from '@/lib/notifications';
 
 export async function POST(
-    request: Request,
-    { params }: { params: { id: string } }
+    _request: Request,
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { error: authError } = await checkApiRole('admin', 'approver');
+    if (authError) return NextResponse.json({ error: authError.message }, { status: authError.status });
+
+    const { id } = await params;
     const supabase = await createClient();
+
+    const { data: borrow } = await supabase
+        .from('borrows')
+        .select('user_id, equipment_ids, status')
+        .eq('id', id)
+        .single();
+
+    if (!borrow) {
+        return NextResponse.json({ error: 'ไม่พบคำขอยืมนี้ในระบบ' }, { status: 404 });
+    }
+
+    if (borrow.status !== 'pending_borrow_approval') {
+        return NextResponse.json({ error: 'สามารถอนุมัติได้เฉพาะคำขอที่รอการอนุมัติเท่านั้น' }, { status: 409 });
+    }
 
     const { error } = await supabase
         .from('borrows')
-        .update({ status: 'pending_delivery' }) // Next step after approval
-        .eq('id', params.id);
+        .update({ status: 'pending_delivery' })
+        .eq('id', id);
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    redirect('/dashboard/approvals');
+    if (borrow.equipment_ids && borrow.equipment_ids.length > 0) {
+        await supabase
+            .from('equipment')
+            .update({ status: 'reserved' })
+            .in('id', borrow.equipment_ids);
+    }
+
+    if (borrow?.user_id) {
+        notifyBorrowStatusChanged(borrow.user_id, 'pending_delivery', borrow.equipment_ids || [], Number(id)).catch(console.error);
+    }
+
+    return NextResponse.json({ success: true });
 }

@@ -1,73 +1,70 @@
+import { HistoryClient } from "@/components/dashboard/HistoryClient";
+import { requirePageRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { GlassCard } from "@/components/ui/GlassCard";
 
 export default async function HistoryPage() {
+    const profile = await requirePageRole("admin", "user");
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
 
     const { data: borrows } = await supabase
         .from("borrows")
-        .select("*, equipment:equipment_ids")
-        .eq("user_id", user?.id)
+        .select("id, borrow_date, due_date, actual_return_date, purpose, status, equipment_ids, late_return_reason")
+        .eq("user_id", profile.id)
         .order("created_at", { ascending: false });
 
-    const statusLabels: Record<string, { text: string; color: string }> = {
-        pending_borrow_approval: { text: "รออนุมัติ", color: "bg-yellow-500/20 text-yellow-300" },
-        pending_delivery: { text: "รอช่างตรวจ", color: "bg-cyan-500/20 text-cyan-300" },
-        borrowed: { text: "ยืมอยู่", color: "bg-blue-500/20 text-blue-300" },
-        rejected: { text: "ไม่อนุมัติ", color: "bg-red-500/20 text-red-300" },
-        cancelled: { text: "ยกเลิก", color: "bg-gray-500/20 text-gray-300" },
-        returned_early: { text: "คืนก่อนกำหนด", color: "bg-teal-500/20 text-teal-300" },
-        returned_late: { text: "คืนล่าช้า", color: "bg-orange-500/20 text-orange-300" },
-        returned: { text: "คืนแล้ว", color: "bg-green-500/20 text-green-300" },
-        returned_damaged: { text: "คืน (ชำรุด)", color: "bg-orange-500/20 text-orange-300" },
+    const allEquipmentIds = new Set<number>();
+    borrows?.forEach((borrow) => borrow.equipment_ids?.forEach((id: number) => allEquipmentIds.add(id)));
+
+    const equipmentMap: Record<number, { name: string; image_url: string | null; serial: string; type: string }> = {};
+    if (allEquipmentIds.size > 0) {
+        const { data: equipment } = await supabase
+            .from("equipment")
+            .select("id, name, image_url, serial, type")
+            .in("id", Array.from(allEquipmentIds));
+
+        equipment?.forEach((item) => {
+            equipmentMap[item.id] = { name: item.name, image_url: item.image_url, serial: item.serial, type: item.type };
+        });
+    }
+
+    const statusLabels: Record<string, { text: string; className: string }> = {
+        pending_borrow_approval: {
+            text: "รออนุมัติ",
+            className: "border border-amber-100 bg-amber-50 text-amber-700",
+        },
+        pending_delivery: {
+            text: "รอส่งมอบ",
+            className: "border border-sky-100 bg-sky-50 text-sky-700",
+        },
+        borrowed: {
+            text: "กำลังใช้งาน",
+            className: "border border-indigo-100 bg-indigo-50 text-indigo-700",
+        },
+        rejected: {
+            text: "ไม่อนุมัติ",
+            className: "border border-rose-100 bg-rose-50 text-rose-700",
+        },
+        cancelled: {
+            text: "ยกเลิก",
+            className: "border border-slate-200 bg-slate-100 text-slate-700",
+        },
+        returned_early: {
+            text: "คืนก่อนกำหนด",
+            className: "border border-emerald-100 bg-emerald-50 text-emerald-700",
+        },
+        returned_late: {
+            text: "คืนล่าช้า",
+            className: "border border-orange-100 bg-orange-50 text-orange-700",
+        },
+        returned: {
+            text: "คืนแล้ว",
+            className: "border border-emerald-100 bg-emerald-50 text-emerald-700",
+        },
+        returned_damaged: {
+            text: "คืนพร้อมแจ้งชำรุด",
+            className: "border border-rose-100 bg-rose-50 text-rose-700",
+        },
     };
 
-    return (
-        <div className="fade-in">
-            <GlassCard>
-                <h2 className="text-xl font-bold mb-6">ประวัติการยืม-คืน</h2>
-
-                <div className="space-y-4">
-                    {borrows && borrows.length > 0 ? (
-                        borrows.map((borrow) => {
-                            const status = statusLabels[borrow.status] || { text: "N/A", color: "bg-gray-500/20" };
-                            return (
-                                <div
-                                    key={borrow.id}
-                                    className="p-4 rounded-xl bg-white/5 border border-white/10"
-                                >
-                                    <div className="flex justify-between items-start mb-3">
-                                        <div>
-                                            <span className="font-semibold">คำขอยืม #{borrow.id}</span>
-                                            <span className="text-white/50 ml-2">
-                                                ({Array.isArray(borrow.equipment_ids) ? borrow.equipment_ids.length : 0} เครื่อง)
-                                            </span>
-                                        </div>
-                                        <span className={`text-xs px-3 py-1 rounded-full ${status.color}`}>
-                                            {status.text}
-                                        </span>
-                                    </div>
-                                    <div className="text-sm text-white/70 space-y-1">
-                                        <p><span className="text-white/50">วัตถุประสงค์:</span> {borrow.purpose}</p>
-                                        <p><span className="text-white/50">วันที่ยืม:</span> {borrow.borrow_date} | <span className="text-white/50">กำหนดคืน:</span> {borrow.due_date}</p>
-                                        {borrow.actual_return_date && (
-                                            <p><span className="text-white/50">วันที่คืน:</span> {borrow.actual_return_date}</p>
-                                        )}
-                                        {borrow.late_return_reason && (
-                                            <p className="text-orange-300"><span className="text-white/50">เหตุผลคืนช้า:</span> {borrow.late_return_reason}</p>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })
-                    ) : (
-                        <div className="text-center py-12 text-white/50">
-                            ไม่มีประวัติการยืม
-                        </div>
-                    )}
-                </div>
-            </GlassCard>
-        </div>
-    );
+    return <HistoryClient borrows={borrows || []} equipmentMap={equipmentMap} statusLabels={statusLabels} />;
 }

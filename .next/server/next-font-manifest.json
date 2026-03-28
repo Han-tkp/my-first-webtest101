@@ -1,1 +1,47 @@
-{"pages":{},"app":{},"appUsingSizeAdjust":false,"pagesUsingSizeAdjust":false}
+{
+  "app": {
+    "[project]/src/app/_not-found/page": [
+      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
+      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
+    ],
+    "[project]/src/app/dashboard/approvals/page": [
+      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
+      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
+    ],
+    "[project]/src/app/dashboard/borrow/page": [
+      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
+      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
+    ],
+    "[project]/src/app/dashboard/history/page": [
+      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
+      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
+    ],
+    "[project]/src/app/dashboard/notifications/page": [
+      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
+      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
+    ],
+    "[project]/src/app/dashboard/page": [
+      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
+      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
+    ],
+    "[project]/src/app/dashboard/reports/page": [
+      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
+      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
+    ],
+    "[project]/src/app/dashboard/technician/page": [
+      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
+      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
+    ],
+    "[project]/src/app/login/page": [
+      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
+      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
+    ],
+    "[project]/src/app/page": [
+      "static/media/bfd813093b8ca1bb-s.p.88bd3266.woff2",
+      "static/media/f304c3cf3765fb5f-s.p.607a00cf.woff2"
+    ]
+  },
+  "appUsingSizeAdjust": true,
+  "pages": {},
+  "pagesUsingSizeAdjust": false
+}

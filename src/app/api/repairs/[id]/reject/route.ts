@@ -1,32 +1,35 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
-import { redirect } from 'next/navigation';
+import { checkApiRole } from '@/lib/auth';
+import { notifyRepairStatus } from '@/lib/notifications';
 
+// POST reject repair - admin or approver
 export async function POST(
-    request: Request,
-    { params }: { params: { id: string } }
+    _request: Request,
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { error: authError } = await checkApiRole('admin', 'approver');
+    if (authError) return NextResponse.json({ error: authError.message }, { status: authError.status });
+
+    const { id } = await params;
     const supabase = await createClient();
 
-    // Get repair to find equipment ID
+    // Get repair to find equipment ID and details
     const { data: repair } = await supabase
         .from('repairs')
-        .select('equipment_id')
-        .eq('id', params.id)
+        .select('equipment_id, equipment_name, damage_description')
+        .eq('id', id)
         .single();
 
     const { error } = await supabase
         .from('repairs')
         .update({ status: 'repair_rejected' })
-        .eq('id', params.id);
+        .eq('id', id);
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Set equipment back to available if rejected? Or maybe it stays as is?
-    // Usually if repair is rejected, equipment might be returned to available or broken state
-    // Let's assume available for now
     if (repair?.equipment_id) {
         await supabase
             .from('equipment')
@@ -34,5 +37,15 @@ export async function POST(
             .eq('id', repair.equipment_id);
     }
 
-    redirect('/dashboard/approvals');
+    // Notify admins about rejected repair
+    if (repair) {
+        notifyRepairStatus({
+            repairId: Number(id),
+            equipment_name: repair.equipment_name,
+            damage_description: repair.damage_description,
+            status: 'repair_rejected',
+        }).catch(console.error);
+    }
+
+    return NextResponse.json({ success: true });
 }

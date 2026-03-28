@@ -1,0 +1,17 @@
+<svg width="640" height="420" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="420" rx="32" fill="#F4F8F6"/>
+  <rect x="34" y="34" width="572" height="352" rx="24" fill="#E9F2EF"/>
+  <rect x="138" y="206" width="252" height="72" rx="20" fill="#0F5C6E"/>
+  <rect x="224" y="156" width="88" height="56" rx="16" fill="#2D7A63"/>
+  <rect x="378" y="222" width="126" height="24" rx="12" fill="#DFF0E8"/>
+  <rect x="486" y="230" width="70" height="10" rx="5" fill="#173642"/>
+  <path d="M132 278H392L374 312H152L132 278Z" fill="#173642"/>
+  <circle cx="188" cy="324" r="24" fill="#173642"/>
+  <circle cx="188" cy="324" r="10" fill="#DFF0E8"/>
+  <circle cx="340" cy="324" r="24" fill="#173642"/>
+  <circle cx="340" cy="324" r="10" fill="#DFF0E8"/>
+  <rect x="168" y="138" width="70" height="18" rx="9" fill="#DFF0E8"/>
+  <path d="M504 150C504 133.431 517.431 120 534 120H558C574.569 120 588 133.431 588 150V184H504V150Z" fill="#2D7A63"/>
+  <text x="68" y="92" fill="#0F5C6E" font-family="Noto Sans Thai, sans-serif" font-size="28" font-weight="700">เครื่องพ่นละอองฝอย ULV</text>
+  <text x="68" y="126" fill="#5F7279" font-family="Noto Sans Thai, sans-serif" font-size="18">รูปประกอบสำหรับแสดงรายการอุปกรณ์</text>
+</svg>

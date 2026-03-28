@@ -1,12 +1,51 @@
+import Link from "next/link";
+import { CalendarClock, ClipboardList } from "lucide-react";
+import { CancelBorrowButton } from "./CancelBorrowButton";
 import { createClient } from "@/lib/supabase/server";
 import { GlassCard } from "@/components/ui/GlassCard";
-import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { EquipmentImage } from "@/components/ui/EquipmentImage";
+import { getEquipmentImageUrl } from "@/lib/equipment-catalog";
+
+interface EquipmentSummary {
+    name: string;
+    image_url: string | null;
+    type: string;
+}
+
+interface EquipmentTypeGroup {
+    type: string;
+    count: number;
+    imageUrl: string | null;
+}
+
+function groupEquipmentByType(equipmentIds: number[] | null | undefined, equipmentMap: Record<number, EquipmentSummary>) {
+    const grouped = new Map<string, EquipmentTypeGroup>();
+
+    (equipmentIds || []).forEach((equipmentId) => {
+        const equipment = equipmentMap[equipmentId];
+        const type = equipment?.type || "ไม่ระบุประเภท";
+        const existing = grouped.get(type);
+
+        if (existing) {
+            existing.count += 1;
+            existing.imageUrl = existing.imageUrl || equipment?.image_url || null;
+            return;
+        }
+
+        grouped.set(type, {
+            type,
+            count: 1,
+            imageUrl: equipment?.image_url || null,
+        });
+    });
+
+    return Array.from(grouped.values()).sort((a, b) => a.type.localeCompare(b.type, "th"));
+}
 
 export default async function UserView({ userId }: { userId: string }) {
     const supabase = await createClient();
 
-    // Get active borrows for this user
     const { data: myBorrows } = await supabase
         .from("borrows")
         .select("*")
@@ -14,82 +53,176 @@ export default async function UserView({ userId }: { userId: string }) {
         .order("created_at", { ascending: false })
         .limit(5);
 
-    const activeBorrows = myBorrows?.filter(b =>
-        ['pending_borrow_approval', 'pending_delivery', 'borrowed'].includes(b.status)
-    ) || [];
+    const activeBorrows =
+        myBorrows?.filter((borrow) =>
+            ["pending_borrow_approval", "pending_delivery", "borrowed"].includes(borrow.status),
+        ) || [];
 
-    const statusLabels: Record<string, { text: string; color: string }> = {
-        pending_borrow_approval: { text: "รออนุมัติ", color: "text-yellow-400 bg-yellow-400/10" },
-        pending_delivery: { text: "รอรับของ", color: "text-blue-400 bg-blue-400/10" },
-        borrowed: { text: "กำลังยืม", color: "text-green-400 bg-green-400/10" },
-        returned: { text: "คืนแล้ว", color: "text-gray-400 bg-gray-400/10" },
-        rejected: { text: "ไม่อนุมัติ", color: "text-red-400 bg-red-400/10" },
+    const allEquipmentIds = new Set<number>();
+    activeBorrows.forEach((borrow) => borrow.equipment_ids?.forEach((id: number) => allEquipmentIds.add(id)));
+
+    const equipmentMap: Record<number, EquipmentSummary> = {};
+    if (allEquipmentIds.size > 0) {
+        const { data: equipment } = await supabase
+            .from("equipment")
+            .select("id, name, image_url, type")
+            .in("id", Array.from(allEquipmentIds));
+
+        equipment?.forEach((item) => {
+            equipmentMap[item.id] = {
+                name: item.name,
+                image_url: item.image_url,
+                type: item.type,
+            };
+        });
+    }
+
+    const statusLabels: Record<string, { text: string; className: string }> = {
+        pending_borrow_approval: {
+            text: "รออนุมัติ",
+            className: "bg-amber-50 text-amber-700 border border-amber-100",
+        },
+        pending_delivery: {
+            text: "รอรับอุปกรณ์",
+            className: "bg-sky-50 text-sky-700 border border-sky-100",
+        },
+        borrowed: {
+            text: "กำลังใช้งาน",
+            className: "bg-emerald-50 text-emerald-700 border border-emerald-100",
+        },
     };
 
     return (
         <div className="space-y-6 fade-in">
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">สวัสดี! ยินดีต้อนรับ</h1>
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div className="space-y-2">
+                    <p className="section-kicker">User Dashboard</p>
+                    <h1 className="text-3xl font-semibold text-slate-900">ภาพรวมการขอใช้อุปกรณ์</h1>
+                    <p className="max-w-2xl text-sm leading-7 text-slate-600">
+                        ติดตามคำขอที่อยู่ระหว่างดำเนินการ ตรวจสอบกำหนดรับ-คืน และเข้าถึงเมนูหลักได้จากหน้าเดียว
+                    </p>
+                </div>
+
                 <Link href="/dashboard/borrow">
-                    <Button variant="primary" className="shadow-lg shadow-indigo-500/20">
-                        + ยืมอุปกรณ์ใหม่
-                    </Button>
+                    <Button size="lg">สร้างคำขอยืมใหม่</Button>
                 </Link>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-6">
-                {/* Active Status Card */}
-                <GlassCard className="lg:col-span-2">
-                    <h3 className="text-lg font-bold mb-4">รายการที่กำลังดำเนินการ</h3>
-                    <div className="space-y-3">
+            <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+                <GlassCard className="bg-white">
+                    <div className="flex items-center gap-3">
+                        <div className="tone-info flex h-11 w-11 items-center justify-center rounded-2xl">
+                            <ClipboardList className="h-5 w-5" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-semibold text-slate-900">คำขอที่กำลังดำเนินการ</h2>
+                            <p className="text-sm text-slate-500">แสดงรายการล่าสุดสูงสุด 5 รายการ</p>
+                        </div>
+                    </div>
+
+                    <div className="mt-6 space-y-4">
                         {activeBorrows.length > 0 ? (
                             activeBorrows.map((borrow) => {
-                                const status = statusLabels[borrow.status] || { text: borrow.status, color: "text-gray-400" };
+                                const equipmentGroups = groupEquipmentByType(borrow.equipment_ids, equipmentMap);
+                                const status = statusLabels[borrow.status] || {
+                                    text: borrow.status,
+                                    className: "bg-slate-100 text-slate-700 border border-slate-200",
+                                };
+
                                 return (
-                                    <div key={borrow.id} className="p-4 rounded-xl bg-white/5 border border-white/10 flex justify-between items-center">
-                                        <div>
-                                            <p className="font-semibold">คำขอยืม #{borrow.id}</p>
-                                            <p className="text-sm text-white/60">
-                                                วันที่ต้องการใช้: {new Date(borrow.borrow_date).toLocaleDateString('th-TH')}
-                                            </p>
+                                    <div key={borrow.id} className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                            <div>
+                                                <p className="font-semibold text-slate-900">คำขอเลขที่ {borrow.id}</p>
+                                                <p className="mt-1 text-sm text-slate-600">
+                                                    วันที่ใช้งาน {new Date(borrow.borrow_date).toLocaleDateString("th-TH")}
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-wrap items-center gap-3">
+                                                <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${status.className}`}>
+                                                    {status.text}
+                                                </span>
+                                                {borrow.status === "pending_borrow_approval" && (
+                                                    <CancelBorrowButton borrowId={borrow.id} />
+                                                )}
+                                            </div>
                                         </div>
-                                        <span className={`text-xs px-3 py-1 rounded-full ${status.color} font-medium`}>
-                                            {status.text}
-                                        </span>
+
+                                        {equipmentGroups.length > 0 ? (
+                                            <div className="mt-4 flex flex-wrap gap-2">
+                                                {equipmentGroups.map((group) => (
+                                                    <div
+                                                        key={group.type}
+                                                        className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600"
+                                                    >
+                                                        <EquipmentImage
+                                                            src={getEquipmentImageUrl(group.type, group.imageUrl)}
+                                                            alt={group.type}
+                                                            className="h-7 w-7 rounded-lg border border-slate-200"
+                                                            imageClassName="object-cover"
+                                                            labelClassName="text-[9px]"
+                                                            sizes="28px"
+                                                        />
+                                                        <span>{group.type}</span>
+                                                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                                                            {group.count} เครื่อง
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : null}
                                     </div>
                                 );
                             })
                         ) : (
-                            <div className="text-center py-8 text-white/40">
-                                <p>ไม่มีรายการที่กำลังดำเนินการ</p>
-                                <Link href="/dashboard/borrow" className="text-indigo-400 text-sm hover:underline mt-2 inline-block">
-                                    เริ่มยืมอุปกรณ์เลย
+                            <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center">
+                                <p className="font-medium text-slate-700">ยังไม่มีคำขอที่กำลังดำเนินการ</p>
+                                <p className="mt-2 text-sm text-slate-500">
+                                    เมื่อสร้างคำขอยืมใหม่ รายการจะแสดงที่นี่พร้อมสถานะการอนุมัติ
+                                </p>
+                                <Link href="/dashboard/borrow" className="brand-link mt-4 inline-block text-sm font-semibold">
+                                    ไปยังหน้าสร้างคำขอ
                                 </Link>
                             </div>
                         )}
                     </div>
                 </GlassCard>
 
-                {/* Quick Actions / Tips */}
-                <GlassCard>
-                    <h3 className="text-lg font-bold mb-4">เมนูลัด</h3>
-                    <div className="space-y-2">
-                        <Link href="/dashboard/borrow" className="p-3 rounded-lg bg-white/5 hover:bg-white/10 transition flex items-center gap-3">
-                            <span className="text-xl">📅</span>
-                            <span className="text-sm">จองอุปกรณ์ล่วงหน้า</span>
-                        </Link>
-                        <Link href="/dashboard/history" className="p-3 rounded-lg bg-white/5 hover:bg-white/10 transition flex items-center gap-3">
-                            <span className="text-xl">📜</span>
-                            <span className="text-sm">ประวัติการยืมทั้งหมด</span>
-                        </Link>
-                        <div className="mt-4 p-4 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
-                            <h4 className="font-semibold text-indigo-300 mb-1">เกร็ดความรู้</h4>
-                            <p className="text-xs text-indigo-200/70">
-                                ควรจองอุปกรณ์ล่วงหน้าอย่างน้อย 3 วัน เพื่อให้เจ้าหน้าที่เตรียมเครื่องให้พร้อมใช้งาน
-                            </p>
+                <div className="space-y-6">
+                    <GlassCard className="bg-white">
+                        <div className="flex items-center gap-3">
+                            <div className="tone-success flex h-11 w-11 items-center justify-center rounded-2xl">
+                                <CalendarClock className="h-5 w-5" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold text-slate-900">เมนูด่วน</h3>
+                                <p className="text-sm text-slate-500">เข้าถึงงานที่ใช้บ่อย</p>
+                            </div>
                         </div>
-                    </div>
-                </GlassCard>
+
+                        <div className="mt-5 space-y-3">
+                            <Link
+                                href="/dashboard/borrow"
+                                className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm font-medium text-slate-700 transition hover:border-[#b7cfca] hover:bg-white"
+                            >
+                                ส่งคำขอยืมอุปกรณ์
+                            </Link>
+                            <Link
+                                href="/dashboard/history"
+                                className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm font-medium text-slate-700 transition hover:border-[#b7cfca] hover:bg-white"
+                            >
+                                ดูประวัติการยืมทั้งหมด
+                            </Link>
+                        </div>
+                    </GlassCard>
+
+                    <GlassCard className="brand-panel">
+                        <h3 className="text-lg font-semibold">ข้อแนะนำในการขอใช้อุปกรณ์</h3>
+                        <p className="mt-3 text-sm leading-7 text-white/80">
+                            ระบุวันใช้งาน พื้นที่ปฏิบัติงาน และผู้ประสานงานให้ครบถ้วน เพื่อช่วยให้การอนุมัติและการจัดเตรียมอุปกรณ์รวดเร็วขึ้น
+                        </p>
+                    </GlassCard>
+                </div>
             </div>
         </div>
     );

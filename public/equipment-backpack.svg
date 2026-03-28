@@ -1,0 +1,16 @@
+<svg width="640" height="420" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="420" rx="32" fill="#F4F8F6"/>
+  <rect x="34" y="34" width="572" height="352" rx="24" fill="#EEF5F3"/>
+  <rect x="214" y="126" width="148" height="168" rx="28" fill="#0F5C6E"/>
+  <rect x="236" y="148" width="104" height="92" rx="20" fill="#DFF0E8"/>
+  <rect x="260" y="252" width="58" height="24" rx="12" fill="#2D7A63"/>
+  <path d="M212 158C188 168 174 194 174 224V310" stroke="#2D7A63" stroke-width="16" stroke-linecap="round"/>
+  <path d="M364 158C388 168 402 194 402 224V310" stroke="#2D7A63" stroke-width="16" stroke-linecap="round"/>
+  <rect x="410" y="188" width="96" height="22" rx="11" fill="#2D7A63"/>
+  <rect x="500" y="194" width="48" height="10" rx="5" fill="#173642"/>
+  <circle cx="290" cy="194" r="20" fill="#0F5C6E"/>
+  <path d="M288 294V340" stroke="#173642" stroke-width="18" stroke-linecap="round"/>
+  <path d="M288 340C270 352 252 364 236 378" stroke="#173642" stroke-width="12" stroke-linecap="round"/>
+  <text x="68" y="92" fill="#0F5C6E" font-family="Noto Sans Thai, sans-serif" font-size="28" font-weight="700">เครื่องพ่นสารเคมีสะพายหลัง</text>
+  <text x="68" y="126" fill="#5F7279" font-family="Noto Sans Thai, sans-serif" font-size="18">รูปประกอบสำหรับแสดงรายการอุปกรณ์</text>
+</svg>

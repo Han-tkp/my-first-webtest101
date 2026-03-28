@@ -1,7 +1,24 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
   "/api/auth/logout/route": "app/api/auth/logout/route.js",
+  "/api/borrows/[id]/approve/route": "app/api/borrows/[id]/approve/route.js",
+  "/api/borrows/[id]/deliver/route": "app/api/borrows/[id]/deliver/route.js",
+  "/api/borrows/[id]/return/route": "app/api/borrows/[id]/return/route.js",
+  "/api/borrows/route": "app/api/borrows/route.js",
+  "/api/equipment/[id]/route": "app/api/equipment/[id]/route.js",
+  "/api/equipment/route": "app/api/equipment/route.js",
+  "/api/notifications/[id]/read/route": "app/api/notifications/[id]/read/route.js",
+  "/api/notifications/route": "app/api/notifications/route.js",
+  "/api/repairs/[id]/approve/route": "app/api/repairs/[id]/approve/route.js",
+  "/api/repairs/route": "app/api/repairs/route.js",
+  "/api/users/route": "app/api/users/route.js",
+  "/dashboard/approvals/page": "app/dashboard/approvals/page.js",
+  "/dashboard/borrow/page": "app/dashboard/borrow/page.js",
+  "/dashboard/history/page": "app/dashboard/history/page.js",
+  "/dashboard/notifications/page": "app/dashboard/notifications/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/reports/page": "app/dashboard/reports/page.js",
+  "/dashboard/technician/page": "app/dashboard/technician/page.js",
   "/login/page": "app/login/page.js",
-  "/dashboard/page": "app/dashboard/page.js"
+  "/page": "app/page.js"
 }

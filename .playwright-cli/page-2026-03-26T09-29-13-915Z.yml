@@ -1,0 +1,120 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img [ref=e7]
+          - generic [ref=e9]:
+            - paragraph [ref=e10]: Yonchuw
+            - paragraph [ref=e11]: ระบบบริหารเครื่องพ่นหมอกควันสำหรับงานสาธารณสุข
+        - button "Open navigation menu" [active] [ref=e128]:
+          - img [ref=e129]
+      - generic [ref=e132]:
+        - generic [ref=e133]:
+          - generic [ref=e134]:
+            - paragraph [ref=e135]: เมนูหลัก
+            - paragraph [ref=e136]: เข้าสู่ระบบหรือเปิดบัญชีผู้ใช้ใหม่
+          - button "Close navigation menu" [ref=e137]:
+            - img [ref=e138]
+        - generic [ref=e141]:
+          - link "เข้าสู่ระบบ" [ref=e142] [cursor=pointer]:
+            - /url: /login
+            - button "เข้าสู่ระบบ" [ref=e143]
+          - link "ลงทะเบียนใช้งาน" [ref=e144] [cursor=pointer]:
+            - /url: /register
+            - button "ลงทะเบียนใช้งาน" [ref=e145]
+    - main [ref=e17]:
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - paragraph [ref=e21]: Public Health Operations
+          - generic [ref=e22]:
+            - heading "ระบบยืม-คืนและซ่อมบำรุงอุปกรณ์ที่ออกแบบให้เหมาะกับงานสาธารณสุขภาครัฐ" [level=1] [ref=e23]
+            - paragraph [ref=e24]: รองรับขั้นตอนการลงทะเบียน ตรวจสอบสิทธิ์ อนุมัติคำขอ และติดตามสภาพอุปกรณ์ ด้วยภาษาภาพที่อ่านง่าย สุภาพ และพร้อมใช้งานในบริบทหน่วยงานราชการ
+          - generic [ref=e25]:
+            - link "เริ่มใช้งานระบบ" [ref=e26] [cursor=pointer]:
+              - /url: /login
+              - button "เริ่มใช้งานระบบ" [ref=e27]:
+                - text: เริ่มใช้งานระบบ
+                - img [ref=e28]
+            - link "ขอเปิดบัญชีผู้ใช้" [ref=e30] [cursor=pointer]:
+              - /url: /register
+              - button "ขอเปิดบัญชีผู้ใช้" [ref=e31]
+          - generic [ref=e32]:
+            - generic [ref=e33]: ธีมสว่างอ่านง่าย
+            - generic [ref=e34]: รองรับหลายบทบาท
+            - generic [ref=e35]: เหมาะกับงานเอกสารราชการ
+        - generic [ref=e36]:
+          - generic [ref=e37]:
+            - paragraph [ref=e38]: Operational Snapshot
+            - heading "ภาพรวมการดำเนินงานที่อ่านง่ายในหน้าเดียว" [level=2] [ref=e39]
+          - generic [ref=e40]:
+            - generic [ref=e41]:
+              - generic [ref=e42]:
+                - paragraph [ref=e43]: โครงสร้างการอนุมัติ
+                - paragraph [ref=e44]: 3 ระดับ
+                - paragraph [ref=e45]: ผู้ใช้ ผู้อนุมัติ และช่างเทคนิค
+              - generic [ref=e46]:
+                - paragraph [ref=e47]: ข้อมูลสำคัญ
+                - paragraph [ref=e48]: Realtime
+                - paragraph [ref=e49]: ติดตามสถานะคำขอและอุปกรณ์ได้ต่อเนื่อง
+            - generic [ref=e51]:
+              - img [ref=e53]
+              - generic [ref=e57]:
+                - paragraph [ref=e58]: ออกแบบสำหรับหน่วยงานภาครัฐและสาธารณสุข
+                - paragraph [ref=e59]: โทนสีและองค์ประกอบถูกปรับให้ดูเป็นทางการ สงบ และเหมาะกับการใช้งานโดยบุคลากรในงานควบคุมโรค
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - paragraph [ref=e63]: Core Functions
+          - heading "ฟังก์ชันหลักที่ครอบคลุมงานยืมคืนและซ่อมบำรุง" [level=2] [ref=e64]
+          - paragraph [ref=e65]: เน้นความชัดเจนของข้อมูล การอนุมัติอย่างมีลำดับ และการใช้งานที่ไม่ซับซ้อนสำหรับเจ้าหน้าที่ทุกระดับ
+        - generic [ref=e66]:
+          - generic [ref=e67]:
+            - img [ref=e69]
+            - heading "ติดตามอุปกรณ์อย่างเป็นระบบ" [level=3] [ref=e73]
+            - paragraph [ref=e74]: บันทึกสถานะ ยืม-คืน และประวัติการใช้งานของเครื่องพ่นหมอกควันแบบตรวจสอบย้อนหลังได้
+          - generic [ref=e75]:
+            - img [ref=e77]
+            - heading "รองรับลำดับการอนุมัติ" [level=3] [ref=e80]
+            - paragraph [ref=e81]: แยกบทบาทผู้ใช้งาน ผู้อนุมัติ และช่างเทคนิคอย่างชัดเจนตามกระบวนงานราชการ
+          - generic [ref=e82]:
+            - img [ref=e84]
+            - heading "ดูแลงานซ่อมบำรุงต่อเนื่อง" [level=3] [ref=e86]
+            - paragraph [ref=e87]: แจ้งซ่อม อนุมัติซ่อม และบันทึกค่าใช้จ่ายในระบบเดียว ลดเอกสารกระจัดกระจาย
+          - generic [ref=e88]:
+            - img [ref=e90]
+            - heading "สรุปข้อมูลเพื่อการบริหาร" [level=3] [ref=e92]
+            - paragraph [ref=e93]: ดูภาพรวมจำนวนอุปกรณ์ คำขอที่รออนุมัติ และภารกิจที่อยู่ระหว่างดำเนินการ
+      - generic [ref=e95]:
+        - generic [ref=e96]:
+          - paragraph [ref=e97]: Workflow
+          - heading "ลำดับงานที่สอดคล้องกับการปฏิบัติงานจริง" [level=2] [ref=e98]
+          - paragraph [ref=e99]: ตั้งแต่การเปิดบัญชี การขอใช้อุปกรณ์ ไปจนถึงการส่งคืนและงานซ่อมบำรุง ระบบช่วยให้ทุกขั้นตอนมีหลักฐานอ้างอิงและติดตามต่อได้
+        - generic [ref=e100]:
+          - generic [ref=e101]:
+            - generic [ref=e102]: "1"
+            - paragraph [ref=e103]: ลงทะเบียนผู้ใช้งานพร้อมข้อมูลหน่วยงานและผู้ประสานงาน
+          - generic [ref=e104]:
+            - generic [ref=e105]: "2"
+            - paragraph [ref=e106]: ผู้มีสิทธิ์ตรวจสอบและอนุมัติบัญชีผู้ใช้ก่อนเข้าใช้งานจริง
+          - generic [ref=e107]:
+            - generic [ref=e108]: "3"
+            - paragraph [ref=e109]: ส่งคำขอยืมอุปกรณ์ พร้อมระบุวันใช้งานและวัตถุประสงค์ของภารกิจ
+          - generic [ref=e110]:
+            - generic [ref=e111]: "4"
+            - paragraph [ref=e112]: ช่างเทคนิคส่งมอบ ตรวจรับคืน และบันทึกผลการซ่อมบำรุงตามสภาพอุปกรณ์
+      - generic [ref=e115]:
+        - paragraph [ref=e116]: Ready To Use
+        - heading "เริ่มต้นใช้งานในรูปแบบที่เป็นทางการและเข้าใจง่าย" [level=2] [ref=e117]
+        - paragraph [ref=e118]: ผู้ปฏิบัติงานสามารถลงทะเบียนใช้งานและรอการอนุมัติจากผู้รับผิดชอบได้ทันที ส่วนผู้ดูแลสามารถบริหารคำขอ อุปกรณ์ และประวัติการซ่อมได้จากหน้าแดชบอร์ดเดียว
+        - generic [ref=e119]:
+          - link "ลงทะเบียนผู้ใช้ใหม่" [ref=e120] [cursor=pointer]:
+            - /url: /register
+            - button "ลงทะเบียนผู้ใช้ใหม่" [ref=e121]
+          - link "เข้าสู่ระบบ" [ref=e122] [cursor=pointer]:
+            - /url: /login
+            - button "เข้าสู่ระบบ" [ref=e123]
+    - contentinfo [ref=e124]:
+      - generic [ref=e125]:
+        - paragraph [ref=e126]: ระบบสนับสนุนงานควบคุมโรคติดต่อและบริหารอุปกรณ์ภาคสนาม
+        - paragraph [ref=e127]: ออกแบบให้เหมาะกับการใช้งานในหน่วยงานสาธารณสุขและองค์กรปกครองส่วนท้องถิ่น
+  - alert [ref=e130]

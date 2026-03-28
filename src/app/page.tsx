@@ -1,216 +1,178 @@
-import dynamic from "next/dynamic";
 import Link from "next/link";
+import { ArrowRight, Building2, ChartColumn, ClipboardCheck, ShieldCheck, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { BentoGrid, BentoItem } from "@/components/ui/BentoGrid";
-import { KineticText } from "@/components/effects/KineticText";
-import { ScrollReveal } from "@/components/effects/ParallaxSection";
+import { PublicHeader } from "@/components/layout/PublicHeader";
 
-// Dynamic import for 3D scene (client-side only)
-const Scene3D = dynamic(
-    () => import("@/components/effects/Scene3D").then((mod) => mod.Scene3D),
-    { ssr: false }
-);
+const principles = [
+    {
+        title: "ติดตามอุปกรณ์อย่างเป็นระบบ",
+        description: "บันทึกสถานะ ยืม-คืน และประวัติการใช้งานของเครื่องพ่นหมอกควันแบบตรวจสอบย้อนหลังได้",
+        icon: ClipboardCheck,
+    },
+    {
+        title: "รองรับลำดับการอนุมัติ",
+        description: "แยกบทบาทผู้ใช้งาน ผู้อนุมัติ และช่างเทคนิคอย่างชัดเจนตามกระบวนงานราชการ",
+        icon: ShieldCheck,
+    },
+    {
+        title: "ดูแลงานซ่อมบำรุงต่อเนื่อง",
+        description: "แจ้งซ่อม อนุมัติซ่อม และบันทึกค่าใช้จ่ายในระบบเดียว ลดเอกสารกระจัดกระจาย",
+        icon: Wrench,
+    },
+    {
+        title: "สรุปข้อมูลเพื่อการบริหาร",
+        description: "ดูภาพรวมจำนวนอุปกรณ์ คำขอที่รออนุมัติ และภารกิจที่อยู่ระหว่างดำเนินการ",
+        icon: ChartColumn,
+    },
+];
+
+const processSteps = [
+    "ลงทะเบียนผู้ใช้งานพร้อมข้อมูลหน่วยงานและผู้ประสานงาน",
+    "ผู้มีสิทธิ์ตรวจสอบและอนุมัติบัญชีผู้ใช้ก่อนเข้าใช้งานจริง",
+    "ส่งคำขอยืมอุปกรณ์ พร้อมระบุวันใช้งานและวัตถุประสงค์ของภารกิจ",
+    "ช่างเทคนิคส่งมอบ ตรวจรับคืน และบันทึกผลการซ่อมบำรุงตามสภาพอุปกรณ์",
+];
 
 export default function HomePage() {
     return (
         <div className="min-h-screen bg-gradient-dark">
-            {/* Header */}
-            <header className="sticky top-0 z-50 glass">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                            <span className="text-2xl">🔄</span>
-                        </div>
-                        <div>
-                            <p className="font-bold text-lg">Yonchuw</p>
-                            <p className="text-white/70 text-xs">ระบบบริหารจัดการเครื่องพ่นหมอกควัน</p>
-                        </div>
-                    </div>
-                    <nav className="flex items-center gap-3">
-                        <Link href="/login">
-                            <Button variant="glass" size="sm">เข้าสู่ระบบ</Button>
-                        </Link>
-                        <Link href="/register">
-                            <Button variant="secondary" size="sm">ลงทะเบียน</Button>
-                        </Link>
-                    </nav>
-                </div>
-            </header>
+            <PublicHeader />
 
-            {/* Hero Section with 3D */}
-            <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-                <Scene3D />
-                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-                    <div className="max-w-3xl">
-                        <KineticText
-                            text="ระบบจอง ยืม-คืน"
-                            className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight"
-                            delay={0.2}
-                        />
-                        <KineticText
-                            text="และซ่อมบำรุง"
-                            className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mt-2 bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
-                            delay={0.8}
-                        />
-                        <ScrollReveal delay={1.2}>
-                            <p className="mt-8 text-xl text-white/80 max-w-xl">
-                                ลดขั้นตอนงานเอกสาร เพิ่มประสิทธิภาพการทำงาน
-                                ติดตามสถานะอุปกรณ์ได้แบบเรียลไทม์
-                            </p>
-                        </ScrollReveal>
-                        <ScrollReveal delay={1.4}>
-                            <div className="mt-10 flex flex-wrap gap-4">
+            <main>
+                <section className="page-shell px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+                    <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-center">
+                        <div className="space-y-6">
+                            <p className="section-kicker">Public Health Operations</p>
+                            <div className="max-w-3xl space-y-4">
+                                <h1 className="text-4xl font-semibold leading-tight text-[color:var(--color-foreground)] sm:text-5xl lg:text-6xl">
+                                    ระบบยืม-คืนและซ่อมบำรุงอุปกรณ์ที่ออกแบบให้เหมาะกับงานสาธารณสุขภาครัฐ
+                                </h1>
+                                <p className="max-w-2xl text-lg leading-8 text-[color:var(--color-foreground-muted)]">
+                                    รองรับขั้นตอนการลงทะเบียน ตรวจสอบสิทธิ์ อนุมัติคำขอ และติดตามสภาพอุปกรณ์
+                                    ด้วยภาษาภาพที่อ่านง่าย สุภาพ และพร้อมใช้งานในบริบทหน่วยงานราชการ
+                                </p>
+                            </div>
+
+                            <div className="flex flex-wrap gap-3">
                                 <Link href="/login">
-                                    <Button variant="primary" size="lg">
-                                        เริ่มต้นใช้งาน
+                                    <Button size="lg">
+                                        เริ่มใช้งานระบบ
+                                        <ArrowRight className="h-4 w-4" />
                                     </Button>
                                 </Link>
-                                <Button variant="glass" size="lg">
-                                    ดูรายละเอียด
-                                </Button>
-                            </div>
-                        </ScrollReveal>
-                        <ScrollReveal delay={1.6}>
-                            <div className="mt-8 flex items-center gap-3">
-                                <span className="chip">Responsive</span>
-                                <span className="chip">Role-based</span>
-                                <span className="chip">Real-time</span>
-                            </div>
-                        </ScrollReveal>
-                    </div>
-                </div>
-            </section>
-
-            {/* Features Bento Grid */}
-            <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-                <ScrollReveal>
-                    <h2 className="text-4xl font-bold text-center mb-4">
-                        ฟีเจอร์หลัก
-                    </h2>
-                    <p className="text-center text-white/60 mb-16 max-w-2xl mx-auto">
-                        ระบบครบวงจรสำหรับการบริหารจัดการอุปกรณ์ ตั้งแต่การยืม-คืน ไปจนถึงการซ่อมบำรุง
-                    </p>
-                </ScrollReveal>
-
-                <BentoGrid>
-                    <BentoItem span={2} className="bg-gradient-to-br from-indigo-500/20 to-purple-500/20">
-                        <div className="flex flex-col h-full justify-between">
-                            <div>
-                                <span className="text-4xl mb-4 block">📦</span>
-                                <h3 className="text-2xl font-bold mb-2">จัดการอุปกรณ์</h3>
-                                <p className="text-white/70">
-                                    ดูสถานะอุปกรณ์ทั้งหมด ค้นหา กรอง และจัดการได้อย่างง่ายดาย
-                                </p>
-                            </div>
-                            <div className="mt-6 flex gap-2">
-                                <span className="chip chip-success">40 เครื่อง</span>
-                                <span className="chip">พร้อมใช้งาน</span>
-                            </div>
-                        </div>
-                    </BentoItem>
-
-                    <BentoItem className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20">
-                        <span className="text-4xl mb-4 block">📝</span>
-                        <h3 className="text-xl font-bold mb-2">ยืม-คืน</h3>
-                        <p className="text-white/70 text-sm">
-                            ส่งคำขอยืม อนุมัติ และติดตามสถานะ
-                        </p>
-                    </BentoItem>
-
-                    <BentoItem className="bg-gradient-to-br from-amber-500/20 to-orange-500/20">
-                        <span className="text-4xl mb-4 block">🔧</span>
-                        <h3 className="text-xl font-bold mb-2">ซ่อมบำรุง</h3>
-                        <p className="text-white/70 text-sm">
-                            แจ้งซ่อม ติดตามงาน บันทึกค่าใช้จ่าย
-                        </p>
-                    </BentoItem>
-
-                    <BentoItem className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20">
-                        <span className="text-4xl mb-4 block">👥</span>
-                        <h3 className="text-xl font-bold mb-2">จัดการผู้ใช้</h3>
-                        <p className="text-white/70 text-sm">
-                            ระบบ Role-based สำหรับ Admin, Approver, Technician
-                        </p>
-                    </BentoItem>
-
-                    <BentoItem className="bg-gradient-to-br from-rose-500/20 to-pink-500/20">
-                        <span className="text-4xl mb-4 block">📊</span>
-                        <h3 className="text-xl font-bold mb-2">รายงาน</h3>
-                        <p className="text-white/70 text-sm">
-                            สถิติการยืม ค่าซ่อม Export ข้อมูล
-                        </p>
-                    </BentoItem>
-
-                    <BentoItem span={2} rowSpan={1} className="bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20">
-                        <div className="flex items-center gap-6">
-                            <span className="text-5xl">🔔</span>
-                            <div>
-                                <h3 className="text-xl font-bold mb-2">แจ้งเตือนอัตโนมัติ</h3>
-                                <p className="text-white/70">
-                                    รับการแจ้งเตือนเมื่อมีคำขอใหม่ อนุมัติ หรือเมื่อถึงกำหนดคืน
-                                </p>
-                            </div>
-                        </div>
-                    </BentoItem>
-                </BentoGrid>
-            </section>
-
-            {/* How it works */}
-            <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent to-indigo-900/20">
-                <div className="max-w-4xl mx-auto">
-                    <ScrollReveal>
-                        <h2 className="text-4xl font-bold text-center mb-16">
-                            ขั้นตอนการใช้งาน
-                        </h2>
-                    </ScrollReveal>
-
-                    <div className="space-y-8">
-                        {[
-                            { step: 1, title: "ลงทะเบียน", desc: "ผู้ใช้ใหม่ลงทะเบียน → สถานะเป็น \"รอตรวจสอบ\"", icon: "📝" },
-                            { step: 2, title: "อนุมัติบัญชี", desc: "ผู้อนุมัติทำการอนุมัติ → ผู้ใช้จึงจะเข้าสู่ระบบได้", icon: "✅" },
-                            { step: 3, title: "ส่งคำขอยืม", desc: "ผู้ใช้ทั่วไปส่งคำขอยืม (สามารถเลือกได้หลายเครื่อง)", icon: "📨" },
-                            { step: 4, title: "อนุมัติการยืม", desc: "ผู้อนุมัติอนุมัติคำขอ → ช่างตรวจสภาพก่อนส่งมอบ", icon: "🔍" },
-                            { step: 5, title: "คืนอุปกรณ์", desc: "เมื่อคืนอุปกรณ์ ช่างจะตรวจสภาพและตัดสินว่า \"เสีย/ไม่เสีย\"", icon: "🔄" },
-                            { step: 6, title: "ซ่อมบำรุง", desc: "หากเสีย → สร้างคำขอซ่อม → อนุมัติ → ซ่อมเสร็จ → กลับมา \"ว่าง\"", icon: "🔧" },
-                        ].map((item, index) => (
-                            <ScrollReveal key={item.step} delay={index * 0.1} direction="left">
-                                <GlassCard hover className="flex items-start gap-6">
-                                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl shadow-lg shadow-indigo-500/30 shrink-0">
-                                        {item.icon}
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm font-bold">
-                                                {item.step}
-                                            </span>
-                                            <h3 className="text-xl font-bold">{item.title}</h3>
-                                        </div>
-                                        <p className="text-white/70">{item.desc}</p>
-                                    </div>
-                                </GlassCard>
-                            </ScrollReveal>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA Section */}
-            <section className="py-24 px-4 sm:px-6 lg:px-8">
-                <ScrollReveal>
-                    <div className="max-w-4xl mx-auto text-center">
-                        <GlassCard className="py-16 px-8" glow>
-                            <h2 className="text-4xl font-bold mb-4">
-                                พร้อมเริ่มใช้งานแล้วหรือยัง?
-                            </h2>
-                            <p className="text-white/70 mb-8 max-w-lg mx-auto">
-                                ลงทะเบียนวันนี้เพื่อเริ่มต้นใช้งานระบบบริหารจัดการเครื่องพ่นหมอกควัน
-                            </p>
-                            <div className="flex justify-center gap-4">
                                 <Link href="/register">
-                                    <Button variant="primary" size="lg">
-                                        ลงทะเบียนฟรี
+                                    <Button variant="glass" size="lg">
+                                        ขอเปิดบัญชีผู้ใช้
                                     </Button>
+                                </Link>
+                            </div>
+
+                            <div className="flex flex-wrap gap-2 pt-2">
+                                <span className="chip">ธีมสว่างอ่านง่าย</span>
+                                <span className="chip chip-success">รองรับหลายบทบาท</span>
+                                <span className="chip chip-warning">เหมาะกับงานเอกสารราชการ</span>
+                            </div>
+                        </div>
+
+                        <GlassCard className="overflow-hidden p-0">
+                            <div className="brand-panel border-b border-white/10 px-6 py-5">
+                                <p className="text-sm uppercase tracking-[0.18em] text-white/75">Operational Snapshot</p>
+                                <h2 className="mt-2 text-2xl font-semibold">ภาพรวมการดำเนินงานที่อ่านง่ายในหน้าเดียว</h2>
+                            </div>
+                            <div className="space-y-5 px-6 py-6">
+                                <div className="grid gap-3 sm:grid-cols-2">
+                                    <div className="rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-surface-muted)] p-4">
+                                        <p className="text-sm text-[color:var(--color-foreground-muted)]">โครงสร้างการอนุมัติ</p>
+                                        <p className="mt-2 text-2xl font-semibold text-[color:var(--color-foreground)]">3 ระดับ</p>
+                                        <p className="mt-1 text-sm text-[color:var(--color-foreground-muted)]">ผู้ใช้ ผู้อนุมัติ และช่างเทคนิค</p>
+                                    </div>
+                                    <div className="rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-surface-muted)] p-4">
+                                        <p className="text-sm text-[color:var(--color-foreground-muted)]">ข้อมูลสำคัญ</p>
+                                        <p className="mt-2 text-2xl font-semibold text-[color:var(--color-foreground)]">Realtime</p>
+                                        <p className="mt-1 text-sm text-[color:var(--color-foreground-muted)]">ติดตามสถานะคำขอและอุปกรณ์ได้ต่อเนื่อง</p>
+                                    </div>
+                                </div>
+
+                                <div className="rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-surface-muted)] p-5">
+                                    <div className="flex items-start gap-3">
+                                        <div className="brand-fill-soft flex h-11 w-11 items-center justify-center rounded-2xl">
+                                            <Building2 className="h-5 w-5" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <p className="font-semibold text-[color:var(--color-foreground)]">ออกแบบสำหรับหน่วยงานภาครัฐและสาธารณสุข</p>
+                                            <p className="text-sm leading-7 text-[color:var(--color-foreground-muted)]">
+                                                โทนสีและองค์ประกอบถูกปรับให้ดูเป็นทางการ สงบ และเหมาะกับการใช้งานโดยบุคลากรในงานควบคุมโรค
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </GlassCard>
+                    </div>
+                </section>
+
+                <section className="px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+                    <div className="mx-auto max-w-7xl">
+                        <div className="mb-8 max-w-3xl">
+                            <p className="section-kicker">Core Functions</p>
+                            <h2 className="mt-3 text-3xl font-semibold text-[color:var(--color-foreground)]">ฟังก์ชันหลักที่ครอบคลุมงานยืมคืนและซ่อมบำรุง</h2>
+                            <p className="mt-3 text-base leading-7 text-[color:var(--color-foreground-muted)]">
+                                เน้นความชัดเจนของข้อมูล การอนุมัติอย่างมีลำดับ และการใช้งานที่ไม่ซับซ้อนสำหรับเจ้าหน้าที่ทุกระดับ
+                            </p>
+                        </div>
+
+                        <BentoGrid>
+                            {principles.map(({ title, description, icon: Icon }) => (
+                                <BentoItem key={title} className="bg-[color:var(--color-surface)]">
+                                    <div className="brand-fill-soft flex h-12 w-12 items-center justify-center rounded-2xl">
+                                        <Icon className="h-6 w-6" />
+                                    </div>
+                                    <h3 className="mt-5 text-xl font-semibold text-[color:var(--color-foreground)]">{title}</h3>
+                                    <p className="mt-3 text-sm leading-7 text-[color:var(--color-foreground-muted)]">{description}</p>
+                                </BentoItem>
+                            ))}
+                        </BentoGrid>
+                    </div>
+                </section>
+
+                <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+                    <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+                        <GlassCard className="brand-panel">
+                            <p className="section-kicker !text-white/70">Workflow</p>
+                            <h2 className="mt-3 text-3xl font-semibold">ลำดับงานที่สอดคล้องกับการปฏิบัติงานจริง</h2>
+                            <p className="mt-4 text-sm leading-7 text-white/80">
+                                ตั้งแต่การเปิดบัญชี การขอใช้อุปกรณ์ ไปจนถึงการส่งคืนและงานซ่อมบำรุง
+                                ระบบช่วยให้ทุกขั้นตอนมีหลักฐานอ้างอิงและติดตามต่อได้
+                            </p>
+                        </GlassCard>
+
+                        <div className="space-y-4">
+                            {processSteps.map((step, index) => (
+                                <GlassCard key={step} className="flex gap-4 bg-white">
+                                    <div className="brand-fill-soft flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl font-semibold">
+                                        {index + 1}
+                                    </div>
+                                    <p className="pt-1 text-base leading-7 text-[color:var(--color-foreground-muted)]">{step}</p>
+                                </GlassCard>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                <section className="px-4 pb-16 pt-8 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-5xl">
+                        <GlassCard className="bg-[color:var(--color-surface)] text-center">
+                            <p className="section-kicker">Ready To Use</p>
+                            <h2 className="mt-3 text-3xl font-semibold text-[color:var(--color-foreground)]">เริ่มต้นใช้งานในรูปแบบที่เป็นทางการและเข้าใจง่าย</h2>
+                            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[color:var(--color-foreground-muted)]">
+                                ผู้ปฏิบัติงานสามารถลงทะเบียนใช้งานและรอการอนุมัติจากผู้รับผิดชอบได้ทันที
+                                ส่วนผู้ดูแลสามารถบริหารคำขอ อุปกรณ์ และประวัติการซ่อมได้จากหน้าแดชบอร์ดเดียว
+                            </p>
+                            <div className="mt-8 flex flex-wrap justify-center gap-3">
+                                <Link href="/register">
+                                    <Button size="lg">ลงทะเบียนผู้ใช้ใหม่</Button>
                                 </Link>
                                 <Link href="/login">
                                     <Button variant="glass" size="lg">
@@ -220,17 +182,13 @@ export default function HomePage() {
                             </div>
                         </GlassCard>
                     </div>
-                </ScrollReveal>
-            </section>
+                </section>
+            </main>
 
-            {/* Footer */}
-            <footer className="py-12 px-4 border-t border-white/10">
-                <div className="max-w-4xl mx-auto text-center text-white/60 text-sm">
-                    <p className="font-semibold text-white/80 mb-2">
-                        หน่วยควบคุมโรคติดต่อนำโดยแมลงที่ 12.4.4
-                    </p>
-                    <p>11 ถนนระแงะมรรคา ตำบลบางนาค อำเภอเมืองนราธิวาส จังหวัดนราธิวาส 96000</p>
-                    <p className="mt-2">โทรศัพท์: 073-514-960</p>
+            <footer className="border-t border-[color:var(--color-border)] bg-[color:var(--color-surface)]/80 px-4 py-8 text-sm text-[color:var(--color-foreground-muted)] sm:px-6 lg:px-8">
+                <div className="mx-auto flex max-w-7xl flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                    <p className="font-medium text-[color:var(--color-foreground)]">ระบบสนับสนุนงานควบคุมโรคติดต่อและบริหารอุปกรณ์ภาคสนาม</p>
+                    <p>ออกแบบให้เหมาะกับการใช้งานในหน่วยงานสาธารณสุขและองค์กรปกครองส่วนท้องถิ่น</p>
                 </div>
             </footer>
         </div>

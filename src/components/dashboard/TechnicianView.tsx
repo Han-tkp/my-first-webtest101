@@ -1,26 +1,24 @@
-import { createClient } from "@/lib/supabase/server";
-import { GlassCard } from "@/components/ui/GlassCard";
-import TechnicianPage from "@/app/dashboard/technician/page"; // Reuse existing tech page logic
+import { Wrench } from "lucide-react";
+import TechnicianPage from "@/app/dashboard/technician/page";
 
 export default async function TechnicianView() {
-    // We can reuse the existing Technician Page component since it already has the logic we want
-    // But we'll wrap it differently or just import its contents.
-    // For cleaner architecture, let's just use the existing page content as a component.
-    // However, TechnicianPage is an async component page.
-
-    // Let's refetch data specific for "My Work Queue" summary here if we want a dashboard feel,
-    // OR just render the full technician page which is already designed as a dashboard.
-
     return (
         <div className="space-y-6 fade-in">
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">ส่วนงานช่าง (Technician)</h1>
-                <span className="text-sm text-white/50 bg-white/10 px-3 py-1 rounded-full">
-                    พร้อมปฏิบัติงาน
-                </span>
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                <div className="space-y-2">
+                    <p className="section-kicker">Technician Workspace</p>
+                    <h1 className="text-3xl font-semibold text-slate-900">ศูนย์ปฏิบัติงานช่าง</h1>
+                    <p className="max-w-2xl text-sm leading-7 text-slate-600">
+                        จัดการการส่งมอบ ตรวจสภาพหลังคืน และบันทึกงานซ่อมบำรุงในรูปแบบที่ชัดเจนต่อการติดตาม
+                    </p>
+                </div>
+
+                <div className="tone-info inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium">
+                    <Wrench className="h-4 w-4" />
+                    สถานะพร้อมปฏิบัติงาน
+                </div>
             </div>
 
-            {/* Reuse the existing technician dashboard layout */}
             <TechnicianPage />
         </div>
     );

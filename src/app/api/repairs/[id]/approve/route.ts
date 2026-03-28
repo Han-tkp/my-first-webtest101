@@ -1,21 +1,42 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
-import { redirect } from 'next/navigation';
+import { checkApiRole } from '@/lib/auth';
+import { notifyRepairStatus } from '@/lib/notifications';
 
+// POST approve repair - admin or approver
 export async function POST(
-    request: Request,
-    { params }: { params: { id: string } }
+    _request: Request,
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { error: authError } = await checkApiRole('admin', 'approver');
+    if (authError) return NextResponse.json({ error: authError.message }, { status: authError.status });
+
+    const { id } = await params;
     const supabase = await createClient();
+
+    const { data: repair } = await supabase
+        .from('repairs')
+        .select('equipment_name, damage_description')
+        .eq('id', id)
+        .single();
 
     const { error } = await supabase
         .from('repairs')
         .update({ status: 'repair_approved' })
-        .eq('id', params.id);
+        .eq('id', id);
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    redirect('/dashboard/approvals');
+    if (repair) {
+        notifyRepairStatus({
+            repairId: Number(id),
+            equipment_name: repair.equipment_name,
+            damage_description: repair.damage_description,
+            status: 'repair_approved',
+        }).catch(console.error);
+    }
+
+    return NextResponse.json({ success: true });
 }
