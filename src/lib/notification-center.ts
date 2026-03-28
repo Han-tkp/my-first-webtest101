@@ -49,6 +49,7 @@ interface ActiveRecipient {
     email: string;
     full_name: string;
     role: Role;
+    line_user_id: string | null;
 }
 
 interface NotificationInsert {
@@ -82,7 +83,7 @@ export async function getActiveRecipientsByRoles(roles: Role[]) {
     const supabase = await createClient();
     const { data } = await supabase
         .from("profiles")
-        .select("id, email, full_name, role")
+        .select("id, email, full_name, role, line_user_id")
         .in("role", roles)
         .eq("status", "active");
 
@@ -93,7 +94,7 @@ export async function getRecipientByUserId(userId: string) {
     const supabase = await createClient();
     const { data } = await supabase
         .from("profiles")
-        .select("id, email, full_name, role")
+        .select("id, email, full_name, role, line_user_id")
         .eq("id", userId)
         .eq("status", "active")
         .maybeSingle();

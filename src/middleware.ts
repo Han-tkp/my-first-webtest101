@@ -21,6 +21,7 @@ const ROUTE_ROLE_GUARDS: RouteRoleGuard[] = [
     { prefix: "/dashboard/technician", roles: ["admin", "technician"] },
     { prefix: "/dashboard/borrow", roles: ["admin", "user"] },
     { prefix: "/dashboard/history", roles: ["admin", "user"] },
+    { prefix: "/dashboard/settings", roles: ["admin", "approver", "technician", "user"] },
 ];
 
 const PUBLIC_PATHS = ["/login", "/register"];
@@ -72,7 +73,7 @@ async function getProfile(
 }
 
 function createSupabaseMiddlewareClient(request: NextRequest) {
-    let response = NextResponse.next({ request });
+    const response = NextResponse.next({ request });
 
     if (!isSupabaseConfigured()) {
         console.warn("[Middleware] Supabase not configured, allowing public access");

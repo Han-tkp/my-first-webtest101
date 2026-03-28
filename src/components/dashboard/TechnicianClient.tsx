@@ -39,6 +39,7 @@ interface TechnicianClientProps {
     returnQueue: BorrowQueueItem[];
     activeRepairs: RepairItem[];
     equipmentMap: Record<number, EquipmentSummary>;
+    allEquipment: { id: number; name: string; serial: string }[];
 }
 
 function InspectionFields({ prefix }: { prefix: string }) {
@@ -118,10 +119,14 @@ export function TechnicianClient({
     returnQueue,
     activeRepairs,
     equipmentMap,
+    allEquipment,
 }: TechnicianClientProps) {
     const router = useRouter();
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [actionError, setActionError] = useState<string | null>(null);
+    const [showNewRepairModal, setShowNewRepairModal] = useState(false);
+    const [newRepairLoading, setNewRepairLoading] = useState(false);
+    const [newRepairError, setNewRepairError] = useState<string | null>(null);
 
     const handleFormAction = async (url: string, formElement: HTMLFormElement, actionKey: string, extraData?: Record<string, string>) => {
         setActionLoading(actionKey);
@@ -144,6 +149,44 @@ export function TechnicianClient({
             setActionError("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้");
         } finally {
             setActionLoading(null);
+        }
+    };
+
+    const handleCreateRepair = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setNewRepairLoading(true);
+        setNewRepairError(null);
+
+        const formData = new FormData(e.currentTarget);
+        const equipment_id = formData.get("equipment_id");
+        const damage_description = formData.get("damage_description");
+
+        if (!equipment_id || !damage_description) {
+            setNewRepairError("กรุณากรอกข้อมูลให้ครบถ้วน");
+            setNewRepairLoading(false);
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/repairs", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ equipment_id: Number(equipment_id), damage_description }),
+            });
+
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({ error: "ไม่สามารถสร้างรายการแจ้งซ่อมได้" }));
+                setNewRepairError(data.error || "ไม่สามารถสร้างรายการแจ้งซ่อมได้");
+                setNewRepairLoading(false);
+                return;
+            }
+
+            setShowNewRepairModal(false);
+            router.refresh();
+        } catch {
+            setNewRepairError("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้");
+        } finally {
+            setNewRepairLoading(false);
         }
     };
 
@@ -439,9 +482,17 @@ export function TechnicianClient({
                             <p className="text-sm text-slate-500">บันทึกรายละเอียดค่าใช้จ่ายและผลประเมินหลังซ่อม</p>
                         </div>
                     </div>
-                    <span className="tone-info rounded-full px-3 py-1 text-xs font-semibold">
-                        {filteredRepairs.length} รายการ
-                    </span>
+                    <div className="flex shrink-0 items-center gap-2">
+                        <span className="tone-info rounded-full px-3 py-1 text-xs font-semibold">
+                            {filteredRepairs.length} รายการ
+                        </span>
+                        <button
+                            onClick={() => setShowNewRepairModal(true)}
+                            className="action-primary shrink-0 px-3 py-1.5 text-xs font-medium"
+                        >
+                            + แจ้งซ่อมใหม่
+                        </button>
+                    </div>
                 </div>
 
                 <ListToolbar
@@ -481,7 +532,8 @@ export function TechnicianClient({
                                             sizes="48px"
                                         />
                                         <div className="min-w-0">
-                                            <p className="break-words font-semibold text-slate-900">
+                                            <p className="wrap-break-word font-semibold text-slate-900">
+
                                                 {repair.equipment_name}
                                             </p>
                                             {equipment?.serial ? (
@@ -624,6 +676,44 @@ export function TechnicianClient({
                     />
                 </div>
             </GlassCard>
+
+            {showNewRepairModal ? (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-slate-900/30 backdrop-blur-sm" onClick={() => setShowNewRepairModal(false)} />
+                    <div className="glass-card relative w-full max-w-xl space-y-5 bg-white p-6">
+                        <h3 className="text-xl font-bold">+ แจ้งซ่อมใหม่</h3>
+                        <p className="text-sm text-slate-500">สร้างรายการแจ้งซ่อมใหม่สำหรับอุปกรณ์ที่ชำรุด</p>
+
+                        {newRepairError ? <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{newRepairError}</div> : null}
+
+                        <form onSubmit={handleCreateRepair} className="space-y-4">
+                            <div>
+                                <label className="label">อุปกรณ์ที่ชำรุด</label>
+                                <select name="equipment_id" className="form-select w-full" required defaultValue="">
+                                    <option value="" disabled>เลือกอุปกรณ์...</option>
+                                    {allEquipment.map((eq) => (
+                                        <option key={eq.id} value={eq.id}>
+                                            {eq.name} {eq.serial ? `(${eq.serial})` : ""}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="label">อาการชำรุด / ปัญหาที่พบ</label>
+                                <textarea name="damage_description" className="form-textarea w-full" rows={4} placeholder="อธิบายอาการชำรุดหรือร่องรอยความเสียหาย" required />
+                            </div>
+                            <div className="flex gap-3 pt-4">
+                                <button type="submit" disabled={newRepairLoading} className="action-primary flex-1 px-4 py-2.5 disabled:opacity-50">
+                                    {newRepairLoading ? "กำลังดำเนินการ..." : "ยืนยันการแจ้งซ่อม"}
+                                </button>
+                                <button type="button" onClick={() => setShowNewRepairModal(false)} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 font-medium text-slate-700 transition hover:bg-slate-50">
+                                    ยกเลิก
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            ) : null}
         </div>
     );
 }

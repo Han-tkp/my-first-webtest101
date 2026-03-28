@@ -122,7 +122,7 @@ export function NotificationsCenter() {
                 ))}
             </div>
 
-            <div className="max-h-[600px] space-y-3 overflow-y-auto pr-1" style={{ scrollbarWidth: "thin" }}>
+            <div className="max-h-[min(60vh,600px)] space-y-3 overflow-y-auto pr-1" style={{ scrollbarWidth: "thin" }}>
                 {isLoading ? (
                     <div className="rounded-3xl border border-slate-200 bg-white px-5 py-10 text-center text-sm text-slate-500">
                         กำลังโหลดการแจ้งเตือน...

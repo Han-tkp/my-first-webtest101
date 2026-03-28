@@ -43,12 +43,18 @@ export default async function TechnicianPage() {
         });
     }
 
+    const { data: allEquipmentItems } = await supabase
+        .from("equipment")
+        .select("id, name, serial")
+        .order("name", { ascending: true });
+
     return (
         <TechnicianClient
             deliveryQueue={deliveryQueue || []}
             returnQueue={returnQueue || []}
             activeRepairs={activeRepairs || []}
             equipmentMap={equipmentMap}
+            allEquipment={allEquipmentItems || []}
         />
     );
 }

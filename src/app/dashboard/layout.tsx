@@ -30,6 +30,7 @@ export default async function DashboardLayout({
         { id: "technician", label: "งานช่าง", href: "/dashboard/technician", roles: ["admin", "technician"] },
         { id: "approvals", label: "ศูนย์อนุมัติ", href: "/dashboard/approvals", roles: ["admin", "approver"] },
         { id: "reports", label: "รายงาน", href: "/dashboard/reports", roles: ["admin", "approver"] },
+        { id: "settings", label: "ตั้งค่า", href: "/dashboard/settings", roles: ["admin", "user", "technician", "approver"] },
     ];
 
     const visibleTabs = allTabs.filter((tab) => tab.roles.includes(profile.role));

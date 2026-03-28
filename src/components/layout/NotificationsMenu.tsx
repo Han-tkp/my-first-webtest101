@@ -70,19 +70,19 @@ export function NotificationsMenu() {
                     setIsOpen((previous) => !previous);
                     void loadNotifications();
                 }}
-                className="relative inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 transition hover:border-[color:var(--color-border)] hover:bg-[color:var(--color-surface-muted)]"
+                className="relative flex items-center justify-center rounded-(--radius-button) border border-transparent p-2 text-(--color-text) transition-colors hover:border-(--color-border) hover:bg-(--color-surface-muted)"
                 aria-label="Open notifications"
             >
                 <Bell className="h-5 w-5" />
                 {unreadCount > 0 ? (
-                    <span className="absolute -right-1 -top-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[color:var(--color-danger)] px-1 text-[11px] font-semibold text-white">
+                    <span className="absolute right-0 top-0 flex h-4 w-4 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-(--color-danger) text-[10px] font-bold text-white shadow-sm">
                         {unreadCount}
                     </span>
                 ) : null}
             </button>
 
             {isOpen ? (
-                <div className="absolute right-0 z-50 mt-3 w-[22rem] rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_24px_48px_rgba(15,23,42,0.12)]">
+                <div className="absolute right-0 top-full mt-2 w-88 origin-top-right rounded-(--radius-card) border border-(--color-border) bg-(--color-surface) p-2 shadow-xl ring-1 ring-black/5 focus:outline-none">
                     <div className="flex items-center justify-between gap-3">
                         <div>
                             <p className="text-sm font-semibold text-slate-900">การแจ้งเตือน</p>
@@ -121,10 +121,8 @@ export function NotificationsMenu() {
                                             void markAsRead(item.id);
                                             setIsOpen(false);
                                         }}
-                                        className={`block rounded-2xl border px-4 py-3 transition ${
-                                            item.is_read
-                                                ? "border-slate-200 bg-white hover:bg-slate-50"
-                                                : "border-[color:var(--color-border)] bg-[color:var(--color-surface-muted)] hover:bg-[color:var(--color-background-muted)]"
+                                        className={`block rounded-(--radius-base) border border-(--color-border) bg-(--color-surface-muted) px-4 py-3 text-left transition-colors hover:bg-(--color-background-muted) ${
+                                            item.is_read ? "opacity-80" : "border-l-4 border-l-(--color-primary) font-medium"
                                         }`}
                                     >
                                         {content}
@@ -134,10 +132,10 @@ export function NotificationsMenu() {
                                         key={item.id}
                                         type="button"
                                         onClick={() => void markAsRead(item.id)}
-                                        className={`block w-full rounded-2xl border px-4 py-3 text-left transition ${
+                                        className={`block rounded-(--radius-base) border border-(--color-border) px-4 py-3 transition ${
                                             item.is_read
-                                                ? "border-slate-200 bg-white hover:bg-slate-50"
-                                                : "border-[color:var(--color-border)] bg-[color:var(--color-surface-muted)] hover:bg-[color:var(--color-background-muted)]"
+                                                ? "bg-white hover:bg-slate-50"
+                                                : "border-l-4 border-l-(--color-primary) bg-(--color-surface-muted) font-medium"
                                         }`}
                                     >
                                         {content}

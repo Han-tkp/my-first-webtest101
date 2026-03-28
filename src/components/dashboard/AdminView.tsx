@@ -55,12 +55,22 @@ const userStatusLabels: Record<string, { text: string; color: string }> = {
 
 const defaultForm = { name: "", type: "", serial: "", image_url: "", status: "available" };
 
+interface Repair {
+    id: number;
+    equipment_id: number;
+    equipment_name: string;
+    damage_description: string;
+    status: string;
+    request_date: string;
+    cost?: number;
+}
+
 function sortThai(values: string[]) {
     return [...values].sort((a, b) => a.localeCompare(b, "th"));
 }
 
 export default function AdminView() {
-    const [activeTab, setActiveTab] = useState<"equipment" | "users">("equipment");
+    const [activeTab, setActiveTab] = useState<"equipment" | "users" | "repairs">("equipment");
     const [userViewMode, setUserViewMode] = useState<"grid" | "table">("grid");
     const [equipment, setEquipment] = useState<Equipment[]>([]);
     const [search, setSearch] = useState("");
@@ -88,6 +98,10 @@ export default function AdminView() {
     const [deleteUserConfirm, setDeleteUserConfirm] = useState<string | null>(null);
     const defaultUserForm = { full_name: "", email: "", password: "", agency: "", phone: "", role: "user" };
 
+    const [repairs, setRepairs] = useState<Repair[]>([]);
+    const [repairSearch, setRepairSearch] = useState("");
+    const [repairStatusFilter, setRepairStatusFilter] = useState("all");
+
     const loadEquipment = async () => {
         const response = await fetch("/api/equipment", { cache: "no-store" });
         if (!response.ok) return;
@@ -102,9 +116,17 @@ export default function AdminView() {
         setUsers(data);
     };
 
+    const loadRepairs = async () => {
+        const response = await fetch("/api/repairs", { cache: "no-store" });
+        if (!response.ok) return;
+        const data = (await response.json()) as Repair[];
+        setRepairs(data);
+    };
+
     useEffect(() => {
         loadEquipment();
         loadUsers();
+        loadRepairs();
     }, []);
 
     const availableTypes = useMemo(() => sortThai(Array.from(new Set(equipment.map((item) => item.type)))), [equipment]);
@@ -344,6 +366,44 @@ export default function AdminView() {
         setUserActionLoading(null);
     };
 
+    const handleApproveRepair = async (repair: Repair) => {
+        setUserActionLoading(String(repair.id));
+        await fetch(`/api/repairs/${repair.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "repair_approved" }),
+        });
+        await loadRepairs();
+        await loadEquipment();
+        setUserActionLoading(null);
+    };
+
+    const handleRejectRepair = async (repair: Repair) => {
+        setUserActionLoading(String(repair.id));
+        await fetch(`/api/repairs/${repair.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "repair_rejected" }),
+        });
+        await loadRepairs();
+        await loadEquipment();
+        setUserActionLoading(null);
+    };
+
+    const filteredRepairs = useMemo(() => {
+        const keyword = repairSearch.trim().toLowerCase();
+        return repairs.filter((r) => {
+            const matchSearch = !keyword || 
+                r.equipment_name.toLowerCase().includes(keyword) || 
+                r.damage_description.toLowerCase().includes(keyword);
+            const matchStatus = repairStatusFilter === "all" || r.status === repairStatusFilter;
+            return matchSearch && matchStatus;
+        });
+    }, [repairs, repairSearch, repairStatusFilter]);
+
+    const repairPagination = useListPagination(filteredRepairs);
+    const pendingRepairCount = repairs.filter(r => r.status === "pending_repair_approval").length;
+
     return (
         <div className="space-y-5 fade-in">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -355,12 +415,16 @@ export default function AdminView() {
                         จัดการผู้ใช้งาน
                         {pendingCount > 0 ? <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">{pendingCount}</span> : null}
                     </button>
+                    <button onClick={() => setActiveTab("repairs")} className={`relative rounded-xl px-5 py-2.5 text-sm font-medium transition ${activeTab === "repairs" ? "brand-tab-active" : "brand-tab-idle"}`}>
+                        จัดการงานซ่อม
+                        {pendingRepairCount > 0 ? <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-xs text-white">{pendingRepairCount}</span> : null}
+                    </button>
                 </div>
-                {activeTab === "users" ? <Button variant="primary" onClick={openCreateUser} className="w-full justify-center sm:w-auto">+ เพิ่มผู้ใช้งานใหม่</Button> : null}
-                {activeTab === "equipment" ? <Button variant="primary" onClick={() => openModal()} className="w-full justify-center sm:w-auto">+ เพิ่มเครื่องใหม่</Button> : null}
+                {activeTab === "users" && <Button variant="primary" onClick={openCreateUser} className="w-full justify-center sm:w-auto">+ เพิ่มผู้ใช้งานใหม่</Button>}
+                {activeTab === "equipment" && <Button variant="primary" onClick={() => openModal()} className="w-full justify-center sm:w-auto">+ เพิ่มเครื่องใหม่</Button>}
             </div>
 
-            {activeTab === "equipment" ? (
+            {activeTab === "equipment" && (
                 <>
                     <BentoGrid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                         <BentoItem className="border border-slate-200 bg-white"><p className="text-xs text-slate-500">เครื่องทั้งหมด</p><p className="mt-1 text-2xl font-bold">{total}</p></BentoItem>
@@ -426,7 +490,9 @@ export default function AdminView() {
                         <div className="mt-6"><PaginationControls currentPage={equipmentPagination.currentPage} totalPages={equipmentPagination.totalPages} totalItems={equipmentPagination.totalItems} pageSize={equipmentPagination.pageSize} onPageChange={equipmentPagination.setCurrentPage} /></div>
                     </GlassCard>
                 </>
-            ) : (
+            )}
+
+            {activeTab === "users" && (
                 <>
                     <BentoGrid className="grid-cols-1 sm:grid-cols-3">
                         <BentoItem className="tone-warning"><p className="text-xs text-slate-500">รออนุมัติ</p><p className="mt-1 text-2xl font-bold">{pendingCount}</p></BentoItem>
@@ -510,7 +576,7 @@ export default function AdminView() {
                                                 {user.status === "active" ? <button onClick={() => handleRejectUser(user.id)} disabled={isActioning} className="tone-danger rounded-xl px-3 py-1.5 text-xs font-medium disabled:opacity-50">{isActioning ? "..." : "ระงับ"}</button> : null}
                                                 {user.status === "suspended" ? <button onClick={() => handleApproveUser(user.id)} disabled={isActioning} className="tone-success rounded-xl px-3 py-1.5 text-xs font-medium disabled:opacity-50">{isActioning ? "..." : "เปิดใช้งาน"}</button> : null}
                                                 {user.status === "active" ? (roleChangeUser === user.id ? <div className="flex flex-wrap gap-1">{["user", "approver", "technician", "admin"].map((roleValue) => <button key={roleValue} onClick={() => handleChangeRole(user.id, roleValue)} disabled={roleValue === user.role || isActioning} className={`rounded-lg px-2 py-1 text-xs transition ${roleValue === user.role ? "cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400" : "action-soft"}`}>{roleLabels[roleValue]?.text || roleValue}</button>)}<button onClick={() => setRoleChangeUser(null)} className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600 transition hover:bg-slate-50">ปิด</button></div> : <button onClick={() => setRoleChangeUser(user.id)} className="action-soft px-3 py-1.5 text-xs">เปลี่ยน Role</button>) : null}
-                                                {deleteUserConfirm === user.id ? <><button onClick={() => handleDeleteUser(user.id)} disabled={isActioning} className="action-danger px-3 py-1.5 text-xs">{isActioning ? "..." : "ยืนยันลบ"}</button><button onClick={() => setDeleteUserConfirm(null)} className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600 transition hover:bg-slate-50">ยกเลิก</button></> : <button onClick={() => setDeleteUserConfirm(user.id)} className="tone-danger rounded-xl px-3 py-1.5 text-xs font-medium">ลบ</button>}
+                                                {deleteUserConfirm === user.id ? <><button onClick={() => handleDeleteUser(user.id)} disabled={isActioning} className="action-danger px-3 py-1.5 text-xs">{isActioning ? "..." : "ยืนยันลบ"}</button><button onClick={() => setDeleteConfirm(null)} className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600 transition hover:bg-slate-50">ยกเลิก</button></> : <button onClick={() => setDeleteUserConfirm(user.id)} className="tone-danger rounded-xl px-3 py-1.5 text-xs font-medium">ลบ</button>}
                                             </div>
                                         </div>
                                     </div>
@@ -523,6 +589,79 @@ export default function AdminView() {
                         <div className="mt-6"><PaginationControls currentPage={userPagination.currentPage} totalPages={userPagination.totalPages} totalItems={userPagination.totalItems} pageSize={userPagination.pageSize} onPageChange={userPagination.setCurrentPage} /></div>
                     </GlassCard>
                 </>
+            )}
+
+            {activeTab === "repairs" && (
+                <>
+                    <BentoGrid className="grid-cols-1 sm:grid-cols-3">
+                        <BentoItem className="tone-warning">
+                            <p className="text-xs text-slate-500">รออนุมัติซ่อม</p>
+                            <p className="mt-1 text-2xl font-bold">{pendingRepairCount}</p>
+                        </BentoItem>
+                        <BentoItem className="tone-info">
+                            <p className="text-xs text-slate-500">กำลังซ่อม</p>
+                            <p className="mt-1 text-2xl font-bold">{repairs.filter(r => r.status === "repair_approved").length}</p>
+                        </BentoItem>
+                        <BentoItem className="tone-success">
+                            <p className="text-xs text-slate-500">ซ่อมเสร็จแล้ว</p>
+                            <p className="mt-1 text-2xl font-bold">{repairs.filter(r => r.status === "completed").length}</p>
+                        </BentoItem>
+                    </BentoGrid>
+
+                    <GlassCard>
+                        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <h2 className="text-xl font-bold">รายการแจ้งซ่อมทั้งหมด</h2>
+                            <select value={repairStatusFilter} onChange={(e) => setRepairStatusFilter(e.target.value)} className="form-select w-full text-sm sm:w-56">
+                                <option value="all">ทุกสถานะ</option>
+                                <option value="pending_repair_approval">รออนุมัติ</option>
+                                <option value="repair_approved">อนุมัติแล้ว/กำลังซ่อม</option>
+                                <option value="completed">เสร็จสิ้น</option>
+                                <option value="repair_rejected">ไม่อนุมัติ</option>
+                            </select>
+                        </div>
+
+                        <ListToolbar searchValue={repairSearch} onSearchChange={setRepairSearch} pageSize={repairPagination.pageSize} onPageSizeChange={repairPagination.setPageSize} resultCount={repairPagination.totalItems} placeholder="ค้นหาชื่ออุปกรณ์ หรืออาการเสีย" />
+
+                        <div className="mt-6 space-y-3 max-h-[min(60vh,600px)] overflow-y-auto pr-2 custom-scrollbar">
+                            {repairPagination.paginatedItems.map((repair) => {
+                                const status = statusLabels[repair.status] || { text: repair.status, color: "border border-slate-200 bg-slate-100 text-slate-700" };
+                                const isActioning = userActionLoading === String(repair.id);
+                                return (
+                                    <div key={repair.id} className="rounded-3xl border border-slate-200 bg-slate-50 p-4 transition hover:bg-white">
+                                        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                                            <div className="min-w-0 flex-1">
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <p className="font-semibold">{repair.equipment_name}</p>
+                                                    <span className={`rounded-full px-2 py-0.5 text-xs ${status.color}`}>{status.text}</span>
+                                                </div>
+                                                <p className="text-sm text-slate-600 mt-1">{repair.damage_description}</p>
+                                                <p className="text-xs text-slate-400 mt-1">วันที่แจ้ง: {new Date(repair.request_date).toLocaleDateString("th-TH")}</p>
+                                            </div>
+                                            <div className="flex shrink-0 flex-wrap items-center gap-2">
+                                                {repair.status === "pending_repair_approval" && (
+                                                    <>
+                                                        <button onClick={() => handleApproveRepair(repair)} disabled={isActioning} className="tone-success rounded-xl px-3 py-1.5 text-xs font-medium disabled:opacity-50">
+                                                            {isActioning ? "..." : "อนุมัติการซ่อม"}
+                                                        </button>
+                                                        <button onClick={() => handleRejectRepair(repair)} disabled={isActioning} className="tone-danger rounded-xl px-3 py-1.5 text-xs font-medium disabled:opacity-50">
+                                                            {isActioning ? "..." : "ไม่อนุมัติ"}
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            {repairPagination.paginatedItems.length === 0 ? <div className="py-12 text-center text-slate-500">ไม่พบรายการแจ้งซ่อม</div> : null}
+                        </div>
+
+                        <div className="mt-6">
+                            <PaginationControls currentPage={repairPagination.currentPage} totalPages={repairPagination.totalPages} totalItems={repairPagination.totalItems} pageSize={repairPagination.pageSize} onPageChange={repairPagination.setCurrentPage} />
+                        </div>
+                    </GlassCard>
+                </>
+
             )}
 
             {showModal ? (

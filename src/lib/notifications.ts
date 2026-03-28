@@ -7,6 +7,7 @@ import { UserStatusChangedEmail } from "@/emails/user-status-changed";
 import type { Role } from "@/lib/auth";
 import type { ReactElement } from "react";
 import { sendEmail } from "./email";
+import { sendLineMessage } from "./line";
 import {
     createInAppNotifications,
     getActiveRecipientsByRoles,
@@ -14,6 +15,7 @@ import {
     getRecipientByUserId,
     type NotificationEventType,
     updateNotificationEmailStatus,
+    updateNotificationDeliveryStatus,
 } from "./notification-center";
 import { createClient } from "./supabase/server";
 
@@ -24,6 +26,7 @@ interface Recipient {
     email: string;
     full_name: string;
     role: Role;
+    line_user_id: string | null;
 }
 
 interface DeliverOptions {
@@ -51,6 +54,20 @@ function buildDedupeKey(prefix: string, recipientId: string) {
     return `${prefix}/${recipientId}`;
 }
 
+async function sendLineNotification(recipient: Recipient, title: string, body: string, actionUrl: string) {
+    if (!recipient.line_user_id) return { skipped: true };
+
+    const message = `🔔 ${title}\n\n${body}\n\nดูรายละเอียด: ${BASE_URL}${actionUrl}`;
+    
+    try {
+        await sendLineMessage(recipient.line_user_id, message);
+        return { success: true };
+    } catch (error) {
+        console.error(`[LINE] Failed to send to ${recipient.id}`, error);
+        return { error };
+    }
+}
+
 async function deliverNotifications({
     recipients,
     eventType,
@@ -74,6 +91,7 @@ async function deliverNotifications({
 
     if (freshRecipients.length === 0) return;
 
+    // 1. In-App Notifications
     await createInAppNotifications(
         freshRecipients.map((recipient) => ({
             user_id: recipient.id,
@@ -89,6 +107,22 @@ async function deliverNotifications({
         })),
     );
 
+    // 2. LINE Notifications
+    for (const recipient of freshRecipients) {
+        if (recipient.line_user_id) {
+            const result = await sendLineNotification(recipient, title, body, actionUrl);
+            const dedupeKey = buildDedupeKey(dedupePrefix, recipient.id);
+            
+            await updateNotificationDeliveryStatus(
+                [dedupeKey],
+                "in_app",
+                result.success ? "sent" : "failed",
+                { error_message: result.error ? String(result.error) : undefined },
+            );
+        }
+    }
+
+    // 3. Email Notifications
     if (!emailSubject || !buildEmailTemplate) {
         await updateNotificationEmailStatus(
             freshRecipients.map((recipient) => buildDedupeKey(dedupePrefix, recipient.id)),
