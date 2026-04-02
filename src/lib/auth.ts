@@ -89,15 +89,23 @@ export async function checkApiRole(...allowedRoles: Role[]) {
     const profile = await getAuthUser();
 
     if (!profile) {
-        return { profile: null, error: { message: "Unauthorized", status: 401 } };
+        return { profile: null, error: { message: "กรุณาเข้าสู่ระบบก่อนใช้งาน", status: 401 } };
+    }
+
+    if (profile.status === "pending_approval") {
+        return { profile: null, error: { message: "บัญชีของคุณรอการอนุมัติจากผู้ดูแลระบบ", status: 403 } };
+    }
+
+    if (profile.status === "suspended") {
+        return { profile: null, error: { message: "บัญชีของคุณถูกระงับการใช้งาน", status: 403 } };
     }
 
     if (profile.status !== "active") {
-        return { profile: null, error: { message: "Account not active", status: 403 } };
+        return { profile: null, error: { message: "บัญชีของคุณยังไม่พร้อมใช้งาน", status: 403 } };
     }
 
     if (!allowedRoles.includes(profile.role)) {
-        return { profile: null, error: { message: "Forbidden", status: 403 } };
+        return { profile: null, error: { message: "คุณไม่มีสิทธิ์เข้าถึงส่วนนี้", status: 403 } };
     }
 
     return { profile, error: null };

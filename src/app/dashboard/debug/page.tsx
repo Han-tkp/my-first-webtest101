@@ -1,6 +1,7 @@
 import { requirePageRole } from "@/lib/auth";
 import { EmailTestPanel } from "@/components/dashboard/EmailTestPanel";
 import { createAuthServerClient } from "@/lib/supabase/auth-server";
+import Link from "next/link";
 
 export default async function DebugRolePage() {
     const profile = await requirePageRole("admin");
@@ -38,6 +39,19 @@ export default async function DebugRolePage() {
                 </div>
 
                 <EmailTestPanel />
+
+                <div className="border-t border-slate-200 pt-6">
+                    <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+                        Notification Deliveries
+                    </h2>
+                    <p className="mt-2 text-sm text-slate-600">ดูสถานะการส่งแจ้งเตือนทั้ง email และ in-app รวมถึงรายการที่ล้มเหลว</p>
+                    <Link
+                        href="/dashboard/debug/deliveries"
+                        className="mt-3 inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-white"
+                    >
+                        ดูสถานะการส่งแจ้งเตือน
+                    </Link>
+                </div>
             </div>
         </div>
     );

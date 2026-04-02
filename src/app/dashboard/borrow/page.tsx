@@ -16,6 +16,7 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
 import { getEquipmentTypeDescription } from "@/lib/equipment-catalog";
 import { EquipmentImage } from "@/components/ui/EquipmentImage";
+import { createClient as createBrowserClient } from "@/lib/supabase/client";
 import { ListToolbar } from "@/components/ui/ListToolbar";
 import { PaginationControls } from "@/components/ui/PaginationControls";
 import { useListPagination } from "@/hooks/useListPagination";
@@ -38,6 +39,7 @@ interface EquipmentGroup {
 }
 
 export default function BorrowPage() {
+    const [userAgency, setUserAgency] = useState<string | null>(null);
     const [catalog, setCatalog] = useState<EquipmentGroup[]>([]);
     const [search, setSearch] = useState("");
     const [typeFilter, setTypeFilter] = useState("all");
@@ -58,7 +60,17 @@ export default function BorrowPage() {
 
     useEffect(() => {
         void loadEquipmentCatalog();
+        void loadUserAgency();
     }, []);
+
+    const loadUserAgency = async () => {
+        const supabase = createBrowserClient();
+        if (!supabase) return;
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data } = await supabase.from("profiles").select("agency").eq("id", user.id).single();
+        if (data?.agency) setUserAgency(data.agency);
+    };
 
     const loadEquipmentCatalog = async () => {
         const response = await fetch("/api/equipment", { cache: "no-store" });
@@ -382,6 +394,13 @@ export default function BorrowPage() {
                                     }`}
                                 >
                                     {message.text}
+                                </div>
+                            ) : null}
+
+                            {userAgency ? (
+                                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                    <span className="text-xs font-medium uppercase tracking-wider text-slate-500">หน่วยงาน</span>
+                                    <p className="mt-0.5 text-sm font-semibold text-slate-900">{userAgency}</p>
                                 </div>
                             ) : null}
 

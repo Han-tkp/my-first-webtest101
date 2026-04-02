@@ -533,15 +533,105 @@ body::before {
   }
 }
 
-/* Print styles */
+/* Print styles — optimized for official Thai government form output */
 @media print {
-  .no-print {
+  .no-print,
+  .print\:hidden {
     display: none !important;
   }
-  
-  body {
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html, body {
     background: white !important;
     color: black !important;
+    font-size: 12pt !important;
+    line-height: 1.5 !important;
+  }
+
+  body::before {
+    display: none !important;
+  }
+
+  /* Remove dashboard chrome */
+  header, nav, [data-dashboard-header] {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Glass cards become plain bordered boxes */
+  .glass-card, .glass {
+    background: white !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    border-radius: 0 !important;
+    break-inside: avoid;
+  }
+
+  /* Form inputs show their values cleanly */
+  .form-input, .form-select, .form-textarea {
+    border: none !important;
+    border-bottom: 1px solid #999 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    padding: 0.25rem 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Chips/badges */
+  .chip {
+    border: 1px solid #666 !important;
+    background: transparent !important;
+    color: black !important;
+  }
+
+  /* Buttons hidden except explicit print buttons */
+  button, .action-primary, .action-danger, .action-success, .action-soft {
+    display: none !important;
+  }
+
+  /* Tables */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  th, td {
+    border: 1px solid #999 !important;
+    padding: 0.4rem 0.6rem !important;
+  }
+
+  /* Page breaks */
+  h1, h2, h3 {
+    break-after: avoid;
+  }
+
+  /* Section kicker for form title */
+  .section-kicker {
+    color: black !important;
+    font-size: 10pt !important;
+  }
+
+  /* Ensure images print */
+  img {
+    max-width: 100% !important;
+    break-inside: avoid;
+  }
+
+  /* Page margins */
+  @page {
+    margin: 1.5cm 2cm;
+    size: A4;
   }
 }
 

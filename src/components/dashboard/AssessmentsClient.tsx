@@ -12,7 +12,7 @@ import { isWithinDateRange } from "@/lib/date-range";
 import { AssessmentForm } from "./AssessmentForm";
 import { EquipmentImage } from "@/components/ui/EquipmentImage";
 import { getEquipmentImageUrl } from "@/lib/equipment-catalog";
-import { FileText, Plus, ArrowLeft, Eye } from "lucide-react";
+import { FileText, Plus, ArrowLeft, Eye, Trash2, Printer } from "lucide-react";
 
 interface Equipment {
     id: number;
@@ -63,9 +63,27 @@ export function AssessmentsClient({ assessments, allEquipment }: AssessmentsClie
     const [showNewForm, setShowNewForm] = useState(false);
     const [selectedEquipmentId, setSelectedEquipmentId] = useState<number | null>(null);
     const [viewingAssessment, setViewingAssessment] = useState<Assessment | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [search, setSearch] = useState("");
     const [dateFrom, setDateFrom] = useState("");
     const [dateTo, setDateTo] = useState("");
+
+    const handleDelete = async (id: number) => {
+        if (!confirm("ต้องการลบรายงานประเมินนี้หรือไม่?")) return;
+        setIsDeleting(true);
+        try {
+            const res = await fetch(`/api/assessments/${id}`, { method: "DELETE" });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                alert(err.error || "ไม่สามารถลบได้");
+                return;
+            }
+            setViewingAssessment(null);
+            router.refresh();
+        } finally {
+            setIsDeleting(false);
+        }
+    };
 
     const filteredAssessments = useMemo(() => {
         const keyword = search.trim().toLowerCase();
@@ -95,16 +113,35 @@ export function AssessmentsClient({ assessments, allEquipment }: AssessmentsClie
         const imgSrc = eq ? getEquipmentImageUrl(eq.name, eq.image_url) : null;
         return (
             <div className="mx-auto max-w-5xl space-y-6 fade-in">
-                <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => setViewingAssessment(null)}
-                        className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50"
-                    >
-                        <ArrowLeft className="h-5 w-5" />
-                    </button>
-                    <div className="space-y-1">
-                        <p className="section-kicker">Assessment Detail</p>
-                        <h1 className="text-3xl font-semibold text-slate-900">รายละเอียดการประเมิน #{viewingAssessment.id}</h1>
+                <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => setViewingAssessment(null)}
+                            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 print:hidden"
+                        >
+                            <ArrowLeft className="h-5 w-5" />
+                        </button>
+                        <div className="space-y-1">
+                            <p className="section-kicker">Assessment Detail</p>
+                            <h1 className="text-3xl font-semibold text-slate-900">รายละเอียดการประเมิน #{viewingAssessment.id}</h1>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2 print:hidden">
+                        <button
+                            onClick={() => window.print()}
+                            className="inline-flex items-center gap-1.5 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                        >
+                            <Printer className="h-4 w-4" />
+                            พิมพ์
+                        </button>
+                        <button
+                            onClick={() => handleDelete(viewingAssessment.id)}
+                            disabled={isDeleting}
+                            className="inline-flex items-center gap-1.5 rounded-2xl border border-rose-200 bg-white px-4 py-2 text-sm font-medium text-rose-600 transition hover:bg-rose-50 disabled:opacity-50"
+                        >
+                            <Trash2 className="h-4 w-4" />
+                            {isDeleting ? "กำลังลบ..." : "ลบ"}
+                        </button>
                     </div>
                 </div>
 

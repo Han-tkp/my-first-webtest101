@@ -103,14 +103,14 @@ async function resolveEquipmentIds(
 
 export async function GET(request: Request) {
     if (!isSupabaseConfigured()) {
-        return NextResponse.json({ error: "ระบบยังไม่พร้อมใช้งาน" }, { status: 503 });
+        return NextResponse.json({ error: "ระบบฐานข้อมูลยังไม่ได้เชื่อมต่อ" }, { status: 503 });
     }
 
     const { profile, error: authError } = await checkApiRole("admin", "approver", "technician", "user");
     if (authError) return NextResponse.json({ error: authError.message }, { status: authError.status });
 
     const supabase = await createClient();
-    if (!supabase) return NextResponse.json({ error: "ระบบยังไม่พร้อมใช้งาน" }, { status: 503 });
+    if (!supabase) return NextResponse.json({ error: "ระบบฐานข้อมูลยังไม่ได้เชื่อมต่อ" }, { status: 503 });
 
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
@@ -137,7 +137,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     if (!isSupabaseConfigured()) {
-        return NextResponse.json({ error: "ระบบยังไม่พร้อมใช้งาน" }, { status: 503 });
+        return NextResponse.json({ error: "ระบบฐานข้อมูลยังไม่ได้เชื่อมต่อ" }, { status: 503 });
     }
 
     const { profile, error: authError } = await checkApiRole("admin", "user");
@@ -163,7 +163,7 @@ export async function POST(request: Request) {
     }
 
     const supabase = await createClient();
-    if (!supabase) return NextResponse.json({ error: "ระบบยังไม่พร้อมใช้งาน" }, { status: 503 });
+    if (!supabase) return NextResponse.json({ error: "ระบบฐานข้อมูลยังไม่ได้เชื่อมต่อ" }, { status: 503 });
 
     const body = await request.json();
     
