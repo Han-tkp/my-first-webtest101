@@ -18,7 +18,8 @@ export default async function AssessmentsPage() {
                 serial,
                 brand,
                 model,
-                purchase_year
+                purchase_year,
+                image_url
             )
         `)
         .order("assessment_date", { ascending: false });
@@ -26,7 +27,7 @@ export default async function AssessmentsPage() {
     // Fetch all equipment for the dropdown
     const { data: allEquipment } = await supabase
         .from("equipment")
-        .select("id, name, type, serial, brand, model, purchase_year")
+        .select("id, name, type, serial, brand, model, purchase_year, image_url")
         .order("name", { ascending: true });
 
     return (

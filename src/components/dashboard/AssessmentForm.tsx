@@ -14,6 +14,8 @@ import {
     validateAssessmentData,
     type AssessmentData,
 } from "@/lib/assessments";
+import { EquipmentImage } from "@/components/ui/EquipmentImage";
+import { getEquipmentImageUrl } from "@/lib/equipment-catalog";
 
 interface Equipment {
     id: number;
@@ -23,6 +25,7 @@ interface Equipment {
     brand: string | null;
     model: string | null;
     purchase_year: number | null;
+    image_url?: string | null;
 }
 
 interface AssessmentFormProps {
@@ -133,7 +136,13 @@ export function AssessmentForm({ equipment, onSuccess, onCancel }: AssessmentFor
                 {/* Equipment Info Header */}
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
                     <h3 className="text-lg font-semibold text-slate-900">ข้อมูลเครื่องพ่นสารเคมี</h3>
-                    <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="mt-4 flex flex-col gap-5 sm:flex-row">
+                        <EquipmentImage
+                            src={getEquipmentImageUrl(equipment.name, equipment.image_url)}
+                            alt={equipment.name}
+                            className="h-28 w-28 shrink-0 rounded-2xl border border-slate-200"
+                        />
+                    <div className="grid flex-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <div>
                             <label className="label">ชนิดเครื่อง</label>
                             <input
@@ -188,6 +197,7 @@ export function AssessmentForm({ equipment, onSuccess, onCancel }: AssessmentFor
                                 className="form-input bg-slate-100 text-slate-500"
                             />
                         </div>
+                    </div>
                     </div>
                 </div>
 
