@@ -10,6 +10,9 @@ function normalizeEquipmentPayload(body: Record<string, unknown>) {
         serial: String(body.serial || "").trim(),
         status: String(body.status || "available").trim() || "available",
         image_url: body.image_url ? String(body.image_url).trim() : null,
+        brand: body.brand ? String(body.brand).trim() : null,
+        model: body.model ? String(body.model).trim() : null,
+        purchase_year: body.purchase_year ? Number(body.purchase_year) : null,
     };
 }
 
