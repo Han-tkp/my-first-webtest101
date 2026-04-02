@@ -10,7 +10,9 @@ import { DateRangeFilter } from "@/components/ui/DateRangeFilter";
 import { useListPagination } from "@/hooks/useListPagination";
 import { isWithinDateRange } from "@/lib/date-range";
 import { AssessmentForm } from "./AssessmentForm";
-import { FileText, Plus } from "lucide-react";
+import { EquipmentImage } from "@/components/ui/EquipmentImage";
+import { getEquipmentImageUrl } from "@/lib/equipment-catalog";
+import { FileText, Plus, ArrowLeft, Eye } from "lucide-react";
 
 interface Equipment {
     id: number;
@@ -20,6 +22,7 @@ interface Equipment {
     brand: string | null;
     model: string | null;
     purchase_year: number | null;
+    image_url?: string | null;
 }
 
 interface Assessment {
@@ -32,6 +35,21 @@ interface Assessment {
     span_value: string | null;
     exterior_condition_class: string | null;
     engine_start_quality: string | null;
+    clean_exterior: string | null;
+    clean_nozzle: string | null;
+    flow_control_type: string | null;
+    flow_control_size: string | null;
+    spray_distance: string | null;
+    chemical_substance: string | null;
+    chemical_concentration: string | null;
+    chemical_volume: string | null;
+    chemical_mix_ratio: string | null;
+    season: string | null;
+    location: string | null;
+    result_temp: string | null;
+    result_flow_rate: string | null;
+    recommendations: string | null;
+    notes: string | null;
     equipment: Equipment | null;
 }
 
@@ -44,6 +62,7 @@ export function AssessmentsClient({ assessments, allEquipment }: AssessmentsClie
     const router = useRouter();
     const [showNewForm, setShowNewForm] = useState(false);
     const [selectedEquipmentId, setSelectedEquipmentId] = useState<number | null>(null);
+    const [viewingAssessment, setViewingAssessment] = useState<Assessment | null>(null);
     const [search, setSearch] = useState("");
     const [dateFrom, setDateFrom] = useState("");
     const [dateTo, setDateTo] = useState("");
@@ -69,6 +88,134 @@ export function AssessmentsClient({ assessments, allEquipment }: AssessmentsClie
     }, [assessments, search, dateFrom, dateTo]);
 
     const pagination = useListPagination(filteredAssessments);
+
+    // Detail view for a single assessment
+    if (viewingAssessment) {
+        const eq = viewingAssessment.equipment;
+        const imgSrc = eq ? getEquipmentImageUrl(eq.name, eq.image_url) : null;
+        return (
+            <div className="mx-auto max-w-5xl space-y-6 fade-in">
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setViewingAssessment(null)}
+                        className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50"
+                    >
+                        <ArrowLeft className="h-5 w-5" />
+                    </button>
+                    <div className="space-y-1">
+                        <p className="section-kicker">Assessment Detail</p>
+                        <h1 className="text-3xl font-semibold text-slate-900">รายละเอียดการประเมิน #{viewingAssessment.id}</h1>
+                    </div>
+                </div>
+
+                {/* Equipment info with image */}
+                <GlassCard className="bg-white">
+                    <h3 className="mb-4 text-lg font-semibold text-slate-900">ข้อมูลเครื่องพ่นสารเคมี</h3>
+                    <div className="flex flex-col gap-5 sm:flex-row">
+                        <EquipmentImage
+                            src={imgSrc}
+                            alt={eq?.name || "อุปกรณ์"}
+                            className="h-32 w-32 shrink-0 rounded-2xl border border-slate-200"
+                        />
+                        <div className="grid flex-1 gap-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                            <DetailField label="ชื่อเครื่อง" value={eq?.name} />
+                            <DetailField label="ชนิดเครื่อง" value={eq?.type} />
+                            <DetailField label="เลขครุภัณฑ์" value={eq?.serial} />
+                            <DetailField label="ยี่ห้อ" value={eq?.brand} />
+                            <DetailField label="รุ่น" value={eq?.model} />
+                            <DetailField label="ปีที่ซื้อ" value={eq?.purchase_year?.toString()} />
+                        </div>
+                    </div>
+                </GlassCard>
+
+                {/* Assessment details */}
+                <GlassCard className="bg-white">
+                    <h3 className="mb-4 text-lg font-semibold text-slate-900">ผลการประเมิน</h3>
+                    <div className="space-y-6">
+                        {/* Dates & Assessor */}
+                        <div className="grid gap-3 text-sm sm:grid-cols-3">
+                            <DetailField label="วันที่ประเมิน" value={new Date(viewingAssessment.assessment_date).toLocaleDateString("th-TH")} />
+                            <DetailField label="วันที่ออกรายงาน" value={viewingAssessment.report_date ? new Date(viewingAssessment.report_date).toLocaleDateString("th-TH") : null} />
+                            <DetailField label="ผู้ประเมิน" value={viewingAssessment.assessor_name} />
+                        </div>
+
+                        <hr className="border-slate-200" />
+
+                        {/* Flow Control */}
+                        <div>
+                            <h4 className="mb-3 font-medium text-slate-800">ตัวควบคุมการไหล</h4>
+                            <div className="grid gap-3 text-sm sm:grid-cols-3">
+                                <DetailField label="ประเภทตัวควบคุม" value={viewingAssessment.flow_control_type} />
+                                <DetailField label="ขนาด" value={viewingAssessment.flow_control_size} />
+                                <DetailField label="ระยะพ่น (เมตร)" value={viewingAssessment.spray_distance} />
+                            </div>
+                        </div>
+
+                        <hr className="border-slate-200" />
+
+                        {/* External Condition */}
+                        <div>
+                            <h4 className="mb-3 font-medium text-slate-800">สภาพภายนอก</h4>
+                            <div className="grid gap-3 text-sm sm:grid-cols-3">
+                                <DetailField label="สภาพเครื่อง" value={viewingAssessment.exterior_condition_class} />
+                                <DetailField label="ความสะอาดภายนอก" value={viewingAssessment.clean_exterior} />
+                                <DetailField label="หัวพ่น" value={viewingAssessment.clean_nozzle} />
+                            </div>
+                        </div>
+
+                        <hr className="border-slate-200" />
+
+                        {/* Engine */}
+                        <div>
+                            <h4 className="mb-3 font-medium text-slate-800">การติดเครื่องยนต์</h4>
+                            <div className="grid gap-3 text-sm sm:grid-cols-2">
+                                <DetailField label="การสตาร์ท" value={viewingAssessment.engine_start_quality} />
+                            </div>
+                        </div>
+
+                        <hr className="border-slate-200" />
+
+                        {/* Chemical */}
+                        <div>
+                            <h4 className="mb-3 font-medium text-slate-800">ข้อมูลการทดสอบสารเคมี</h4>
+                            <div className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                                <DetailField label="สารเคมี" value={viewingAssessment.chemical_substance} />
+                                <DetailField label="ความเข้มข้น (%)" value={viewingAssessment.chemical_concentration} />
+                                <DetailField label="ปริมาณ (ลิตร)" value={viewingAssessment.chemical_volume} />
+                                <DetailField label="อัตราส่วนผสม" value={viewingAssessment.chemical_mix_ratio} />
+                                <DetailField label="ฤดูกาล" value={viewingAssessment.season} />
+                                <DetailField label="สถานที่" value={viewingAssessment.location} />
+                            </div>
+                        </div>
+
+                        <hr className="border-slate-200" />
+
+                        {/* Measurement Results */}
+                        <div>
+                            <h4 className="mb-3 font-medium text-slate-800">ผลการวัด</h4>
+                            <div className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
+                                <DetailField label="อุณหภูมิ (°C)" value={viewingAssessment.result_temp} />
+                                <DetailField label="อัตราการไหล" value={viewingAssessment.result_flow_rate} />
+                                <DetailField label="VMD (ไมครอน)" value={viewingAssessment.vmd_value} />
+                                <DetailField label="SPAN" value={viewingAssessment.span_value} />
+                            </div>
+                        </div>
+
+                        {/* Recommendations & Notes */}
+                        {(viewingAssessment.recommendations || viewingAssessment.notes) ? (
+                            <>
+                                <hr className="border-slate-200" />
+                                <div className="grid gap-3 text-sm sm:grid-cols-2">
+                                    {viewingAssessment.recommendations ? <DetailField label="ข้อเสนอแนะ" value={viewingAssessment.recommendations} /> : null}
+                                    {viewingAssessment.notes ? <DetailField label="หมายเหตุ" value={viewingAssessment.notes} /> : null}
+                                </div>
+                            </>
+                        ) : null}
+                    </div>
+                </GlassCard>
+            </div>
+        );
+    }
 
     if (showNewForm && selectedEquipmentId) {
         const selectedEquipment = allEquipment.find((eq) => eq.id === selectedEquipmentId);
@@ -183,51 +330,71 @@ export function AssessmentsClient({ assessments, allEquipment }: AssessmentsClie
 
                     <div className="mt-6 space-y-3">
                         {pagination.paginatedItems.length > 0 ? (
-                            pagination.paginatedItems.map((assessment) => (
-                                <div
-                                    key={assessment.id}
-                                    className="rounded-3xl border border-slate-200 bg-slate-50 p-5"
-                                >
-                                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                                        <div className="min-w-0 flex-1">
-                                            <div className="flex flex-wrap items-center gap-2">
-                                                <h3 className="text-lg font-semibold text-slate-900">
-                                                    {assessment.equipment?.name || `อุปกรณ์ #${assessment.equipment_id}`}
-                                                </h3>
-                                                <span className="chip chip-info">
-                                                    {assessment.equipment?.type || "-"}
-                                                </span>
+                            pagination.paginatedItems.map((assessment) => {
+                                const eq = assessment.equipment;
+                                const imgSrc = eq ? getEquipmentImageUrl(eq.name, eq.image_url) : null;
+                                return (
+                                    <div
+                                        key={assessment.id}
+                                        className="cursor-pointer rounded-3xl border border-slate-200 bg-slate-50 p-5 transition hover:border-slate-300 hover:shadow-sm"
+                                        onClick={() => setViewingAssessment(assessment)}
+                                    >
+                                        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                                            <EquipmentImage
+                                                src={imgSrc}
+                                                alt={eq?.name || "อุปกรณ์"}
+                                                className="h-20 w-20 shrink-0 rounded-2xl border border-slate-200"
+                                            />
+                                            <div className="min-w-0 flex-1">
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <h3 className="text-lg font-semibold text-slate-900">
+                                                        {eq?.name || `อุปกรณ์ #${assessment.equipment_id}`}
+                                                    </h3>
+                                                    <span className="chip chip-info">
+                                                        {eq?.type || "-"}
+                                                    </span>
+                                                </div>
+                                                <div className="mt-2 grid gap-2 text-sm text-slate-600 sm:grid-cols-2 lg:grid-cols-3">
+                                                    <div>
+                                                        <span className="font-medium text-slate-700">เลขครุภัณฑ์:</span>{" "}
+                                                        {eq?.serial || "-"}
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-medium text-slate-700">ยี่ห้อ:</span>{" "}
+                                                        {eq?.brand || "-"}
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-medium text-slate-700">รุ่น:</span>{" "}
+                                                        {eq?.model || "-"}
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-medium text-slate-700">วันที่ประเมิน:</span>{" "}
+                                                        {new Date(assessment.assessment_date).toLocaleDateString("th-TH")}
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-medium text-slate-700">ผู้ประเมิน:</span>{" "}
+                                                        {assessment.assessor_name || "-"}
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-medium text-slate-700">VMD:</span>{" "}
+                                                        {assessment.vmd_value || "-"} ไมครอน
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="mt-2 grid gap-2 text-sm text-slate-600 sm:grid-cols-2 lg:grid-cols-3">
-                                                <div>
-                                                    <span className="font-medium text-slate-700">เลขครุภัณฑ์:</span>{" "}
-                                                    {assessment.equipment?.serial || "-"}
-                                                </div>
-                                                <div>
-                                                    <span className="font-medium text-slate-700">ยี่ห้อ:</span>{" "}
-                                                    {assessment.equipment?.brand || "-"}
-                                                </div>
-                                                <div>
-                                                    <span className="font-medium text-slate-700">รุ่น:</span>{" "}
-                                                    {assessment.equipment?.model || "-"}
-                                                </div>
-                                                <div>
-                                                    <span className="font-medium text-slate-700">วันที่ประเมิน:</span>{" "}
-                                                    {new Date(assessment.assessment_date).toLocaleDateString("th-TH")}
-                                                </div>
-                                                <div>
-                                                    <span className="font-medium text-slate-700">ผู้ประเมิน:</span>{" "}
-                                                    {assessment.assessor_name || "-"}
-                                                </div>
-                                                <div>
-                                                    <span className="font-medium text-slate-700">VMD:</span>{" "}
-                                                    {assessment.vmd_value || "-"} ไมครอน
-                                                </div>
-                                            </div>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setViewingAssessment(assessment);
+                                                }}
+                                                className="inline-flex shrink-0 items-center gap-1.5 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                                            >
+                                                <Eye className="h-4 w-4" />
+                                                ดูรายละเอียด
+                                            </button>
                                         </div>
                                     </div>
-                                </div>
-                            ))
+                                );
+                            })
                         ) : (
                             <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-6 py-14 text-center text-sm text-slate-500">
                                 ไม่พบรายการประเมินที่ตรงกับเงื่อนไขการค้นหา
@@ -246,6 +413,15 @@ export function AssessmentsClient({ assessments, allEquipment }: AssessmentsClie
                     </div>
                 </GlassCard>
             )}
+        </div>
+    );
+}
+
+function DetailField({ label, value }: { label: string; value?: string | null }) {
+    return (
+        <div>
+            <span className="font-medium text-slate-700">{label}</span>
+            <p className="mt-0.5 text-slate-600">{value || "-"}</p>
         </div>
     );
 }
