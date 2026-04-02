@@ -19,6 +19,7 @@ const ROUTE_ROLE_GUARDS: RouteRoleGuard[] = [
     { prefix: "/dashboard/approvals", roles: ["admin", "approver"] },
     { prefix: "/dashboard/reports", roles: ["admin", "approver"] },
     { prefix: "/dashboard/technician", roles: ["admin", "technician"] },
+    { prefix: "/dashboard/assessments", roles: ["admin", "technician"] },
     { prefix: "/dashboard/borrow", roles: ["admin", "user"] },
     { prefix: "/dashboard/history", roles: ["admin", "user"] },
     { prefix: "/dashboard/settings", roles: ["admin", "approver", "technician", "user"] },

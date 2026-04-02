@@ -5,6 +5,7 @@ import {
     CalendarRange,
     CircleAlert,
     FileText,
+    Hash,
     Minus,
     Phone,
     Plus,
@@ -47,6 +48,8 @@ export default function BorrowPage() {
         contact_name: "",
         contact_phone: "",
         notes: "",
+        document_reference: "",
+        subject: "",
     });
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState({ type: "", text: "" });
@@ -174,6 +177,8 @@ export default function BorrowPage() {
                     contact_name: formData.contact_name,
                     contact_phone: formData.contact_phone,
                     notes: formData.notes,
+                    document_reference: formData.document_reference,
+                    subject: formData.subject,
                 }),
             });
 
@@ -193,6 +198,8 @@ export default function BorrowPage() {
                 contact_name: "",
                 contact_phone: "",
                 notes: "",
+                document_reference: "",
+                subject: "",
             });
             await loadEquipmentCatalog();
         } catch (error: any) {
@@ -378,41 +385,84 @@ export default function BorrowPage() {
                                 </div>
                             ) : null}
 
+                            <div className="grid gap-5 sm:grid-cols-2">
+                                <div>
+                                    <label className="label">มีหนังสือเลขที่</label>
+                                    <div className="relative">
+                                        <Hash className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                        <input
+                                            type="text"
+                                            value={formData.document_reference}
+                                            onChange={(event) => setFormData({ ...formData, document_reference: event.target.value })}
+                                            placeholder="เช่น สธ 0402/1234"
+                                            className="form-input form-input-icon"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="label">เรื่อง</label>
+                                    <input
+                                        type="text"
+                                        value={formData.subject}
+                                        onChange={(event) => setFormData({ ...formData, subject: event.target.value })}
+                                        placeholder="เช่น ขอยืมเครื่องพ่นสารเคมี"
+                                        className="form-input"
+                                    />
+                                </div>
+                            </div>
+
                             <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
                                 <div className="flex items-center justify-between gap-3">
                                     <div>
-                                        <p className="text-sm font-semibold text-slate-900">รายการที่เลือก</p>
-                                        <p className="text-xs text-slate-500">รวม {totalRequested} เครื่อง</p>
+                                        <p className="text-sm font-semibold text-slate-900">รายการอุปกรณ์ที่ขอยืม</p>
+                                        <p className="text-xs text-slate-500">รวม {totalRequested} เครื่อง ({selectedRequests.length} ประเภท)</p>
                                     </div>
-                                    <span className="chip">{selectedRequests.length} ประเภท</span>
                                 </div>
 
-                                <div className="mt-4 space-y-3">
-                                    {selectedRequests.length > 0 ? (
-                                        selectedRequests.map((group) => (
-                                            <div key={group.type} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-3">
-                                                <EquipmentImage
-                                                    src={group.imageUrl}
-                                                    alt={group.type}
-                                                    className="h-14 w-14 shrink-0 rounded-2xl border border-slate-200"
-                                                    imageClassName="object-cover"
-                                                    labelClassName="text-[10px]"
-                                                    sizes="56px"
-                                                />
-                                                <div className="min-w-0 flex-1">
-                                                    <p className="font-medium text-slate-900">{group.type}</p>
-                                                    <p className="text-xs text-slate-500">
-                                                        ขอ {group.quantity} จากทั้งหมด {group.availableCount} เครื่อง
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-4 text-sm text-slate-500">
-                                            ยังไม่ได้เลือกอุปกรณ์ กรุณาระบุจำนวนจากรายการด้านซ้ายก่อนส่งคำขอ
-                                        </div>
-                                    )}
-                                </div>
+                                {selectedRequests.length > 0 ? (
+                                    <div className="mt-4 overflow-x-auto">
+                                        <table className="w-full text-sm">
+                                            <thead>
+                                                <tr className="border-b border-slate-200 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                                    <th className="px-3 py-2 text-center">#</th>
+                                                    <th className="px-3 py-2">รายการ</th>
+                                                    <th className="px-3 py-2 text-center">จำนวน</th>
+                                                    <th className="px-3 py-2">รหัสครุภัณฑ์</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {(() => {
+                                                    let rowIndex = 0;
+                                                    return selectedRequests.flatMap((group) =>
+                                                        group.items.slice(0, group.quantity).map((item, itemIdx) => {
+                                                            rowIndex += 1;
+                                                            return (
+                                                                <tr key={item.id} className="border-b border-slate-100 bg-white">
+                                                                    <td className="px-3 py-2.5 text-center text-slate-500">{rowIndex}</td>
+                                                                    <td className="px-3 py-2.5">
+                                                                        <span className="font-medium text-slate-900">{item.name}</span>
+                                                                        {itemIdx === 0 && group.quantity > 1 ? (
+                                                                            <span className="ml-2 text-xs text-slate-400">
+                                                                                ({group.quantity} เครื่อง)
+                                                                            </span>
+                                                                        ) : null}
+                                                                    </td>
+                                                                    <td className="px-3 py-2.5 text-center text-slate-600">1</td>
+                                                                    <td className="px-3 py-2.5 text-slate-600">{item.serial}</td>
+                                                                </tr>
+                                                            );
+                                                        }),
+                                                    );
+                                                })()}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ) : (
+                                    <div className="mt-4 rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-4 text-sm text-slate-500">
+                                        ยังไม่ได้เลือกอุปกรณ์ กรุณาระบุจำนวนจากรายการด้านซ้ายก่อนส่งคำขอ
+                                    </div>
+                                )}
                             </div>
 
                             <div className="grid gap-5 sm:grid-cols-2">

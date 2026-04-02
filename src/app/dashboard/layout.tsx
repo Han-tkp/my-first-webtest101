@@ -28,6 +28,7 @@ export default async function DashboardLayout({
         { id: "borrow", label: "ยืมอุปกรณ์", href: "/dashboard/borrow", roles: ["admin", "user"] },
         { id: "history", label: "ประวัติการยืม", href: "/dashboard/history", roles: ["admin", "user"] },
         { id: "technician", label: "งานช่าง", href: "/dashboard/technician", roles: ["admin", "technician"] },
+        { id: "assessments", label: "ประเมินเครื่อง", href: "/dashboard/assessments", roles: ["admin", "technician"] },
         { id: "approvals", label: "ศูนย์อนุมัติ", href: "/dashboard/approvals", roles: ["admin", "approver"] },
         { id: "reports", label: "รายงาน", href: "/dashboard/reports", roles: ["admin", "approver"] },
         { id: "settings", label: "ตั้งค่า", href: "/dashboard/settings", roles: ["admin", "user", "technician", "approver"] },

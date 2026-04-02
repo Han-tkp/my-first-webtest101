@@ -35,7 +35,7 @@ Middleware at [src/middleware.ts](src/middleware.ts) enforces per-route role and
 
 ### Database (Supabase)
 
-Core tables: `profiles`, `equipment`, `borrows`, `repairs`, `notifications`, `notification_dedupe_keys`, `notification_deliveries`
+Core tables: `profiles`, `equipment`, `borrows`, `repairs`, `notifications`, `notification_dedupe_keys`, `notification_deliveries`, `request_rate_limits`
 
 Key status enums:
 - **Equipment**: `available`, `reserved`, `borrowed`, `under_maintenance`, `pending_repair_approval`
@@ -69,7 +69,8 @@ Protected routes and their allowed roles:
 | `/dashboard/approvals`, `/dashboard/reports` | admin, approver |
 | `/dashboard/technician` | admin, technician |
 | `/dashboard/borrow`, `/dashboard/history` | admin, user |
-| `/dashboard/notifications` | all |
+| `/dashboard/settings`, `/dashboard/notifications` | all |
+| `/dashboard/debug` | admin |
 
 ### Notification System
 
@@ -94,9 +95,17 @@ Orchestrated by [src/lib/notifications.ts](src/lib/notifications.ts) — `delive
 - [src/lib/equipment-catalog.ts](src/lib/equipment-catalog.ts) — `KNOWN_EQUIPMENT_TYPES[]`, `getEquipmentCategory()`, `getEquipmentImageUrl()`
 - [src/lib/equipment-inspection.ts](src/lib/equipment-inspection.ts) — `inspectionItems[]`, `buildInspectionChecklist()` for post-return forms
 
-### File Uploads
+### API Routes
 
-`POST /api/uploads` handles image uploads to R2 storage via `src/lib/supabase/storage.ts`. `DELETE /api/uploads` removes files. `next.config.mjs` allows remote images from `**.supabase.co`.
+Beyond borrow/repair endpoints, other route groups:
+- `/api/auth/register`, `/api/auth/logout` — registration and logout
+- `/api/users/[id]/role`, `/api/users/[id]/approve`, `/api/users/[id]/reject` — admin user management
+- `/api/equipment/` — CRUD for equipment catalog
+- `/api/notifications/` — mark read, mark all read
+- `/api/uploads` — `POST` uploads to R2 storage, `DELETE` removes files (via `src/lib/supabase/storage.ts`)
+- `/api/debug/email` — admin-only email debugging
+
+`next.config.mjs` allows remote images from `**.supabase.co`.
 
 ### Visual Effects
 
@@ -126,8 +135,9 @@ UI components in `src/components/ui/` — `Button` (4 variants: primary, seconda
 - Named exports for shared utilities; default exports for Next.js file conventions (`page.tsx`, `layout.tsx`, `route.ts`)
 - Components: `PascalCase` — helpers/modules: `camelCase`
 - All user-facing copy is in **Thai (ภาษาไทย)**
-- ESLint flat config (`eslint.config.mjs`): `eqeqeq` (error, smart), `prefer-const` (error), `no-var` (error), `no-console` (warn, allow warn/error/info), trailing comma (always-multiline)
-- Types are co-located with their modules (no central `types.ts` file)
+- ESLint flat config (`eslint.config.mjs`): `eqeqeq` (error, always, null ignored), `prefer-const` (error), `no-var` (error), `no-console` (warn, allow warn/error/info), `semi` (error, always), `quotes` (warn, double), trailing comma (always-multiline)
+- Types are co-located with their modules
+- Custom hooks in `src/hooks/` (e.g., `useListPagination`)
 
 ## Required Environment Variables
 

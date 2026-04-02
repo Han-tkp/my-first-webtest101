@@ -207,6 +207,8 @@ export async function POST(request: Request) {
         contact_name: typeof body.contact_name === "string" ? body.contact_name.trim() : "",
         contact_phone: contactPhone,
         notes: typeof body.notes === "string" ? body.notes.trim() : "",
+        document_reference: typeof body.document_reference === "string" ? body.document_reference.trim() : null,
+        subject: typeof body.subject === "string" ? body.subject.trim() : null,
         equipment_ids: equipmentIds,
         status: "pending_borrow_approval",
     };
